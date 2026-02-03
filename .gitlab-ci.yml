@@ -1,0 +1,25 @@
+include:
+  - component: $CI_SERVER_FQDN/components/security/gitleaks@1.1.0
+    inputs:
+      stage: test
+  - component: $CI_SERVER_FQDN/components/dotnet/dotnet@1.1.0
+    inputs:
+      net_version: "8.0"
+  - component: $CI_SERVER_FQDN/components/docker/docker-gitlab@1.2.1
+
+default:
+  tags:
+    - ue19
+
+deploy:dotnet:
+  stage: deploy
+  image:
+    name: registry.helmo.be/public/helmo.depportainer:0.0.1
+    entrypoint: [""]
+  needs:
+    - docker-gitlab
+  script:
+    - dotnet /app/Helmo.DepPortainer.dll --portainer-uri $UE19_PORTAINER_URL --portainer-token $UE19_PORTAINER_TOKEN --image $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG  --container-name $GITLAB_USER_LOGIN
+    - echo "Votre application est disponible via l'url https://ue19.cg.helmo.be/$GITLAB_USER_LOGIN"
+  rules:
+    - if: $CI_COMMIT_TAG
