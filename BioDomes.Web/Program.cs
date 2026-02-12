@@ -5,6 +5,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<ReverseProxyLinksMiddleware>();
+builder.Services.AddWebOptimizer(pipeline =>
+{
+    pipeline.AddCssBundle("/css/bundle.css",
+        "/css/paragraph-custom-style.css",
+        "site.css",
+        "title-custom-style.css");
+});
 
 var app = builder.Build();
 
@@ -27,6 +34,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions());
 app.UseHttpsRedirection();
 
 app.UseReverseProxyLinks();
+
+app.UseWebOptimizer();
 
 app.UseStaticFiles();
 
