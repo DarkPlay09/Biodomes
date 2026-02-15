@@ -1,0 +1,12 @@
+﻿@page
+@model SpeciesModel
+@{
+    ViewData["Title"] = "Species";
+}
+
+<h1>Espèces</h1>
+
+@foreach (var s in Model.Species)
+{
+    <partial name="Species/_SpeciesCard" model="s"/>
+}
