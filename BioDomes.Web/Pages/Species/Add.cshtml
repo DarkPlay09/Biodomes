@@ -1,0 +1,38 @@
+﻿@page "/species/add"
+@model BioDomes.Web.Pages.Species.AddModel
+
+<h1>Ajouter une espèce</h1>
+
+<form method="post">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div>
+        <label asp-for="Type"></label>
+        <input asp-for="Type" />
+        <span asp-validation-for="Type"></span>
+    </div>
+
+    <div>
+        <label asp-for="Diet"></label>
+        <input asp-for="Diet" />
+        <span asp-validation-for="Diet"></span>
+    </div>
+
+    <div>
+        <label asp-for="AdultSize"></label>
+        <input asp-for="AdultSize" type="number" step="0.1" />
+        <span asp-validation-for="AdultSize"></span>
+    </div>
+
+    <button type="submit">Créer</button>
+</form>
+
+<a asp-page="/Species">Retour</a>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

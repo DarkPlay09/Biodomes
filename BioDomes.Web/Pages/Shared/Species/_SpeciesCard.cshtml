@@ -1,8 +1,16 @@
-﻿@model BioDomes.Domains.Species
+﻿@using BioDomes.Domains
+@model BioDomes.Domains.Species
 
 <div class="species-card">
     <h3>@Model.Name</h3>
     <p>Type : @Model.Type</p>
     <p>Régime : @Model.Diet</p>
     <p>Taille adulte : @Model.AdultSize m</p>
+    <a asp-page="/Species/Edit" asp-route-slug="@Model.Name">Modifier</a>
+    <form method="post"
+          asp-page="/Species"
+          asp-page-handler="Delete"
+          asp-route-slug="@Model.Name">
+        <button type="submit">Supprimer</button>
+    </form>
 </div>

@@ -1,5 +1,6 @@
 ﻿using BioDomes.Domains;
 using BioDomes.Infrastructures;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BioDomes.Web.Pages;
@@ -8,7 +9,7 @@ public class SpeciesModel : PageModel
 {
     private readonly ISpeciesRepository _repository;
     
-    public IReadOnlyList<Species> Species { get; private set; } = new List<Species>();
+    public IReadOnlyList<Domains.Species> Species { get; private set; } = new List<Domains.Species>();
     
     public SpeciesModel(ISpeciesRepository repository)
     {
@@ -18,5 +19,11 @@ public class SpeciesModel : PageModel
     public void OnGet()
     {
         Species = _repository.GetAll();
+    }
+    
+    public IActionResult OnPostDelete(string slug)
+    {
+        _repository.DeleteBySlug(slug);
+        return RedirectToPage(); 
     }
 }

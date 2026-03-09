@@ -1,0 +1,21 @@
+﻿@page "/species/{slug:kebab:speciesSlug}"
+@model BioDomes.Web.Pages.Species.EditModel
+
+<h1>Modifier une espèce</h1>
+
+@if (Model.Species is null)
+{
+    <p>Espèce introuvable.</p>
+}
+else
+{
+    <h2>@Model.Species.Name</h2>
+
+    <ul>
+        <li>Type : @Model.Species.Type</li>
+        <li>Diet : @Model.Species.Diet</li>
+        <li>Adult size : @Model.Species.AdultSize</li>
+    </ul>
+}
+
+<a asp-page="/Species">Retour à la liste</a>
