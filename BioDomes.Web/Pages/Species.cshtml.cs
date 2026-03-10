@@ -7,6 +7,9 @@ namespace BioDomes.Web.Pages;
 
 public class SpeciesModel : PageModel
 {
+    [TempData]
+    public string? LastInsertedSpeciesName { get; set; }
+    
     private readonly ISpeciesRepository _repository;
     
     public IReadOnlyList<Domains.Species> Species { get; private set; } = new List<Domains.Species>();

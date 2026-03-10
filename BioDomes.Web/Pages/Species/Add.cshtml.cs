@@ -1,7 +1,8 @@
-﻿using BioDomes.Infrastructures;
+﻿using BioDomes.Domains;
+using BioDomes.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BioDomes.Web.Pages.Species;
 
@@ -14,25 +15,32 @@ public class AddModel : PageModel
         _repo = repo;
     }
 
-    [BindProperty, Required]
-    public string Name { get; set; } = "";
-
-    [BindProperty, Required]
-    public string Type { get; set; } = "";
-
-    [BindProperty, Required]
-    public string Diet { get; set; } = "";
-
-    [BindProperty, Range(0.01, 999)]
-    public double AdultSize { get; set; }
+    [BindProperty] public SpeciesInputModel Input { get; set; } = new();
 
     public void OnGet() { }
+
+    [TempData]
+    public string? LastInsertedSpeciesName { get; set; }
 
     public IActionResult OnPost()
     {
         if (!ModelState.IsValid) return Page();
 
-        _repo.Add(Name, Type, Diet, AdultSize);   
-        return RedirectToPage("/Species");       
+        try
+        {
+            _repo.Add(Input.Name!, Input.Type!, Input.Diet!, Input.AdultSize, Input.ImageUrl);
+        }
+        catch (InvalidOperationException)
+        {
+            ModelState.AddModelError("Input.Name", "Une espèce avec ce nom existe déjà.");
+            return Page();
+        }
+
+        LastInsertedSpeciesName = Input.Name;
+        return RedirectToPage("/Species");
     }
+
+    public IEnumerable<SelectListItem> ClassificationOptions { get; } =
+        Enum.GetNames<SpeciesClassification>()
+            .Select(x => new SelectListItem(x, x));
 }

@@ -4,6 +4,13 @@
     ViewData["Title"] = "Species";
 }
 
+@if (!string.IsNullOrWhiteSpace(Model.LastInsertedSpeciesName))
+{
+    <div class="alert">
+        Espèce ajoutée : <strong>@Model.LastInsertedSpeciesName</strong>
+    </div>
+}
+
 <h1>Espèces</h1>
 
 <a asp-page="/Species/Add">Ajouter une espèce</a>
