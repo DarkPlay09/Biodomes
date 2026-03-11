@@ -1,5 +1,5 @@
 ﻿@using BioDomes.Domains
-@model BioDomes.Domains.Species
+@model BioDomes.Domains.Entities.Species
 
 <div class="species-card">
     <h3>@Model.Name</h3>
@@ -9,7 +9,7 @@
              alt="Image de @Model.Name"
              style="max-width: 220px; border-radius: 12px;" />
     }
-    <p>Type : @Model.Type</p>
+    <p>Type : @Model.Classification</p>
     <p>Régime : @Model.Diet</p>
     <p>Taille adulte : @Model.AdultSize m</p>
     <a asp-page="/Species/Edit" asp-route-slug="@Model.Name">Modifier</a>

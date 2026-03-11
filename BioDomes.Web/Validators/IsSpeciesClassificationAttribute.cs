@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using BioDomes.Domains;
+using BioDomes.Domains.Enums;
 
 namespace BioDomes.Web.Validators;
 

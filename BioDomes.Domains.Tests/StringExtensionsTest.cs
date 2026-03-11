@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using BioDomes.Domains;
+﻿using BioDomes.Domains.Extensions;
 
 public class StringExtensionsTests
 {

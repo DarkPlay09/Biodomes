@@ -1,4 +1,4 @@
-namespace BioDomes.Domains;
+namespace BioDomes.Domains.Enums;
 
 public enum SpeciesClassification
 {

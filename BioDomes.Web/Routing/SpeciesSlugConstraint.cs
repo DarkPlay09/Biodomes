@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using BioDomes.Domains;
+using BioDomes.Domains.Extensions;
 
 namespace BioDomes.Web.Routing;
 

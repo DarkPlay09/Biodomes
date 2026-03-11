@@ -15,7 +15,7 @@
 
 <a asp-page="/Species/Add">Ajouter une espèce</a>
 
-@foreach (var s in Model.Species)
+@foreach (var s in Model.SpeciesList)
 {
     <partial name="Species/_SpeciesCard" model="s"/>
 }

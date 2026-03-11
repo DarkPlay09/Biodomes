@@ -1,4 +1,6 @@
 ﻿using BioDomes.Domains;
+using BioDomes.Domains.Enums;
+using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,15 +21,20 @@ public class EditModel : PageModel
         Enum.GetNames<SpeciesClassification>()
             .Select(x => new SelectListItem(x, x));
 
+    public IEnumerable<SelectListItem> DietOptions =>
+        Enum.GetNames<DietType>()
+            .Select(x => new SelectListItem(x, x));
+    
     public IActionResult OnGet(string slug)
     {
         var s = _repo.GetBySlug(slug);
         if (s is null) return NotFound();
         
         Input.Name = s.Name;
-        Input.Type = s.Type;
-        Input.Diet = s.Diet;
+        Input.Classification = s.Classification.ToString();
+        Input.Diet = s.Diet.ToString();
         Input.AdultSize = s.AdultSize;
+        Input.Weight = s.Weight;
         Input.ImageUrl = s.ImageUrl;
         
         return Page();
@@ -35,9 +42,32 @@ public class EditModel : PageModel
 
     public IActionResult OnPost(string slug)
     {
-        if (!ModelState.IsValid) return Page();
-        
-        _repo.Update(slug, Input.Name!, Input.Type!, Input.Diet!, Input.AdultSize, Input.ImageUrl);
+        if (!ModelState.IsValid)
+            return Page();
+
+        if (!Enum.TryParse<SpeciesClassification>(Input.Classification, out var classification))
+        {
+            ModelState.AddModelError("Input.Classification", "Classification invalide.");
+            return Page();
+        }
+
+        if (!Enum.TryParse<DietType>(Input.Diet, out var diet))
+        {
+            ModelState.AddModelError("Input.Diet", "Régime alimentaire invalide.");
+            return Page();
+        }
+
+        var species = new Domains.Entities.Species(
+            Input.Name!,
+            classification,
+            diet,
+            Input.AdultSize,
+            Input.Weight,
+            Input.ImageUrl
+        );
+
+        _repo.Update(slug, species);
+
         return RedirectToPage("/Species");
     }
 }

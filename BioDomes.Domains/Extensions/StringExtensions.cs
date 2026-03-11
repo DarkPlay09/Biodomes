@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace BioDomes.Domains;
+namespace BioDomes.Domains.Extensions;
 
 public static class StringExtensions
 {

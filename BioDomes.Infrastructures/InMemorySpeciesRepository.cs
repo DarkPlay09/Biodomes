@@ -1,24 +1,17 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using BioDomes.Domains;
+﻿using BioDomes.Domains.Entities;
+using BioDomes.Domains.Enums;
+using BioDomes.Domains.Extensions;
+using BioDomes.Domains.Repositories;
 
 namespace BioDomes.Infrastructures;
-
-public interface ISpeciesRepository
-{
-    IReadOnlyList<Species> GetAll();
-    Species? GetBySlug(string slug);
-    void Add(string name, string type, string diet, double adultSize, string? imageUrl);
-    void Update(string slug, string name, string type, string diet, double adultSize, string? imageUrl);
-    void DeleteBySlug(string slug);
-}
 
 public class InMemorySpeciesRepository : ISpeciesRepository
 {
     private readonly List<Species> _species = new()
     {
-        new("Aloe vera", "Plante", "Photosynthèse", 0.8),
-        new("Loup gris", "Mammifère", "Carnivore", 1.6),
-        new("Raton laveur", "Mammifère", "Omnivore", 0.6),
+        new("Aloe vera", SpeciesClassification.Plantes, DietType.Photosynthese, 0.8, 15),
+        new("Loup gris", SpeciesClassification.Mammiferes, DietType.Carnivore, 1.6, 45000),
+        new("Raton laveur", SpeciesClassification.Mammiferes, DietType.Omnivore, 0.6, 9000),
     };
 
     public IReadOnlyList<Species> GetAll() => _species;
@@ -30,20 +23,20 @@ public class InMemorySpeciesRepository : ISpeciesRepository
         return _species.FirstOrDefault(s => s.Name.ToKebabCase() == slug);
     }
     
-    public void Add(string name, string type, string diet, double adultSize, string? imageUrl)
+    public void Add(Species species)
     {
-        if (_species.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase)))
+        if (_species.Any(s => s.Name.Equals(species.Name, StringComparison.OrdinalIgnoreCase)))
             throw new InvalidOperationException("Nom d'éspèce duplique !");
-        _species.Add(new Species(name, type, diet, adultSize, imageUrl));
+        _species.Add(species);
     }
 
-    public void Update(string slug, string name, string type, string diet, double adultSize, string? imageUrl)
+    public void Update(string slug, Species species)
     {
         var s = GetBySlug(slug);
         if (s is null) return;
 
         _species.Remove(s);
-        _species.Add(new Species(name, type, diet, adultSize, imageUrl));
+        _species.Add(species);
     }
 
     public void DeleteBySlug(string slug)
