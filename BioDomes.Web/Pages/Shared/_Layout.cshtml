@@ -6,42 +6,77 @@
     <title>@ViewData["Title"] - BioDomes : Terrarium Zero</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/bundle.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/BioDomes.Web.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true"/>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-page="/Index">BioDomes.Web</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Species">Species</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                    </li>
-                </ul>
+<div class="site-shell">
+    <header class="site-header">
+        <div class="layout-width">
+            <div class="header-row">
+                <a class="brand-block" asp-area="" asp-page="/Index">
+                    <img class="brand-logo" src="~/images/logo_biodomes.png" alt="Logo BioDomes"/>
+                    <span class="brand-text">BioDomes</span>
+                </a>
+                
+                <nav class="main-navigation">
+                    <a class="nav-entry" asp-area="" asp-page="/Index">Accueil</a>
+                    <a class="nav-entry" asp-area="" asp-page="/Species">Espèces</a>
+                    <a class="nav-entry" href="#">Biomes</a>
+                    <a class="nav-entry" href="#">Equipements</a>
+                </nav>
+                
+                <div class="header-actions">
+                    <a class="action-link" href="#">Connexion</a>
+                    <a class="action-button" href="#">Inscription</a>
+                </div>
             </div>
         </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
+    </header>
+    
+    <main class="site-content" role="main">
         @RenderBody()
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2025 - BioDomes.Web - <a asp-area="" asp-page="/Privacy">Privacy</a>
+<footer class="site-footer">
+    <div class="footer-wrap">
+        <div class="footer-grid">
+            <div class="footer-column footer-brand">
+                <a class="brand-block" asp-area="" asp-page="/Index">
+                    <img class="brand-logo" src="~/images/logo_biodomes.png" alt="Logo BioDomes"/>
+                    <span class="footer-title">BioDomes</span>
+                </a>
+                
+                <p class="footer-description">
+                    Plateforme de simulation de biomes et de gestion d’écosystèmes expérimentaux.
+                </p>
+            </div>
+            
+        
+            <div class="footer-column">
+                <h4 class="footer-title">Navigation</h4>
+                <ul class="footer-list">
+                    <li><a asp-area="" asp-page="/Index">Accueil</a></li>
+                    <li><a asp-area="" asp-page="/Species/Index">Espèces</a></li>
+                    <li><a href="#">Biomes</a></li>
+                    <li><a href="#">Équipements</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Légal</h4>
+                <ul class="footer-list">
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Confidentialité</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>© 2026 BioDomes - Terrarium Zero. Tous droit réservés</p>
+            <p>Projet académique de développement web</p>
+        </div>
     </div>
 </footer>
 

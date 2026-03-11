@@ -1,10 +1,37 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "BioDomes - Accueil";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<main class="home-page">
+    <section class="hero-section">
+        <div class="hero-wrapper">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    <span>Phase Alpha : Accès anticipé</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    BioDomes - <span class="hero-title-accent">Accueil</span>
+                </h1>
+                
+                <p class="hero-description">
+                    Plongez dans une simulation de biome post-apocalyptique et gérez des écosystèmes complexes.
+                </p>
+                
+                <div class="hero-actions">
+                    <a class="button button-primary" href="#">Commencer</a>
+                    <a class="button button-secondary" href="#">En savoir plus</a>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="hero-image-frame">
+                        <!-- illustration à mettre -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

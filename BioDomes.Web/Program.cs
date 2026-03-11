@@ -13,9 +13,7 @@ builder.Services.AddSingleton<ISpeciesRepository, InMemorySpeciesRepository>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
     pipeline.AddCssBundle("/css/bundle.css",
-        "/css/paragraph-custom-style.css",
-        "site.css",
-        "title-custom-style.css");
+        "site.css");
 });
 builder.Services.Configure<RouteOptions>(o =>
 {
