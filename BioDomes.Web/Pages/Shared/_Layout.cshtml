@@ -30,9 +30,31 @@
                     <a class="action-link" href="#">Connexion</a>
                     <a class="action-button" href="#">Inscription</a>
                 </div>
+                
+                <button class="menu-toggle" type="button" id="menuToggle" aria-label="Ouvrir le menu">
+                    ☰
+                </button>
             </div>
         </div>
     </header>
+    
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <aside class="mobile-menu-panel" id="mobileMenuPanel">
+        <button class="mobile-menu-close" type="button" id="menuClose" aria-label="Fermer le menu">×</button>
+
+        <nav class="mobile-menu-nav">
+            <a asp-page="/Index">Accueil</a>
+            <a asp-page="/Species/Index">Espèces</a>
+            <a href="#">Biomes</a>
+            <a href="#">Équipements</a>
+        </nav>
+
+        <div class="mobile-menu-actions">
+            <a class="action-link" href="#">Connexion</a>
+            <a class="action-button" href="#">Inscription</a>
+        </div>
+    </aside>
     
     <main class="site-content" role="main">
         @RenderBody()
@@ -68,13 +90,13 @@
                 <h4 class="footer-title">Légal</h4>
                 <ul class="footer-list">
                     <li><a href="#">Contact</a></li>
-                    <li><a href="#">Confidentialité</a></li>
+                    <li><a href="/Privacy">Confidentialité</a></li>
                 </ul>
             </div>
         </div>
         
         <div class="footer-bottom">
-            <p>© 2026 BioDomes - Terrarium Zero. Tous droit réservés</p>
+            <p>© 2026 BioDomes - Terrarium Zero. Tous droits réservés</p>
             <p>Projet académique de développement web</p>
         </div>
     </div>

@@ -1,37 +1,61 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "BioDomes - Accueil";
+    ViewData["Title"] = "Accueil";
 }
 
-<main class="home-page">
-    <section class="hero-section">
-        <div class="hero-wrapper">
-            <div class="hero-text">
-                <div class="hero-badge">
-                    <span class="hero-badge-dot"></span>
-                    <span>Phase Alpha : Accès anticipé</span>
-                </div>
-                
-                <h1 class="hero-title">
-                    BioDomes - <span class="hero-title-accent">Accueil</span>
-                </h1>
-                
-                <p class="hero-description">
-                    Plongez dans une simulation de biome post-apocalyptique et gérez des écosystèmes complexes.
-                </p>
-                
-                <div class="hero-actions">
-                    <a class="button button-primary" href="#">Commencer</a>
-                    <a class="button button-secondary" href="#">En savoir plus</a>
-                </div>
-                
-                <div class="hero-visual">
-                    <div class="hero-image-frame">
-                        <!-- illustration à mettre -->
-                    </div>
-                </div>
+<section class="hero-section">
+    <div class="hero-wrapper">
+        <div class="hero-text">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span>Phase Alpha : Accès anticipé</span>
+            </div>
+
+            <h1 class="hero-title">
+                BioDomes – <span class="hero-title-accent">Terrarium Zero</span>
+            </h1>
+
+            <p class="hero-description">
+                Plongez dans une simulation de biome post-apocalyptique. Gérez des écosystèmes complexes et assurez la survie de la biodiversité face à l'extinction globale.
+            </p>
+
+            <div class="hero-actions">
+                <a class="button button-primary" href="#">Commencer l'aventure</a>
+                <a class="button button-secondary" href="#">En savoir plus</a>
             </div>
         </div>
-    </section>
-</main>
+
+        <div class="hero-visual">
+            <div class="hero-image-frame">
+                <img src="~/images/home_hero_image.png" alt="Home Hero Image"/>
+            </div>
+
+            <div class="hero-stat-card">
+                <p class="hero-stat-label">Stabilité écosystémique</p>
+                <p class="hero-stat-value">94.2%</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="final-cta-section">
+    <div class="final-cta-glow"></div>
+
+    <div class="final-cta-wrapper">
+        <h2 class="final-cta-title">
+            Devenez le gardien de la biodiversité de demain.
+        </h2>
+
+        <p class="final-cta-text">
+            Rejoignez des milliers de scientifiques et passionnés dans la mission de
+            préservation la plus ambitieuse du 21ème siècle.
+        </p>
+
+        <div class="final-cta-actions">
+            <a class="final-cta-button final-cta-button-main" href="#">
+                Créer mon laboratoire gratuit
+            </a>
+        </div>
+    </div>
+</section>
