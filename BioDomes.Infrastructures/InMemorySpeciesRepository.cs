@@ -26,7 +26,7 @@ public class InMemorySpeciesRepository : ISpeciesRepository
     public void Add(Species species)
     {
         if (_species.Any(s => s.Name.Equals(species.Name, StringComparison.OrdinalIgnoreCase)))
-            throw new InvalidOperationException("Nom d'éspèce duplique !");
+            throw new InvalidOperationException("Nom d'espèce duplique !");
         _species.Add(species);
     }
 

@@ -4,6 +4,8 @@ namespace BioDomes.Domains.Entities;
 
 public class Species
 {
+    
+    public int Id { get; set; } // Primary key
     public string Name { get; set; }
     public SpeciesClassification Classification { get; set; }
     public DietType Diet { get; set; }
