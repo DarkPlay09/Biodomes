@@ -1,0 +1,99 @@
+﻿@page
+@model BioDomes.Web.Pages.Account.LoginModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Connexion";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BioDomes</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body class="login-page">
+    <div class="login-shell">
+        <section class="login-visual">
+            <div class="login-visual-overlay"></div>
+
+            <div class="login-visual-content">
+                <div class="login-brand">
+                    <img class="login-brand-logo" src="~/images/logo_biodomes.png" alt="Logo BioDomes" />
+                    <span class="login-brand-name">BioDomes</span>
+                </div>
+
+                <div class="login-visual-text-block">
+                    <h1 class="login-visual-title">
+                        Cultiver le futur, un écosystème à la fois.
+                    </h1>
+
+                    <p class="login-visual-text">
+                        Rejoignez le réseau mondial de chercheurs en biodynamie et accédez
+                        aux outils de surveillance en temps réel de vos dômes.
+                    </p>
+                </div>
+
+                <p class="login-visual-footer">
+                    © 2026 BioDomes - Terrarium Zero. Tous droits réservés.
+                </p>
+            </div>
+        </section>
+
+        <section class="login-panel">
+            <div class="login-card">
+                <div class="login-heading">
+                    <h2 class="login-title">Bon retour parmi nous</h2>
+                    <p class="login-subtitle">
+                        Accédez à votre compte de chercheur BioDomes.
+                    </p>
+                </div>
+
+                <form class="login-form" method="post">
+                    <div class="login-field">
+                        <label class="login-label" for="login-id">Email ou nom d'utilisateur</label>
+                        <input
+                            class="login-input"
+                            id="login-id"
+                            name="loginId"
+                            type="text"
+                            placeholder="chercheur@biodomes.org" />
+                    </div>
+
+                    <div class="login-field">
+                        <div class="login-field-row">
+                            <label class="login-label" for="login-password">Mot de passe</label>
+                            <a class="login-link-small" href="#">Oublié ?</a>
+                        </div>
+
+                        <input
+                            class="login-input"
+                            id="login-password"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••" />
+
+                        <p class="login-help">
+                            Minimum 8 caractères requis.
+                        </p>
+                    </div>
+
+                    <button class="login-submit" type="submit">
+                        Se connecter au réseau
+                    </button>
+                </form>
+
+                <div class="login-bottom">
+                    <p>
+                        Nouveau membre ?
+                        <a class="login-link-main" href="/Account/Register">Créer un profil</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -5,6 +5,8 @@ using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
 using BioDomes.Web.Transformers;
 using Microsoft.EntityFrameworkCore;
+using BioDomes.Infrastructures.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +25,8 @@ builder.Services.Configure<RouteOptions>(o =>
     o.ConstraintMap["kebab"] = typeof(SlugTransformer);         
 });
 
-builder.Services.AddDbContext<BioDomesContext>(options
-    => options.UseSqlite(
-        builder.Configuration.GetConnectionString("BioDomesContext")));
+builder.Services.AddDbContext<BioDomesDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("BioDomesDb")));
 
 var app = builder.Build();
 
