@@ -10,6 +10,24 @@ Projet d'application web pour l'UE19. Le projet prend la forme d'une solution .N
 
 La suite du document sera à compléter par vos soins.
 
+## Base de données
+
+**Créer une nouvelle migration**
+
+```dotnet ef migrations add NOM_DE_LA_MIGRATION --context BioDomesDbContext --project .\BioDomes.Infrastructures\BioDomes.Infrastructures.csproj --startup-project .\BioDomes.Web\BioDomes.Web.csproj --output-dir EntityFramework\Migrations```
+
+**Appliquer les migrations à la base**
+
+``dotnet ef database update --context BioDomesDbContext --project .\BioDomes.Infrastructures\BioDomes.Infrastructures.csproj --startup-project .\BioDomes.Web\BioDomes.Web.csproj``
+
+**Lister les migrations existantes**
+
+``dotnet ef migrations list --context BioDomesDbContext --project .\BioDomes.Infrastructures\BioDomes.Infrastructures.csproj --startup-project .\BioDomes.Web\BioDomes.Web.csproj``
+
+**Supprimer la dernière migration**
+
+``dotnet ef migrations remove --context BioDomesDbContext --project .\BioDomes.Infrastructures\BioDomes.Infrastructures.csproj --startup-project .\BioDomes.Web\BioDomes.Web.csproj``
+
 ## Membres de l'équipe
 
 **TODO :** indiquez les membres de votre équipe (de deux à trois membres).
