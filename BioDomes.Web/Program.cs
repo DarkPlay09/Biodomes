@@ -5,8 +5,6 @@ using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
 using BioDomes.Web.Transformers;
 using Microsoft.EntityFrameworkCore;
-using BioDomes.Infrastructures.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
