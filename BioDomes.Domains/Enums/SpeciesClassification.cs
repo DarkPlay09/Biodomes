@@ -16,5 +16,11 @@ public enum SpeciesClassification
     Mousses,
     Algues,
     Lichen,
-    Champignons
+    Champignons,
+    Myriapodes,
+    Echinodermes,
+    Annelides,
+    Cnidaires,
+    Plathelminthes,
+    Poriferes
 }
