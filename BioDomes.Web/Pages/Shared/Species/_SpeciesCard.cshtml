@@ -1,22 +1,36 @@
 ﻿@using BioDomes.Domains
 @model BioDomes.Domains.Entities.Species
 
-<div class="species-card">
-    <h3>@Model.Name</h3>
-    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-    {
-        <img src="@Model.ImageUrl"
-             alt="Image de @Model.Name"
-             style="max-width: 220px; border-radius: 12px;" />
-    }
-    <p>Type : @Model.Classification</p>
-    <p>Régime : @Model.Diet</p>
-    <p>Taille adulte : @Model.AdultSize m</p>
-    <a asp-page="/Species/Edit" asp-route-slug="@Model.Name">Modifier</a>
-    <form method="post"
-          asp-page="/Species"
-          asp-page-handler="Delete"
-          asp-route-slug="@Model.Name">
-        <button type="submit">Supprimer</button>
-    </form>
-</div>
+<article class="species-card">
+    <div class="species-card__media">
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <img class="species-card__image"
+                 src="@Model.ImageUrl"
+                 alt="Image de @Model.Name" />
+        }
+        else
+        {
+            <img class="species-card__image species-card__image--placeholder"
+                 src="images/Specie/noImageSpecie.png"
+                 alt="Pas d'image pour @Model.Name" />
+        }
+        <span class="species-card__badge">@Model.Classification</span>
+    </div>
+    <div class="species-card__content">
+        <h3 class="species-card__title">@Model.Name</h3>
+        <div class="species-card__meta">
+            <p><span class="species-card__label">Régime</span>@Model.Diet</p>
+            <p><span class="species-card__label">Taille adulte</span>@Model.AdultSize m</p>
+        </div>
+        <div class="species-card__actions">
+            <a class="species-card__link" asp-page="/Species/Edit" asp-route-slug="@Model.Name">Modifier</a>
+            <form method="post"
+                  asp-page="/Species"
+                  asp-page-handler="Delete"
+                  asp-route-slug="@Model.Name">
+                <button class="species-card__button" type="submit">Supprimer</button>
+            </form>
+        </div>
+    </div>
+</article>

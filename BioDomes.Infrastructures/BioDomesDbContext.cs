@@ -25,7 +25,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Carnivore",
                 AdultSize = 2.5,
                 Weight = 190,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/3/3e/Lion_d%27Afrique_%28Panthera_leo%29.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -37,7 +37,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Photosynthèse",
                 AdultSize = 9,
                 Weight = 12,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/ef/Monstera_deliciosa_Leaf_2700px.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -49,7 +49,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Herbivore",
                 AdultSize = 0.95,
                 Weight = 1.2,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/5/5f/Scarlet_macaw_ara_macao.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -61,7 +61,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Herbivore",
                 AdultSize = 1.5,
                 Weight = 250,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/16/Giant_Tortoise.JPG",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -73,7 +73,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Omnivore",
                 AdultSize = 0.46,
                 Weight = 2.2,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/9/90/Katta_Lemur_catta.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -85,7 +85,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Photosynthèse",
                 AdultSize = 85,
                 Weight = 1200000,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/18/The_giant_sequoia_trees.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -97,7 +97,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Photosynthèse",
                 AdultSize = 0.8,
                 Weight = 15,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/07/Aloe_vera_plant_in_flower_pot.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -109,7 +109,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Carnivore",
                 AdultSize = 1.6,
                 Weight = 45,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e8/Loup_gris_%28Canis_lupus_%29.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -121,7 +121,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Omnivore",
                 AdultSize = 0.6,
                 Weight = 9,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/f/fb/Raccoon_%28Procyon_lotor%29%2C_portrait.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             },
@@ -133,7 +133,7 @@ public class BioDomesDbContext : DbContext
                 Diet = "Carnivore",
                 AdultSize = 2.2,
                 Weight = 13,
-                ImageUrl = null,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Boa_constrictor%2C_boa_constrictora.jpg",
                 IsPublic = true,
                 CreatedByUserName = "admin"
             }
