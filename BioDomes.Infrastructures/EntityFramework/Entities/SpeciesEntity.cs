@@ -8,7 +8,7 @@ public class SpeciesEntity
     public string Diet { get; set; } = string.Empty;
     public double AdultSize { get; set; }
     public double Weight { get; set; }
-    public string? ImageUrl { get; set; }
+    public string? ImagePath { get; set; }
     public bool IsPublic { get; set; }
     public string? CreatedByUserName { get; set; }
 }

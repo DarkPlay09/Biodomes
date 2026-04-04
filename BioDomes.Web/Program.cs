@@ -1,6 +1,7 @@
 using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures;
 using BioDomes.Infrastructures.EntityFramework;
+using BioDomes.Infrastructures.Files;
 using BioDomes.Infrastructures.Repositories;
 using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<ReverseProxyLinksMiddleware>();
 builder.Services.AddScoped<ISpeciesRepository, EfSpeciesRepository>();
+builder.Services.AddScoped<ISpeciesImageStorage, SpeciesImageStorage>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
     pipeline.AddCssBundle("/css/bundle.css",

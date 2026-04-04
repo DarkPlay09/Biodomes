@@ -1,7 +1,6 @@
-﻿using BioDomes.Domains;
+using BioDomes.Domains;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
-using BioDomes.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,9 +10,14 @@ namespace BioDomes.Web.Pages.Species;
 public class EditModel : PageModel
 {
     private readonly ISpeciesRepository _repo;
-    
-    public EditModel(ISpeciesRepository repo) => _repo = repo;
-    
+    private readonly ISpeciesImageStorage _speciesImageStorage;
+
+    public EditModel(ISpeciesRepository repo, ISpeciesImageStorage speciesImageStorage)
+    {
+        _repo = repo;
+        _speciesImageStorage = speciesImageStorage;
+    }
+
     [BindProperty]
     public SpeciesInputModel Input { get; set; } = new();
 
@@ -24,26 +28,50 @@ public class EditModel : PageModel
     public IEnumerable<SelectListItem> DietOptions =>
         Enum.GetNames<DietType>()
             .Select(x => new SelectListItem(x, x));
-    
+
     public IActionResult OnGet(string slug)
     {
         var s = _repo.GetBySlug(slug);
         if (s is null) return NotFound();
-        
+
         Input.Name = s.Name;
         Input.Classification = s.Classification.ToString();
         Input.Diet = s.Diet.ToString();
         Input.AdultSize = s.AdultSize;
         Input.Weight = s.Weight;
-        Input.ImageUrl = s.ImageUrl;
-        
+
         return Page();
     }
 
-    public IActionResult OnPost(string slug)
+    public async Task<IActionResult> OnPost(string slug)
     {
+        // Supprime l'erreur de validation (image requise)
+        ModelState.Remove("Input.ImageFile");
+
         if (!ModelState.IsValid)
             return Page();
+
+        var existingSpecies = _repo.GetBySlug(slug);
+        if (existingSpecies is null)
+            return NotFound();
+
+        var imagePath = existingSpecies.ImagePath;
+
+        if (Input.ImageFile is not null)
+        {
+            try
+            {
+                imagePath = await _speciesImageStorage.SaveAsync(
+                    Input.Name!,
+                    Input.ImageFile.FileName,
+                    Input.ImageFile.OpenReadStream());
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("Input.ImageFile", ex.Message);
+                return Page();
+            }
+        }
 
         if (!Enum.TryParse<SpeciesClassification>(Input.Classification, out var classification))
         {
@@ -53,7 +81,7 @@ public class EditModel : PageModel
 
         if (!Enum.TryParse<DietType>(Input.Diet, out var diet))
         {
-            ModelState.AddModelError("Input.Diet", "Régime alimentaire invalide.");
+            ModelState.AddModelError("Input.Diet", "Regime alimentaire invalide.");
             return Page();
         }
 
@@ -63,11 +91,11 @@ public class EditModel : PageModel
             diet,
             Input.AdultSize,
             Input.Weight,
-            Input.ImageUrl
+            imagePath
         );
 
         _repo.Update(slug, species);
 
-        return RedirectToPage("/Species");
+        return RedirectToPage("/Species/Index");
     }
 }

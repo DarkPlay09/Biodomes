@@ -36,7 +36,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ImageUrl")
+                    b.Property<string>("ImagePath")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsPublic")
@@ -61,7 +61,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Carnivore",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/3/3e/Lion_d%27Afrique_%28Panthera_leo%29.jpg",
+                            ImagePath = "/images/species/lion-dafrique-a1b2c3d4.jpg",
                             IsPublic = true,
                             Name = "Lion d'Afrique",
                             Weight = 190.0
@@ -73,7 +73,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatedByUserName = "admin",
                             Diet = "Photosynthèse",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/ef/Monstera_deliciosa_Leaf_2700px.jpg",
+                            ImagePath = "/images/species/monstera-b2c3d4e5.jpg",
                             IsPublic = true,
                             Name = "Monstera",
                             Weight = 12.0
@@ -85,7 +85,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Oiseau",
                             CreatedByUserName = "admin",
                             Diet = "Herbivore",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/5/5f/Scarlet_macaw_ara_macao.jpg",
+                            ImagePath = "/images/species/ara-rouge-c3d4e5f6.jpg",
                             IsPublic = true,
                             Name = "Ara Rouge",
                             Weight = 1.2
@@ -97,7 +97,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Reptile",
                             CreatedByUserName = "admin",
                             Diet = "Herbivore",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/16/Giant_Tortoise.JPG",
+                            ImagePath = "/images/species/tortue-geante-d4e5f6a7.jpg",
                             IsPublic = true,
                             Name = "Tortue Géante",
                             Weight = 250.0
@@ -109,7 +109,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Omnivore",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/9/90/Katta_Lemur_catta.jpg",
+                            ImagePath = "/images/species/lemur-catta-e5f6a7b8.jpg",
                             IsPublic = true,
                             Name = "Lémur Catta",
                             Weight = 2.2000000000000002
@@ -121,7 +121,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatedByUserName = "admin",
                             Diet = "Photosynthèse",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/18/The_giant_sequoia_trees.jpg",
+                            ImagePath = "/images/species/sequoia-geant-f6a7b8c9.jpg",
                             IsPublic = true,
                             Name = "Séquoia Géant",
                             Weight = 1200000.0
@@ -133,7 +133,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatedByUserName = "admin",
                             Diet = "Photosynthèse",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/07/Aloe_vera_plant_in_flower_pot.jpg",
+                            ImagePath = "/images/species/aloe-vera-a7b8c9d0.jpg",
                             IsPublic = true,
                             Name = "Aloe vera",
                             Weight = 15.0
@@ -145,7 +145,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Carnivore",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e8/Loup_gris_%28Canis_lupus_%29.jpg",
+                            ImagePath = "/images/species/loup-gris-b8c9d0e1.jpg",
                             IsPublic = true,
                             Name = "Loup gris",
                             Weight = 45.0
@@ -157,7 +157,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Omnivore",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/f/fb/Raccoon_%28Procyon_lotor%29%2C_portrait.jpg",
+                            ImagePath = "/images/species/raton-laveur-c9d0e1f2.jpg",
                             IsPublic = true,
                             Name = "Raton laveur",
                             Weight = 9.0
@@ -169,7 +169,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Reptile",
                             CreatedByUserName = "admin",
                             Diet = "Carnivore",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Boa_constrictor%2C_boa_constrictora.jpg",
+                            ImagePath = "/images/species/boa-constrictor-d0e1f2a3.jpg",
                             IsPublic = true,
                             Name = "Boa constrictor",
                             Weight = 13.0

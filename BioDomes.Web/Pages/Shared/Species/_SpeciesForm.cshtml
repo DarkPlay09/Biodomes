@@ -1,0 +1,50 @@
+﻿@model BioDomes.Web.Pages.Species.SpeciesFormViewModel
+
+<div class="species-form__grid">
+    <div class="species-form__field">
+        <label asp-for="Input.Name"></label>
+        <input asp-for="Input.Name" class="species-form__control" />
+        <span asp-validation-for="Input.Name" class="species-form__error"></span>
+    </div>
+
+    <div class="species-form__field">
+        <label asp-for="Input.Classification"></label>
+        <select asp-for="Input.Classification" asp-items="Model.ClassificationOptions" class="species-form__control">
+            <option value="">-- Choisir une classification --</option>
+        </select>
+        <span asp-validation-for="Input.Classification" class="species-form__error"></span>
+    </div>
+
+    <div class="species-form__field">
+        <label asp-for="Input.Diet"></label>
+        <select asp-for="Input.Diet" asp-items="Model.DietOptions" class="species-form__control">
+            <option value="">-- Choisir un régime --</option>
+        </select>
+        <span asp-validation-for="Input.Diet" class="species-form__error"></span>
+    </div>
+
+    <div class="species-form__field">
+        <label asp-for="Input.AdultSize"></label>
+        <div class="species-form__input-with-suffix">
+            <input asp-for="Input.AdultSize" type="number" step="0.1" class="species-form__control species-form__control--with-suffix" />
+            <span class="species-form__suffix">m</span>
+        </div>
+        <span asp-validation-for="Input.AdultSize" class="species-form__error"></span>
+    </div>
+
+    <div class="species-form__field">
+        <label asp-for="Input.Weight"></label>
+        <div class="species-form__input-with-suffix">
+            <input asp-for="Input.Weight" type="number" step="0.1" class="species-form__control species-form__control--with-suffix" />
+            <span class="species-form__suffix">kg</span>
+        </div>
+        <span asp-validation-for="Input.Weight" class="species-form__error"></span>
+    </div>
+
+    <div class="species-form__field species-form__field--full">
+        <label asp-for="Input.ImageFile"></label>
+        <input asp-for="Input.ImageFile" type="file" accept=".jpg,.jpeg" class="species-form__control species-form__control--file" />
+        <span asp-validation-for="Input.ImageFile" class="species-form__error"></span>
+    </div>
+</div>
+                

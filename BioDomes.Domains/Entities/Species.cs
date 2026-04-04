@@ -11,7 +11,7 @@ public class Species
     public DietType Diet { get; set; }
     public double AdultSize { get; set; }
     public double Weight { get; set; }
-    public string? ImageUrl { get; set; }
+    public string? ImagePath { get; set; }
     public string? CreatedByUserName { get; set; } // Temporairement en string
     public bool IsPublic { get; set; }
     
@@ -21,7 +21,7 @@ public class Species
         DietType diet,
         double adultSize,
         double weight,
-        string? imageUrl = null,
+        string? imagePath = null,
         string? createdByUserName = null,
         bool isPublic = false)
     {
@@ -30,7 +30,7 @@ public class Species
         Diet = diet;
         AdultSize = adultSize;
         Weight = weight;
-        ImageUrl = imageUrl;
+        ImagePath = imagePath;
         CreatedByUserName = createdByUserName;
         IsPublic = isPublic;
     }

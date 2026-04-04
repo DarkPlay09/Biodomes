@@ -61,6 +61,7 @@ public class EfSpeciesRepository : ISpeciesRepository
         var normalizedSlug = ToSlug(slug);
 
         var entity = _context.Species
+            .ToList()
             .FirstOrDefault(s => ToSlug(s.Name) == normalizedSlug);
 
         if (entity is null)
@@ -71,7 +72,7 @@ public class EfSpeciesRepository : ISpeciesRepository
         entity.Diet = ToDbDiet(species.Diet);
         entity.AdultSize = species.AdultSize;
         entity.Weight = species.Weight;
-        entity.ImageUrl = species.ImageUrl;
+        entity.ImagePath = species.ImagePath;
         entity.CreatedByUserName = species.CreatedByUserName;
         entity.IsPublic = species.IsPublic;
 
@@ -83,6 +84,7 @@ public class EfSpeciesRepository : ISpeciesRepository
         var normalizedSlug = ToSlug(slug);
 
         var entity = _context.Species
+            .ToList()
             .FirstOrDefault(s => ToSlug(s.Name) == normalizedSlug);
 
         if (entity is null)
@@ -100,7 +102,7 @@ public class EfSpeciesRepository : ISpeciesRepository
             ParseDiet(entity.Diet),
             entity.AdultSize,
             entity.Weight,
-            entity.ImageUrl,
+            entity.ImagePath,
             entity.CreatedByUserName,
             entity.IsPublic
         );
@@ -115,7 +117,7 @@ public class EfSpeciesRepository : ISpeciesRepository
             Diet = ToDbDiet(species.Diet),
             AdultSize = species.AdultSize,
             Weight = species.Weight,
-            ImageUrl = species.ImageUrl,
+            ImagePath = species.ImagePath,
             CreatedByUserName = species.CreatedByUserName,
             IsPublic = species.IsPublic
         };

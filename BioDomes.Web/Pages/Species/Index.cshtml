@@ -12,9 +12,10 @@
         </div>
     }
 
-    <h1>Espèces</h1>
-
-    <a asp-page="/Species/Add">Ajouter une espèce</a>
+    <div class="species-page-header">
+        <h1 class="hero-title">Espèces</h1>
+        <a class="action-button species-page-header__action" asp-page="/Species/Add">+ Ajouter une nouvelle espèce</a>
+    </div>
 
     <div class="species-grid">
         @foreach (var s in Model.SpeciesList)

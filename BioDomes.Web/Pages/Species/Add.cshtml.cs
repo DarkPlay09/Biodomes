@@ -1,7 +1,7 @@
 ﻿using BioDomes.Domains;
 using BioDomes.Domains.Enums;
+using BioDomes.Domains.Extensions;
 using BioDomes.Domains.Repositories;
-using BioDomes.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,10 +11,14 @@ namespace BioDomes.Web.Pages.Species;
 public class AddModel : PageModel
 {
     private readonly ISpeciesRepository _repo;
+    private readonly ISpeciesImageStorage _speciesImageStorage;
 
-    public AddModel(ISpeciesRepository repo)
+
+
+    public AddModel(ISpeciesRepository repo, ISpeciesImageStorage speciesImageStorage)
     {
         _repo = repo;
+        _speciesImageStorage = speciesImageStorage;
     }
 
     [BindProperty] public SpeciesInputModel Input { get; set; } = new();
@@ -33,10 +37,36 @@ public class AddModel : PageModel
     {
     }
     
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid) return Page();
 
+        if (Input.ImageFile is null)
+        {
+            ModelState.AddModelError("Input.ImageFile", "Une image est requise.");
+            return Page();
+        }
+
+        
+        string? imagePath = null;
+        
+        if (Input.ImageFile is not null)
+        {
+            try
+            {
+                imagePath = await _speciesImageStorage.SaveAsync(
+                    Input.Name!,
+                    Input.ImageFile.FileName,
+                    Input.ImageFile.OpenReadStream());
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("Input.ImageFile", ex.Message);
+                return Page();
+            }
+        }
+
+        
         if (!Enum.TryParse<SpeciesClassification>(Input.Classification, out var classification))
         {
             ModelState.AddModelError("Input.Classification", "Classification invalide.");
@@ -55,7 +85,7 @@ public class AddModel : PageModel
             diet,
             Input.AdultSize,
             Input.Weight,
-            Input.ImageUrl
+            imagePath
             );
         
         try
@@ -69,6 +99,6 @@ public class AddModel : PageModel
         }
 
         LastInsertedSpeciesName = Input.Name;
-        return RedirectToPage("/Species");
+        return RedirectToPage("/Species/Index");
     }
 }

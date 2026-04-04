@@ -3,16 +3,16 @@
 
 <article class="species-card">
     <div class="species-card__media">
-        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <img class="species-card__image"
-                 src="@Model.ImageUrl"
+                 src="@Model.ImagePath"
                  alt="Image de @Model.Name" />
         }
         else
         {
             <img class="species-card__image species-card__image--placeholder"
-                 src="images/Specie/noImageSpecie.png"
+                 src="images/species/noImageSpecie.png"
                  alt="Pas d'image pour @Model.Name" />
         }
         <span class="species-card__badge">@Model.Classification</span>
@@ -26,7 +26,7 @@
         <div class="species-card__actions">
             <a class="species-card__link" asp-page="/Species/Edit" asp-route-slug="@Model.Name">Modifier</a>
             <form method="post"
-                  asp-page="/Species"
+                  asp-page="/Species/Index"
                   asp-page-handler="Delete"
                   asp-route-slug="@Model.Name">
                 <button class="species-card__button" type="submit">Supprimer</button>
