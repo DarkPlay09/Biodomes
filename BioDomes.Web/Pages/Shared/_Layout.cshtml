@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true"/>
 </head>
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+}
 <body>
 <div class="site-shell">
     <header class="site-header">
@@ -20,8 +23,8 @@
                 </a>
                 
                 <nav class="main-navigation">
-                    <a class="nav-entry" asp-area="" asp-page="/Index">Accueil</a>
-                    <a class="nav-entry" asp-area="" asp-page="/Species/Index">Espèces</a>
+                    <a class="nav-entry @(currentPage == "/Index" ? "nav-entry--active" : "")" asp-area="" asp-page="/Index">Accueil</a>
+                    <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Species/Index">Espèces</a>
                     <a class="nav-entry" href="#">Biomes</a>
                     <a class="nav-entry" href="#">Equipements</a>
                 </nav>
@@ -44,8 +47,8 @@
         <button class="mobile-menu-close" type="button" id="menuClose" aria-label="Fermer le menu">×</button>
 
         <nav class="mobile-menu-nav">
-            <a asp-page="/Index">Accueil</a>
-            <a asp-page="/Species">Espèces</a>
+            <a class="@(currentPage == "/Index" ? "mobile-menu-link--active" : "")" asp-page="/Index">Accueil</a>
+            <a class="@(currentPage?.StartsWith("/Species") == true ? "mobile-menu-link--active" : "")" asp-page="/Species/Index">Espèces</a>
             <a href="#">Biomes</a>
             <a href="#">Équipements</a>
         </nav>

@@ -103,6 +103,7 @@ body {
 }
 
 .nav-entry {
+  position: relative;
   text-decoration: none;
   color: var(--color-text);
   font-size : .95rem;
@@ -112,6 +113,22 @@ body {
 
 .nav-entry:hover {
   color: var(--color-primary);
+}
+
+.nav-entry--active {
+  color: var(--color-primary);
+  font-weight: 800;
+}
+
+.nav-entry--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.55rem;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-primary);
 }
 
 .header-actions {
@@ -218,6 +235,11 @@ body {
 .mobile-menu-nav a:hover {
   background: rgba(11, 61, 57, 0.06);
   color: var(--color-primary);
+}
+
+.mobile-menu-link--active {
+  background: rgba(11, 61, 57, 0.08);
+  color: var(--color-primary) !important;
 }
 
 .mobile-menu-actions {
