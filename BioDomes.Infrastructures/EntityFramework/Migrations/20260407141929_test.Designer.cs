@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BioDomes.Infrastructures.EntityFramework.Migrations
 {
     [DbContext(typeof(BioDomesDbContext))]
-    [Migration("20260403143055_RenameSpeciesImageUrlToImagePath")]
-    partial class RenameSpeciesImageUrlToImagePath
+    [Migration("20260407141929_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
