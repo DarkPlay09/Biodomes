@@ -2,6 +2,7 @@
 using BioDomes.Infrastructures.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -10,47 +11,53 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BioDomes.Infrastructures.EntityFramework.Migrations
 {
     [DbContext(typeof(BioDomesDbContext))]
-    [Migration("20260319225709_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260408202227_InitialSqlServer")]
+    partial class InitialSqlServer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("BioDomes.Infrastructures.EntityFramework.Entities.SpeciesEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("AdultSize")
-                        .HasColumnType("REAL");
+                        .HasColumnType("float");
 
                     b.Property<string>("Classification")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedByUserName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Diet")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("TEXT");
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Weight")
-                        .HasColumnType("REAL");
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -64,6 +71,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Carnivore",
+                            ImagePath = "/images/species/lion-dafrique-a1b2c3d4.jpg",
                             IsPublic = true,
                             Name = "Lion d'Afrique",
                             Weight = 190.0
@@ -75,6 +83,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatedByUserName = "admin",
                             Diet = "Photosynthèse",
+                            ImagePath = "/images/species/monstera-b2c3d4e5.jpg",
                             IsPublic = true,
                             Name = "Monstera",
                             Weight = 12.0
@@ -86,6 +95,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Oiseau",
                             CreatedByUserName = "admin",
                             Diet = "Herbivore",
+                            ImagePath = "/images/species/ara-rouge-c3d4e5f6.jpg",
                             IsPublic = true,
                             Name = "Ara Rouge",
                             Weight = 1.2
@@ -97,6 +107,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Reptile",
                             CreatedByUserName = "admin",
                             Diet = "Herbivore",
+                            ImagePath = "/images/species/tortue-geante-d4e5f6a7.jpg",
                             IsPublic = true,
                             Name = "Tortue Géante",
                             Weight = 250.0
@@ -108,6 +119,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Omnivore",
+                            ImagePath = "/images/species/lemur-catta-e5f6a7b8.jpg",
                             IsPublic = true,
                             Name = "Lémur Catta",
                             Weight = 2.2000000000000002
@@ -119,6 +131,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatedByUserName = "admin",
                             Diet = "Photosynthèse",
+                            ImagePath = "/images/species/sequoia-geant-f6a7b8c9.jpg",
                             IsPublic = true,
                             Name = "Séquoia Géant",
                             Weight = 1200000.0
@@ -130,6 +143,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatedByUserName = "admin",
                             Diet = "Photosynthèse",
+                            ImagePath = "/images/species/aloe-vera-a7b8c9d0.jpg",
                             IsPublic = true,
                             Name = "Aloe vera",
                             Weight = 15.0
@@ -141,6 +155,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Carnivore",
+                            ImagePath = "/images/species/loup-gris-b8c9d0e1.jpg",
                             IsPublic = true,
                             Name = "Loup gris",
                             Weight = 45.0
@@ -152,6 +167,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatedByUserName = "admin",
                             Diet = "Omnivore",
+                            ImagePath = "/images/species/raton-laveur-c9d0e1f2.jpg",
                             IsPublic = true,
                             Name = "Raton laveur",
                             Weight = 9.0
@@ -163,6 +179,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Reptile",
                             CreatedByUserName = "admin",
                             Diet = "Carnivore",
+                            ImagePath = "/images/species/boa-constrictor-d0e1f2a3.jpg",
                             IsPublic = true,
                             Name = "Boa constrictor",
                             Weight = 13.0
