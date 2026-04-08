@@ -6,13 +6,13 @@
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <img class="species-card__image"
-                 src="@Model.ImagePath"
+                 src="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "" : $"{Context.Request.PathBase}{Model.ImagePath}")"
                  alt="Image de @Model.Name" />
         }
         else
         {
             <img class="species-card__image species-card__image--placeholder"
-                 src="images/species/noImageSpecie.png"
+                 src="~/images/species/noImageSpecie.png"
                  alt="Pas d'image pour @Model.Name" />
         }
         <span class="species-card__badge">@Model.Classification</span>
