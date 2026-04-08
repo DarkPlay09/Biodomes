@@ -26,15 +26,18 @@ builder.Services.Configure<RouteOptions>(o =>
     o.ConstraintMap["kebab"] = typeof(SlugTransformer);         
 });
 
+// Création du dossier Data dans BioDomes.Web
+var dataFolder = Path.Combine(builder.Environment.ContentRootPath, "Data");
+Directory.CreateDirectory(dataFolder);
+
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("BioDomesDb")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BioDomesDb")));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     app.UseExceptionHandler("/Error");
 }
@@ -43,22 +46,14 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-
-
 app.UseForwardedHeaders(new ForwardedHeadersOptions());
 
 app.UseHttpsRedirection();
-
 app.UseReverseProxyLinks();
-
 app.UseWebOptimizer();
-
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapRazorPages();
 
 app.Run();

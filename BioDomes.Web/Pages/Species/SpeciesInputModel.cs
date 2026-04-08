@@ -20,12 +20,12 @@ public class SpeciesInputModel
     public string? Diet { get; set; }
 
     [Required(ErrorMessage = "La Taille est requise.")]
-    [Range(0.1, 10000, ErrorMessage = "La taille adulte doit être comprise entre 0.1 et 10 000.")]
+    [Range(0, 10000, ErrorMessage = "La taille adulte doit être comprise entre 0.1 et 10 000.")]
     [Display(Name = "Taille adulte")]
     public double AdultSize { get; set; }
 
     [Required(ErrorMessage = "Le poids est requis.")]
-    [Range(0.1, 100000000, ErrorMessage = "Le poids doit être positif.")]
+    [Range(0, 100000000, ErrorMessage = "Le poids doit être positif.")]
     [Display(Name = "Poids")]
     public double Weight { get; set; }
     
