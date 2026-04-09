@@ -12,8 +12,8 @@ public class Species
     public double AdultSize { get; set; }
     public double Weight { get; set; }
     public string? ImagePath { get; set; }
-    public string? CreatedByUserName { get; set; } // Temporairement en string
-    public bool IsPublic { get; set; }
+    public UserAccount? Creator { get; set; }
+    public bool IsPublicAvailable { get; set; }
     
     public Species(
         string name,
@@ -22,8 +22,8 @@ public class Species
         double adultSize,
         double weight,
         string? imagePath = null,
-        string? createdByUserName = null,
-        bool isPublic = false)
+        UserAccount? creator = null,
+        bool isPublicAvailable = false)
     {
         Name = name;
         Classification = classification;
@@ -31,7 +31,7 @@ public class Species
         AdultSize = adultSize;
         Weight = weight;
         ImagePath = imagePath;
-        CreatedByUserName = createdByUserName;
-        IsPublic = isPublic;
+        Creator = creator;
+        IsPublicAvailable = isPublicAvailable;
     }
 }

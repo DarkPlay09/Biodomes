@@ -2,19 +2,20 @@
 
 namespace BioDomes.Infrastructures.EntityFramework.Entities;
 
-public class SpeciesEntity
+public class EquipmentEntity
 {
     public int Id { get; set; }
+
     public string Name { get; set; } = string.Empty;
-    public string Classification { get; set; } = string.Empty;
-    public string Diet { get; set; } = string.Empty;
-    public double AdultSize { get; set; }
-    public double Weight { get; set; }
     public string? ImagePath { get; set; }
+
+    public string? ProducedElement { get; set; }
+    public string? ConsumedElement { get; set; }
+
     public bool IsPublicAvailable { get; set; }
 
     public int CreatorId { get; set; }
     public UserEntity Creator { get; set; } = null!;
 
-    public ICollection<BiomeSpeciesLink> BiomeSpeciesLinks { get; set; } = new List<BiomeSpeciesLink>();
+    public ICollection<BiomeEquipmentLink> BiomeEquipmentLinks { get; set; } = new List<BiomeEquipmentLink>();
 }

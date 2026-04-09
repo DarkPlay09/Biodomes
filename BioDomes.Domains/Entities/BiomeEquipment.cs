@@ -1,11 +1,7 @@
 namespace BioDomes.Domains.Entities;
 
-public class BiomeEquipment
+public class BiomeEquipment(Biome biome, Equipment equipment)
 {
-    public Equipment Equipment { get; set; }
-    
-    public BiomeEquipment(Equipment equipment)
-    {
-        Equipment = equipment;
-    }
+    public Biome Biome { get; } = biome ?? throw new ArgumentNullException(nameof(biome));
+    public Equipment Equipment { get; } = equipment ?? throw new ArgumentNullException(nameof(equipment));
 }

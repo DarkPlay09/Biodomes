@@ -1,6 +1,4 @@
-﻿using BioDomes.Domains;
-using BioDomes.Domains.Enums;
-using BioDomes.Domains.Extensions;
+﻿using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
