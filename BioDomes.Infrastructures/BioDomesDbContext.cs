@@ -1,7 +1,7 @@
 ﻿using BioDomes.Infrastructures.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BioDomes.Infrastructures.EntityFramework;
+namespace BioDomes.Infrastructures;
 
 public class BioDomesDbContext : DbContext
 {

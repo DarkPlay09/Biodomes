@@ -45,17 +45,16 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPost(string slug)
     {
-        // Supprime l'erreur de validation (image requise)
-        ModelState.Remove("Input.ImageFile");
-
         if (!ModelState.IsValid)
             return Page();
 
         var existingSpecies = _repo.GetBySlug(slug);
         if (existingSpecies is null)
             return NotFound();
-
+        
+        var oldImagePath = existingSpecies.ImagePath;
         var imagePath = existingSpecies.ImagePath;
+        var hasNewImage = false;
 
         if (Input.ImageFile is not null)
         {
@@ -65,12 +64,18 @@ public class EditModel : PageModel
                     Input.Name!,
                     Input.ImageFile.FileName,
                     Input.ImageFile.OpenReadStream());
+                hasNewImage = true;
             }
             catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("Input.ImageFile", ex.Message);
                 return Page();
             }
+        }
+        
+        if (hasNewImage)
+        {
+            _speciesImageStorage.Delete(oldImagePath);
         }
 
         if (!Enum.TryParse<SpeciesClassification>(Input.Classification, out var classification))

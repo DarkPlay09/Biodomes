@@ -36,4 +36,23 @@ public class SpeciesImageStorage : ISpeciesImageStorage
 
         return $"/images/species/{fileName}";
     }
+
+    public void Delete(string? imagePath)
+    {
+        if (string.IsNullOrEmpty(imagePath))
+            return;
+        
+
+        if (!imagePath.StartsWith("/images/species/"))
+            return;
+
+        if (imagePath == "/images/species/noImageSpecie.png")
+            return;
+        
+        var relativePath = imagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+        var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
+        
+        if(File.Exists(absolutePath))
+            File.Delete(absolutePath);
+    }
 }

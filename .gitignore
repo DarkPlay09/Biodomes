@@ -4,6 +4,3 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 .idea
-**/*.sqlite
-**/*.sqlite-shm
-**/*.sqlite-wal

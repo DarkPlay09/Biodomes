@@ -26,10 +26,6 @@ builder.Services.Configure<RouteOptions>(o =>
     o.ConstraintMap["kebab"] = typeof(SlugTransformer);         
 });
 
-// Création du dossier Data dans BioDomes.Web
-var dataFolder = Path.Combine(builder.Environment.ContentRootPath, "Data");
-Directory.CreateDirectory(dataFolder);
-
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BioDomesDb")));
 
