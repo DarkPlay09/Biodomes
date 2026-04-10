@@ -27,6 +27,7 @@ builder.Services.AddWebOptimizer(pipeline =>
     pipeline.AddCssBundle("/css/bundle.css",
         "site.css"); // TODO : inutile de faire un bundle pour un seul fichier
 });
+
 builder.Services.Configure<RouteOptions>(o =>
 {
     o.ConstraintMap["speciesSlug"] = typeof(SpeciesSlugConstraint); 
