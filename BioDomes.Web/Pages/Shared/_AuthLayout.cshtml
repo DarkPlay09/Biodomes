@@ -1,0 +1,52 @@
+﻿@{
+    var pageTitle = ViewData["AuthPageTitle"]?.ToString() ?? "Bienvenue";
+    var pageSubtitle = ViewData["AuthPageSubtitle"]?.ToString() ?? "";
+    var heroTitle = ViewData["AuthHeroTitle"]?.ToString() ?? "Cultiver le futur,<br />un écosystème à<br />la fois.";
+    var heroText = ViewData["AuthHeroText"]?.ToString() ?? "Rejoignez le réseau mondial de chercheurs en biodynamie et accédez aux outils de surveillance en temps réel de vos dômes.";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BioDomes</title>
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+</head>
+<body>
+<main class="auth-page">
+    <section class="auth-visual">
+        <div class="auth-visual__overlay"></div>
+
+        <div class="auth-visual__content">
+            <div class="auth-brand">
+                <img src="~/images/logo_biodomes.png" asp-append-version="true" alt="Logo BioDomes" class="auth-brand__logo" />
+                <span class="auth-brand__name">BioDomes</span>
+            </div>
+
+            <div class="auth-hero">
+                <h1>@Html.Raw(heroTitle)</h1>
+                <p>@heroText</p>
+            </div>
+
+            <p class="auth-visual__footer">
+                © 2024 BioDomes Research Initiative. Solutions durables pour un monde en évolution.
+            </p>
+        </div>
+    </section>
+
+    <section class="auth-panel">
+        <div class="auth-card">
+            <header class="auth-card__header">
+                <h2>@pageTitle</h2>
+                <p>@pageSubtitle</p>
+            </header>
+
+            @RenderBody()
+        </div>
+    </section>
+</main>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
