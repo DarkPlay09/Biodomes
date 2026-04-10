@@ -1,17 +1,18 @@
 ﻿using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.EntityFramework.Links;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BioDomes.Infrastructures;
 
-public class BioDomesDbContext : DbContext
+public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>, int>
 {
     public BioDomesDbContext(DbContextOptions<BioDomesDbContext> options)
         : base(options)
     {
     }
-
-    public DbSet<UserEntity> Users => Set<UserEntity>();
+    
     public DbSet<BiomeEntity> Biomes => Set<BiomeEntity>();
     public DbSet<SpeciesEntity> Species => Set<SpeciesEntity>();
     public DbSet<EquipmentEntity> Equipments => Set<EquipmentEntity>();
@@ -23,20 +24,6 @@ public class BioDomesDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BioDomesDbContext).Assembly);
-
-        modelBuilder.Entity<UserEntity>().HasData(
-            new UserEntity
-            {
-                Id = 1,
-                UserName = "admin",
-                Email = "admin@biodomes.local",
-                PasswordHash = "seed-admin-password-hash",
-                AvatarPath = null,
-                BirthDate = new DateOnly(1990, 1, 1),
-                ResearchOrganization = "Laudot Solutions",
-                Role = "Admin"
-            }
-        );
 
         modelBuilder.Entity<SpeciesEntity>().HasData(
             new SpeciesEntity

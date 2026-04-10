@@ -1,13 +1,9 @@
-﻿namespace BioDomes.Infrastructures.EntityFramework.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class UserEntity
+namespace BioDomes.Infrastructures.EntityFramework.Entities;
+
+public class UserEntity : IdentityUser<int>
 {
-    public int Id { get; set; }
-
-    public string UserName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string PasswordHash { get; set; } = string.Empty;
-
     public string? AvatarPath { get; set; }
     public DateOnly BirthDate { get; set; }
     public string? ResearchOrganization { get; set; }

@@ -1,12 +1,16 @@
-﻿using BioDomes.Domains.Repositories;
+using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Files;
+using BioDomes.Infrastructures.Identity;
 using BioDomes.Infrastructures.Repositories;
 using BioDomes.Infrastructures.SpeciesMapper;
 using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
 using BioDomes.Web.Transformers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +25,7 @@ builder.Services.AddScoped<ISpeciesImageStorage, SpeciesImageStorage>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
     pipeline.AddCssBundle("/css/bundle.css",
-        "site.css");
+        "site.css"); // TODO : inutile de faire un bundle pour un seul fichier
 });
 builder.Services.Configure<RouteOptions>(o =>
 {
@@ -32,7 +36,11 @@ builder.Services.Configure<RouteOptions>(o =>
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BioDomesDb")));
 
+builder.Services.AddDefaultIdentity<UserEntity>().AddEntityFrameworkStores<BioDomesDbContext>();
+
 var app = builder.Build();
+
+await IdentityDataSeeder.SeedAsync(app.Services);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -59,6 +67,8 @@ app.UseWebOptimizer();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
