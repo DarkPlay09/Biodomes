@@ -55,8 +55,6 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-
-
 app.UseForwardedHeaders(new ForwardedHeadersOptions());
 
 app.UseHttpsRedirection();
