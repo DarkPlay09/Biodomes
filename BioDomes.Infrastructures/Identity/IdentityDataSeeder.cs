@@ -1,6 +1,7 @@
 ﻿using BioDomes.Infrastructures.EntityFramework.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BioDomes.Infrastructures.Identity;
@@ -17,10 +18,15 @@ public static class IdentityDataSeeder
     {
         using var scope = services.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
         const string adminUserName = "admin";
         const string adminEmail = "admin@biodomes.local";
-        const string adminPassword = "Volauvent123";
+        var adminPassword = configuration["IdentitySeed:AdminPassword"];
+        if (string.IsNullOrWhiteSpace(adminPassword))
+        {
+            return;
+        }
 
         var admin = await userManager.Users
             .FirstOrDefaultAsync(u => u.Id == 1 || u.UserName == adminUserName);
