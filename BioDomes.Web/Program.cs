@@ -7,10 +7,12 @@ using BioDomes.Infrastructures.Repositories;
 using BioDomes.Infrastructures.SpeciesMapper;
 using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
+using BioDomes.Web.Services;
 using BioDomes.Web.Transformers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +39,23 @@ builder.Services.Configure<RouteOptions>(o =>
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BioDomesDb")));
 
-builder.Services.AddDefaultIdentity<UserEntity>().AddEntityFrameworkStores<BioDomesDbContext>();
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+
+builder.Services
+    .AddDefaultIdentity<UserEntity>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = true;
+
+        options.Password.RequiredLength = 8;
+        options.Password.RequireDigit = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddEntityFrameworkStores<BioDomesDbContext>();
 
 var app = builder.Build();
 
@@ -56,19 +74,14 @@ else
 }
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions());
-
 app.UseHttpsRedirection();
-
 app.UseReverseProxyLinks();
-
 app.UseWebOptimizer();
-
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapRazorPages();

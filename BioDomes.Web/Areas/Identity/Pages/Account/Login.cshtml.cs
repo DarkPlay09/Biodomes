@@ -149,6 +149,13 @@ namespace BioDomes.Web.Areas.Identity.Pages.Account
                 _logger.LogWarning("Compte verrouillé.");
                 return RedirectToPage("./Lockout");
             }
+            
+            if (result.IsNotAllowed)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Votre adresse e-mail n'est pas encore confirmée. Vérifiez votre boîte mail.");
+                return Page();
+            }
 
             ModelState.AddModelError(string.Empty, "Identifiants invalides.");
             return Page();
