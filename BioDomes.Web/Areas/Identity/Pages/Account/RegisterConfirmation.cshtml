@@ -1,0 +1,92 @@
+﻿@page
+@model BioDomes.Web.Areas.Identity.Pages.Account.RegisterConfirmationModel
+
+@{
+    Layout = "/Pages/Shared/_AuthLayout.cshtml";
+    ViewData["Title"] = "Vérifiez votre boîte mail";
+    ViewData["AuthPageTitle"] = "Inscription enregistrée";
+    ViewData["AuthPageSubtitle"] = "Un e-mail de confirmation vous a été envoyé.";
+    ViewData["AuthHeroTitle"] = "Créer, suivre,<br />et faire évoluer<br />vos BioDomes.";
+    ViewData["AuthHeroText"] = "Confirmez votre adresse e-mail pour activer votre accès à la plateforme.";
+}
+
+<div class="auth-confirm-box">
+    <div class="auth-confirm-icon auth-confirm-icon--info" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16v12H4z"></path>
+            <path d="m22 6-10 7L2 6"></path>
+        </svg>
+    </div>
+
+    <h3 class="auth-confirm-title">Vérifiez votre boîte mail</h3>
+
+    <p class="auth-confirm-text">
+        Nous avons envoyé un lien de confirmation à <strong>@Model.Email</strong>.
+        Cliquez sur ce lien pour activer votre compte BioDomes.
+    </p>
+
+    <p class="auth-confirm-text">
+        Pensez aussi à vérifier vos spams ou courriers indésirables.
+    </p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+    {
+        <div class="auth-status-message @(Model.IsSuccess ? "auth-status-message--success" : "auth-status-message--error")">
+            @Model.StatusMessage
+        </div>
+    }
+
+    <div class="auth-confirm-actions">
+        <form method="post" asp-page-handler="Resend" class="auth-resend-form">
+            <input type="hidden" asp-for="Email" />
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            <button type="submit"
+                    id="resendButton"
+                    class="auth-submit auth-submit--link"
+                    data-cooldown="@Model.CooldownRemainingSeconds"
+                    @(Model.CooldownRemainingSeconds > 0 ? "disabled" : null)>
+                @(Model.CooldownRemainingSeconds > 0
+                    ? $"Renvoyer l’e-mail ({Model.CooldownRemainingSeconds}s)"
+                    : "Renvoyer l’e-mail de confirmation")
+            </button>
+        </form>
+
+        <a asp-page="./Login" class="auth-secondary-link">
+            Aller à la connexion
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const resendButton = document.getElementById("resendButton");
+
+        if (resendButton) {
+            let remaining = parseInt(resendButton.dataset.cooldown || "0");
+
+            const updateText = () => {
+                if (remaining > 0) {
+                    resendButton.disabled = true;
+                    resendButton.textContent = `Renvoyer l’e-mail (${remaining}s)`;
+                } else {
+                    resendButton.disabled = false;
+                    resendButton.textContent = "Renvoyer l’e-mail de confirmation";
+                }
+            };
+
+            updateText();
+
+            if (remaining > 0) {
+                const timer = setInterval(() => {
+                    remaining--;
+                    updateText();
+
+                    if (remaining <= 0) {
+                        clearInterval(timer);
+                    }
+                }, 1000);
+            }
+        }
+    </script>
+}

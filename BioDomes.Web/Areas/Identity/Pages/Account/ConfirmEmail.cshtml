@@ -1,0 +1,48 @@
+﻿@page
+@model BioDomes.Web.Areas.Identity.Pages.Account.ConfirmEmailModel
+
+@{
+    Layout = "/Pages/Shared/_AuthLayout.cshtml";
+    ViewData["Title"] = "Confirmation d'email";
+    ViewData["AuthPageTitle"] = Model.IsSuccess ? "Confirmation réussie" : "Confirmation impossible";
+    ViewData["AuthPageSubtitle"] = Model.IsSuccess
+        ? "Votre compte BioDomes est maintenant activé."
+        : "Nous n'avons pas pu valider votre adresse e-mail.";
+    ViewData["AuthHeroTitle"] = "Créer, suivre,<br />et faire évoluer<br />vos BioDomes.";
+    ViewData["AuthHeroText"] = "Confirmez votre adresse e-mail pour activer votre accès à la plateforme.";
+}
+
+<div class="auth-confirm-box">
+    @if (Model.IsSuccess)
+    {
+        <div class="auth-confirm-icon auth-confirm-icon--success" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+        </div>
+    }
+    else
+    {
+        <div class="auth-confirm-icon auth-confirm-icon--error" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 8v5"></path>
+                <path d="M12 16h.01"></path>
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path>
+            </svg>
+        </div>
+    }
+
+    <h3 class="auth-confirm-title">
+        @(Model.IsSuccess
+            ? "Votre adresse e-mail a bien été confirmée."
+            : "Le lien de confirmation n'est pas valide.")
+    </h3>
+
+    <p class="auth-confirm-text">@Model.Message</p>
+
+    <div class="auth-confirm-actions">
+        <a asp-page="./Login" class="auth-submit auth-submit--link">
+            Aller à la connexion
+        </a>
+    </div>
+</div>

@@ -156,7 +156,7 @@ public class RegisterModel : PageModel
             "Confirmez votre compte BioDomes",
             BuildConfirmationEmail(userName, callbackUrl));
 
-        return RedirectToPage("RegisterConfirmation", new { email, returnUrl });
+        return RedirectToPage("./RegisterConfirmation", new { email, returnUrl });
     }
 
     private static string BuildConfirmationEmail(string userName, string callbackUrl)
