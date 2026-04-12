@@ -11,35 +11,35 @@ using Microsoft.Extensions.Caching.Memory;
 namespace BioDomes.Web.Areas.Identity.Pages.Account;
 
 /// <summary>
-/// Affiche la confirmation d’inscription et permet de renvoyer l’e-mail de confirmation.
+/// Affiche la confirmation d'envoi du mail de réinitialisation et permet de renvoyer ce mail.
 /// </summary>
 /// <remarks>
-/// Cette page applique un cooldown côté serveur afin de limiter le renvoi abusif des e-mails.
+/// Cette page gère également un cooldown côté serveur afin de limiter les renvois répétés.
 /// </remarks>
-public class RegisterConfirmationModel : PageModel
+public class ForgotPasswordConfirmationModel : PageModel
 {
     /// <summary>
-    /// Durée du cooldown, en secondes, avant d’autoriser un nouvel envoi.
+    /// Durée du cooldown, en secondes, avant d'autoriser un nouvel envoi.
     /// </summary>
     private const int ResendCooldownSeconds = 60;
 
     private readonly UserManager<UserEntity> _userManager;
     private readonly IEmailSender _emailSender;
     private readonly IMemoryCache _memoryCache;
-    private readonly ILogger<RegisterConfirmationModel> _logger;
+    private readonly ILogger<ForgotPasswordConfirmationModel> _logger;
 
     /// <summary>
-    /// Initialise une nouvelle instance de la classe <see cref="RegisterConfirmationModel" />.
+    /// Initialise une nouvelle instance de la classe <see cref="ForgotPasswordConfirmationModel" />.
     /// </summary>
-    /// <param name="userManager">Service Identity utilisé pour retrouver le compte et générer le token de confirmation.</param>
-    /// <param name="emailSender">Service chargé d’envoyer les e-mails de confirmation.</param>
-    /// <param name="memoryCache">Cache mémoire utilisé pour stocker le cooldown.</param>
-    /// <param name="logger">Service de journalisation.</param>
-    public RegisterConfirmationModel(
+    /// <param name="userManager">Service Identity utilisé pour retrouver l'utilisateur et générer le token de reset.</param>
+    /// <param name="emailSender">Service chargé d'envoyer les e-mails de réinitialisation.</param>
+    /// <param name="memoryCache">Cache mémoire utilisé pour mémoriser le cooldown de renvoi.</param>
+    /// <param name="logger">Service de journalisation utilisé pour tracer les renvois.</param>
+    public ForgotPasswordConfirmationModel(
         UserManager<UserEntity> userManager,
         IEmailSender emailSender,
         IMemoryCache memoryCache,
-        ILogger<RegisterConfirmationModel> logger)
+        ILogger<ForgotPasswordConfirmationModel> logger)
     {
         _userManager = userManager;
         _emailSender = emailSender;
@@ -48,7 +48,7 @@ public class RegisterConfirmationModel : PageModel
     }
 
     /// <summary>
-    /// Adresse e-mail du compte en attente de confirmation.
+    /// Adresse e-mail concernée par la demande de réinitialisation.
     /// </summary>
     [BindProperty(SupportsGet = true)]
     public string Email { get; set; } = string.Empty;
@@ -60,22 +60,22 @@ public class RegisterConfirmationModel : PageModel
     public string? ReturnUrl { get; set; }
 
     /// <summary>
-    /// Message d’état affiché après une tentative de renvoi.
+    /// Message de statut à afficher à l'utilisateur après une tentative de renvoi.
     /// </summary>
     public string? StatusMessage { get; private set; }
 
     /// <summary>
-    /// Indique si l’action précédente est considérée comme réussie.
+    /// Indique si l'action précédente est considérée comme réussie pour l'affichage.
     /// </summary>
     public bool IsSuccess { get; private set; }
 
     /// <summary>
-    /// Nombre de secondes restantes avant autorisation d’un nouvel envoi.
+    /// Nombre de secondes restantes avant qu'un nouvel envoi soit autorisé.
     /// </summary>
     public int CooldownRemainingSeconds { get; private set; }
 
     /// <summary>
-    /// Initialise la page et calcule le cooldown restant.
+    /// Initialise la page et calcule le temps restant avant un nouvel envoi autorisé.
     /// </summary>
     public void OnGet()
     {
@@ -83,11 +83,15 @@ public class RegisterConfirmationModel : PageModel
     }
 
     /// <summary>
-    /// Tente de renvoyer un e-mail de confirmation d’inscription.
+    /// Tente de renvoyer l'e-mail de réinitialisation.
     /// </summary>
     /// <returns>
-    /// La même page avec le message de statut et le cooldown mis à jour.
+    /// La même page, enrichie d'un message de statut et d'un cooldown mis à jour.
     /// </returns>
+    /// <remarks>
+    /// Pour des raisons de sécurité, le message final reste volontairement neutre
+    /// afin de ne pas révéler explicitement si le compte existe ou non.
+    /// </remarks>
     public async Task<IActionResult> OnPostResendAsync()
     {
         if (string.IsNullOrWhiteSpace(Email))
@@ -106,58 +110,43 @@ public class RegisterConfirmationModel : PageModel
         }
 
         var user = await _userManager.FindByEmailAsync(Email);
-        if (user is null)
+
+        if (user is not null && await _userManager.IsEmailConfirmedAsync(user))
         {
-            StatusMessage = "Impossible de retrouver le compte associé à cette adresse.";
-            IsSuccess = false;
-            return Page();
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var callbackUrl = Url.Page(
+                "/Account/ResetPassword",
+                pageHandler: null,
+                values: new { area = "Identity", code, email = Email },
+                protocol: Request.Scheme);
+
+            if (callbackUrl is not null)
+            {
+                await _emailSender.SendEmailAsync(
+                    Email,
+                    "Réinitialisez votre mot de passe BioDomes",
+                    BuildResetPasswordEmail(user.UserName ?? Email, callbackUrl));
+
+                _logger.LogInformation("Email de réinitialisation renvoyé à {Email}.", Email);
+            }
         }
-
-        if (user.EmailConfirmed)
-        {
-            StatusMessage = "Cette adresse e-mail est déjà confirmée.";
-            IsSuccess = true;
-            return Page();
-        }
-
-        var userId = await _userManager.GetUserIdAsync(user);
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-        var callbackUrl = Url.Page(
-            "/Account/ConfirmEmail",
-            pageHandler: null,
-            values: new { area = "Identity", userId, code, returnUrl = ReturnUrl },
-            protocol: Request.Scheme);
-
-        if (callbackUrl is null)
-        {
-            StatusMessage = "Impossible de générer le lien de confirmation.";
-            IsSuccess = false;
-            return Page();
-        }
-
-        await _emailSender.SendEmailAsync(
-            Email,
-            "Confirmez votre compte BioDomes",
-            BuildConfirmationEmail(user.UserName ?? Email, callbackUrl));
 
         SetCooldown(Email);
 
         CooldownRemainingSeconds = ResendCooldownSeconds;
-        StatusMessage = "Un nouvel e-mail de confirmation vient d’être envoyé.";
+        StatusMessage = "Si un compte BioDomes correspond à cette adresse, un nouvel e-mail vient d’être envoyé.";
         IsSuccess = true;
-
-        _logger.LogInformation("E-mail de confirmation renvoyé à {Email}.", Email);
 
         return Page();
     }
 
     /// <summary>
-    /// Calcule le nombre de secondes restantes avant un nouvel envoi autorisé.
+    /// Calcule le nombre de secondes restantes avant qu'un nouvel envoi soit autorisé.
     /// </summary>
-    /// <param name="email">Adresse e-mail utilisée comme identifiant du cooldown.</param>
-    /// <returns>Le nombre de secondes restantes, ou 0 si aucun cooldown n’est actif.</returns>
+    /// <param name="email">Adresse e-mail utilisée comme clé de cooldown.</param>
+    /// <returns>Le nombre de secondes restantes, ou 0 si aucun cooldown n'est actif.</returns>
     private int GetRemainingCooldownSeconds(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
@@ -175,34 +164,30 @@ public class RegisterConfirmationModel : PageModel
     }
 
     /// <summary>
-    /// Enregistre un cooldown de renvoi pour l’adresse e-mail donnée.
+    /// Enregistre un nouveau cooldown pour l'adresse e-mail donnée.
     /// </summary>
-    /// <param name="email">Adresse e-mail concernée.</param>
+    /// <param name="email">Adresse e-mail pour laquelle le cooldown doit être appliqué.</param>
     private void SetCooldown(string email)
     {
         var expiresAt = DateTimeOffset.UtcNow.AddSeconds(ResendCooldownSeconds);
-
-        _memoryCache.Set(
-            GetCooldownKey(email),
-            expiresAt,
-            expiresAt);
+        _memoryCache.Set(GetCooldownKey(email), expiresAt, expiresAt);
     }
 
     /// <summary>
-    /// Construit la clé de cache utilisée pour stocker le cooldown.
+    /// Construit la clé de cache utilisée pour stocker le cooldown de renvoi.
     /// </summary>
-    /// <param name="email">Adresse e-mail servant d’identifiant logique.</param>
-    /// <returns>Une clé normalisée et unique.</returns>
+    /// <param name="email">Adresse e-mail servant d'identifiant logique.</param>
+    /// <returns>Une clé de cache unique et normalisée.</returns>
     private static string GetCooldownKey(string email)
-        => $"register-confirmation-resend:{email.Trim().ToLowerInvariant()}";
+        => $"forgot-password-resend:{email.Trim().ToLowerInvariant()}";
 
     /// <summary>
-    /// Construit le contenu HTML de l’e-mail de confirmation d’inscription.
+    /// Construit le contenu HTML de l'e-mail de réinitialisation.
     /// </summary>
-    /// <param name="userName">Nom affiché dans l’e-mail.</param>
-    /// <param name="callbackUrl">Lien sécurisé de confirmation.</param>
-    /// <returns>Le contenu HTML complet de l’e-mail.</returns>
-    private static string BuildConfirmationEmail(string userName, string callbackUrl)
+    /// <param name="userName">Nom affiché dans l'e-mail.</param>
+    /// <param name="callbackUrl">Lien sécurisé de réinitialisation.</param>
+    /// <returns>Le contenu HTML complet de l'e-mail.</returns>
+    private static string BuildResetPasswordEmail(string userName, string callbackUrl)
     {
         string safeName = HtmlEncoder.Default.Encode(userName);
         string safeUrl = HtmlEncoder.Default.Encode(callbackUrl);
@@ -212,19 +197,19 @@ public class RegisterConfirmationModel : PageModel
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Confirmation BioDomes</title>
+    <title>Réinitialisation BioDomes</title>
 </head>
 <body style="margin:0;padding:0;background-color:#edf2f1;font-family:Arial,Helvetica,sans-serif;color:#0f172a;">
     <div style="padding:32px 16px;">
         <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 18px 40px rgba(15,23,42,0.08);">
             <div style="background:linear-gradient(135deg,#0c4f49,#0a3d38);padding:28px 32px;color:#ffffff;">
                 <div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">BioDomes</div>
-                <div style="margin-top:8px;font-size:15px;opacity:0.9;">Confirmation de votre inscription</div>
+                <div style="margin-top:8px;font-size:15px;opacity:0.9;">Réinitialisation de votre mot de passe</div>
             </div>
 
             <div style="padding:32px;">
                 <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1;color:#101828;">
-                    Bienvenue sur BioDomes
+                    Mot de passe oublié
                 </h1>
 
                 <p style="margin:0 0 14px;font-size:16px;line-height:1.7;color:#475467;">
@@ -232,16 +217,19 @@ public class RegisterConfirmationModel : PageModel
                 </p>
 
                 <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#475467;">
-                    Votre inscription a bien été enregistrée. Pour activer votre compte,
-                    confirmez votre adresse e-mail en cliquant sur le bouton ci-dessous.
+                    Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe pour votre compte BioDomes.
                 </p>
 
                 <div style="margin:28px 0;text-align:center;">
                     <a href="{safeUrl}"
                        style="display:inline-block;padding:14px 28px;border-radius:14px;background:#0c4f49;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;">
-                        Confirmer mon e-mail
+                        Réinitialiser mon mot de passe
                     </a>
                 </div>
+
+                <p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#667085;">
+                    Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.
+                </p>
 
                 <p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#667085;">
                     Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :

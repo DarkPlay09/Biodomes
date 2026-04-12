@@ -570,3 +570,55 @@ a {
 .auth-secondary-link:hover {
     text-decoration: underline;
 }
+
+.auth-note {
+    margin: -0.25rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--bio-muted);
+}
+
+.auth-status-message {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.auth-status-message--success {
+    background: rgba(12, 79, 73, 0.08);
+    border: 1px solid rgba(12, 79, 73, 0.18);
+    color: #0c4f49;
+}
+
+.auth-status-message--error {
+    background: rgba(180, 35, 24, 0.08);
+    border: 1px solid rgba(180, 35, 24, 0.18);
+    color: #b42318;
+}
+
+.auth-resend-form {
+    width: 100%;
+}
+
+.auth-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.auth-secondary-link {
+    display: inline-block;
+    margin-top: 0.85rem;
+    color: var(--bio-primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-secondary-link:hover {
+    text-decoration: underline;
+}
+
+.auth-input[readonly] {
+    background: #f8fafc;
+}

@@ -11,6 +11,19 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace BioDomes.Web.Areas.Identity.Pages.Account;
 
+/// <summary>
+/// Gère l’inscription d’un nouvel utilisateur sur BioDomes.
+/// </summary>
+/// <remarks>
+/// Cette page :
+/// <list type="bullet">
+/// <item><description>valide les champs du formulaire,</description></item>
+/// <item><description>crée le compte utilisateur,</description></item>
+/// <item><description>génère un token de confirmation d’e-mail,</description></item>
+/// <item><description>envoie un e-mail de confirmation,</description></item>
+/// <item><description>redirige vers la page de confirmation d’inscription.</description></item>
+/// </list>
+/// </remarks>
 public class RegisterModel : PageModel
 {
     private readonly UserManager<UserEntity> _userManager;
@@ -18,6 +31,13 @@ public class RegisterModel : PageModel
     private readonly IEmailSender _emailSender;
     private readonly ILogger<RegisterModel> _logger;
 
+    /// <summary>
+    /// Initialise une nouvelle instance de la classe <see cref="RegisterModel" />.
+    /// </summary>
+    /// <param name="userManager">Service Identity chargé de créer et retrouver les utilisateurs.</param>
+    /// <param name="signInManager">Service Identity chargé des providers externes éventuels.</param>
+    /// <param name="emailSender">Service chargé d’envoyer l’e-mail de confirmation.</param>
+    /// <param name="logger">Service de journalisation.</param>
     public RegisterModel(
         UserManager<UserEntity> userManager,
         SignInManager<UserEntity> signInManager,
@@ -30,41 +50,71 @@ public class RegisterModel : PageModel
         _logger = logger;
     }
 
+    /// <summary>
+    /// Représente les données saisies dans le formulaire d’inscription.
+    /// </summary>
     [BindProperty]
     public InputModel Input { get; set; } = new();
 
+    /// <summary>
+    /// Liste des fournisseurs d’authentification externes disponibles.
+    /// </summary>
     public IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
 
+    /// <summary>
+    /// URL de retour éventuelle après l’inscription.
+    /// </summary>
     public string ReturnUrl { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Représente les champs du formulaire d’inscription.
+    /// </summary>
     public class InputModel
     {
+        /// <summary>
+        /// Nom d’utilisateur unique choisi par l’utilisateur.
+        /// </summary>
         [Required(ErrorMessage = "Le nom d'utilisateur est requis.")]
         [StringLength(30, MinimumLength = 3, ErrorMessage = "Le nom d'utilisateur doit contenir entre 3 et 30 caractères.")]
         [RegularExpression(@"^[a-zA-Z0-9_.-]+$", ErrorMessage = "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, points, tirets et underscores.")]
         [Display(Name = "Nom d'utilisateur")]
         public string UserName { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Adresse e-mail professionnelle de l’utilisateur.
+        /// </summary>
         [Required(ErrorMessage = "L'email est requis.")]
         [EmailAddress(ErrorMessage = "Format d'email invalide.")]
         [Display(Name = "Email professionnel")]
         public string Email { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Date de naissance renseignée à l’inscription.
+        /// </summary>
         [Required(ErrorMessage = "La date de naissance est requise.")]
         [DataType(DataType.Date)]
         [Display(Name = "Date de naissance")]
         public DateOnly BirthDate { get; set; }
 
+        /// <summary>
+        /// Organisation de recherche de l’utilisateur.
+        /// </summary>
         [StringLength(100, ErrorMessage = "Le nom de l'organisation ne peut pas dépasser 100 caractères.")]
         [Display(Name = "Organisation de recherche")]
         public string? ResearchOrganization { get; set; }
 
+        /// <summary>
+        /// Mot de passe du compte.
+        /// </summary>
         [Required(ErrorMessage = "Le mot de passe est requis.")]
         [StringLength(100, MinimumLength = 8, ErrorMessage = "Le mot de passe doit contenir au moins 8 caractères.")]
         [DataType(DataType.Password)]
         [Display(Name = "Mot de passe")]
         public string Password { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Confirmation du mot de passe.
+        /// </summary>
         [Required(ErrorMessage = "La confirmation du mot de passe est requise.")]
         [DataType(DataType.Password)]
         [Compare(nameof(Password), ErrorMessage = "Les mots de passe ne correspondent pas.")]
@@ -72,12 +122,29 @@ public class RegisterModel : PageModel
         public string ConfirmPassword { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Initialise la page d’inscription.
+    /// </summary>
+    /// <param name="returnUrl">URL de retour éventuelle après l’inscription.</param>
+    /// <returns>Une tâche asynchrone représentant l’initialisation de la page.</returns>
     public async Task OnGetAsync(string? returnUrl = null)
     {
         ReturnUrl = returnUrl ?? Url.Content("~/");
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
     }
 
+    /// <summary>
+    /// Traite la demande d’inscription d’un nouvel utilisateur.
+    /// </summary>
+    /// <param name="returnUrl">URL de retour éventuelle.</param>
+    /// <returns>
+    /// La page courante si des erreurs sont détectées, sinon une redirection vers
+    /// la page de confirmation d’inscription.
+    /// </returns>
+    /// <remarks>
+    /// Cette méthode vérifie d’abord l’unicité du nom d’utilisateur et de l’e-mail,
+    /// puis crée l’utilisateur et envoie un e-mail de confirmation.
+    /// </remarks>
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
         returnUrl ??= Url.Content("~/");
@@ -159,6 +226,12 @@ public class RegisterModel : PageModel
         return RedirectToPage("./RegisterConfirmation", new { email, returnUrl });
     }
 
+    /// <summary>
+    /// Construit le contenu HTML de l’e-mail de confirmation d’inscription.
+    /// </summary>
+    /// <param name="userName">Nom de l’utilisateur affiché dans l’e-mail.</param>
+    /// <param name="callbackUrl">Lien sécurisé de confirmation d’e-mail.</param>
+    /// <returns>Le contenu HTML complet de l’e-mail.</returns>
     private static string BuildConfirmationEmail(string userName, string callbackUrl)
     {
         string safeName = HtmlEncoder.Default.Encode(userName);
