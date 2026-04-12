@@ -252,7 +252,7 @@ public class RegisterConfirmationModel : PageModel
                 </p>
 
                 <div style="margin-top:24px;padding-top:20px;border-top:1px solid #e4e7ec;font-size:13px;line-height:1.7;color:#98a2b3;">
-                    BioDomes Research Initiative · Solutions durables pour un monde en évolution.
+                    © 2026 BioDomes - Terrarium Zero. Tous droits réservés.
                 </div>
             </div>
         </div>
