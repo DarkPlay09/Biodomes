@@ -9,15 +9,12 @@ using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
 using BioDomes.Web.Services;
 using BioDomes.Web.Transformers;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
 builder.Services.AddTransient<ReverseProxyLinksMiddleware>();
 builder.Services.AddScoped<ISpeciesRepository, EfSpeciesRepository>();
 builder.Services.AddScoped<ISpeciesMapper, SpeciesMapper>();
@@ -39,6 +36,7 @@ builder.Services.Configure<RouteOptions>(o =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Dashboard");
+    options.Conventions.AuthorizeFolder("/Species");
 });
 
 builder.Services.AddDbContext<BioDomesDbContext>(options =>

@@ -24,9 +24,16 @@
                 
                 <nav class="main-navigation">
                     <a class="nav-entry @(currentPage == "/Index" ? "nav-entry--active" : "")" asp-area="" asp-page="/Index">Accueil</a>
-                    <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Species/Index">Espèces</a>
-                    <a class="nav-entry" href="#">Biomes</a>
-                    <a class="nav-entry" href="#">Equipements</a>
+                    @if(User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Species/Index">Espèces</a>
+                        <a class="nav-entry" href="#">Biomes</a>
+                        <a class="nav-entry" href="#">Equipements</a>
+                    }
+                    else
+                    {
+                        <a class="nav-entry" href="#">Il faudrait ajouter des trucs mais on verra plus tard hahaha</a>
+                    }
                 </nav>
                 
                 <div class="header-actions">
