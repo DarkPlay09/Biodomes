@@ -112,7 +112,7 @@ public class LoginModel : PageModel
             ModelState.AddModelError(string.Empty, ErrorMessage);
         }
 
-        returnUrl ??= Url.Content("~/");
+        returnUrl ??= Url.Content("~/Dashboard");
 
         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
@@ -139,7 +139,7 @@ public class LoginModel : PageModel
     /// </remarks>
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
-        returnUrl ??= Url.Content("~/");
+        returnUrl ??= Url.Content("~/Dashboard");
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
         if (!ModelState.IsValid)

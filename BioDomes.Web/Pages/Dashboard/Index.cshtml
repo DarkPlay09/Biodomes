@@ -1,0 +1,52 @@
+﻿@page
+@model BioDomes.Web.Pages.Dashboard.IndexModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="dashboard-hero">
+    <div class="dashboard-hero__content">
+        <span class="dashboard-badge">Espace connecté</span>
+        <h1>Bonjour @Model.DisplayName</h1>
+        <p>
+            Bienvenue sur ton tableau de bord BioDomes.
+            Retrouve ici l’état de ton compte et un accès rapide aux zones importantes.
+        </p>
+
+        <div class="dashboard-hero__actions">
+            <a asp-page="/Species/Add" class="dashboard-btn dashboard-btn--primary">Ajouter une espèce</a>
+            <a asp-page="/Species/Index" class="dashboard-btn dashboard-btn--ghost">Voir les espèces</a>
+        </div>
+    </div>
+
+    <aside class="dashboard-hero__panel">
+        <h2>Résumé du compte</h2>
+        <p>Ton laboratoire est prêt à évoluer avec tes espèces, biomes et équipements.</p>
+
+        <div class="dashboard-status">
+            <span class="dashboard-status__dot @(Model.EmailConfirmed ? "is-ok" : "is-warning")"></span>
+            <span>@(Model.EmailConfirmed ? "Adresse e-mail confirmée" : "Adresse e-mail non confirmée")</span>
+        </div>
+    </aside>
+</section>
+
+<section class="dashboard-stats">
+    <article class="dashboard-card dashboard-stat">
+        <span class="dashboard-card__label">Espèces</span>
+        <strong class="dashboard-stat__value">@Model.SpeciesCount</strong>
+        <p class="dashboard-card__text">Nombre d’espèces enregistrées.</p>
+    </article>
+
+    <article class="dashboard-card dashboard-stat">
+        <span class="dashboard-card__label">Rôle</span>
+        <strong class="dashboard-stat__value">@Model.Role</strong>
+        <p class="dashboard-card__text">Niveau d’accès actuel.</p>
+    </article>
+
+    <article class="dashboard-card dashboard-stat">
+        <span class="dashboard-card__label">Compte</span>
+        <strong class="dashboard-stat__value">@(Model.EmailConfirmed ? "Actif" : "À confirmer")</strong>
+        <p class="dashboard-card__text">Statut général du compte.</p>
+    </article>
+</section>

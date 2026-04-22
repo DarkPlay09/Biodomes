@@ -36,6 +36,11 @@ builder.Services.Configure<RouteOptions>(o =>
     o.ConstraintMap["kebab"] = typeof(SlugTransformer);         
 });
 
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/Dashboard");
+});
+
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BioDomesDb")));
 
