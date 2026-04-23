@@ -4,10 +4,10 @@ namespace BioDomes.Web.Pages.Equipment;
 
 public class EquipmentInputModel
 {
-    private const string AlphaSpacesDashes = @"^[A-Za-zÀ-ÖØ-öø-ÿ\s-]+$";
+    private const string AlphaSpacesDashes = @"^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s-]+$";
 
     [Required(ErrorMessage = "Le nom est requis.")]
-    [RegularExpression(AlphaSpacesDashes, ErrorMessage = "Le nom ne peut contenir que des lettres, espaces ou tirets.")]
+    [RegularExpression(AlphaSpacesDashes, ErrorMessage = "Le nom ne peut contenir que des lettres, chiffres, espaces ou tirets.")]
     [Display(Name = "Nom")]
     public string? Name { get; set; }
 

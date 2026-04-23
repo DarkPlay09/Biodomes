@@ -6,4 +6,7 @@ public class EquipmentFormViewModel
 {
     public EquipmentInputModel Input { get; set; } = new();
     public IEnumerable<SelectListItem> ResourceOptions { get; set; } = Enumerable.Empty<SelectListItem>();
+    
+    public string? CurrentImagePath { get; set; }
+    public string? CurrentImageFileName { get; set; }
 }

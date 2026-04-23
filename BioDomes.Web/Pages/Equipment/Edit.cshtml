@@ -16,9 +16,13 @@
                 <div asp-validation-summary="ModelOnly" class="entity-form__summary"></div>
 
                 <partial name="Equipment/_EquipmentForm" model="new EquipmentFormViewModel
-                 {
-                    Input = Model.Input,
-                    ResourceOptions = Model.ResourceOptions
+                         {
+                             Input = Model.Input,
+                             ResourceOptions = Model.ResourceOptions,
+                             CurrentImagePath = Model.CurrentImagePath,
+                             CurrentImageFileName = string.IsNullOrWhiteSpace(Model.CurrentImagePath)
+                                 ? null
+                                 : System.IO.Path.GetFileName(Model.CurrentImagePath)
                  }"/>
 
                 <div class="entity-form__actions">
@@ -33,4 +37,6 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/entity-file-upload.js" asp-append-version="true"></script>
+
 }

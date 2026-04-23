@@ -29,6 +29,8 @@ public class EditModel : PageModel
         Enum.GetNames<DietType>()
             .Select(x => new SelectListItem(x, x));
 
+    public string? CurrentImagePath { get; set; }
+
     public IActionResult OnGet(string slug)
     {
         var s = _repo.GetBySlug(slug);
@@ -39,18 +41,21 @@ public class EditModel : PageModel
         Input.Diet = s.Diet.ToString();
         Input.AdultSize = s.AdultSize;
         Input.Weight = s.Weight;
+        CurrentImagePath = s.ImagePath;
 
         return Page();
     }
 
     public async Task<IActionResult> OnPost(string slug)
     {
-        if (!ModelState.IsValid)
-            return Page();
-
         var existingSpecies = _repo.GetBySlug(slug);
         if (existingSpecies is null)
             return NotFound();
+
+        CurrentImagePath = existingSpecies.ImagePath;
+
+        if (!ModelState.IsValid)
+            return Page();
         
         var oldImagePath = existingSpecies.ImagePath;
         var imagePath = existingSpecies.ImagePath;

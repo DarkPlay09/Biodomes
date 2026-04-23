@@ -206,11 +206,19 @@
     height: 52px;
     flex-shrink: 0;
     border-radius: 14px;
+    overflow: hidden;
     background: rgba(11, 61, 57, 0.08);
     color: var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.entity-file-upload__icon-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .entity-file-upload__icon svg {
@@ -273,9 +281,9 @@
 }
 
 .entity-file-upload__preview {
-    width: 100%;
-    max-width: 320px;
-    height: 200px;
+    width: 140px;
+    max-width: none;
+    height: 140px;
     object-fit: cover;
     border-radius: 16px;
     border: 1px solid rgba(11, 61, 57, 0.12);
@@ -293,7 +301,7 @@
     }
 
     .entity-file-upload__preview {
-        max-width: 100%;
-        height: 220px;
+        width: 140px;
+        height: 140px;
     }
 }

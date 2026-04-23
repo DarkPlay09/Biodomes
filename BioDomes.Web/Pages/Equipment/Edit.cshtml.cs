@@ -25,6 +25,8 @@ public class EditModel : PageModel
     public IEnumerable<SelectListItem> ResourceOptions =>
         Enum.GetNames<ResourceType>()
             .Select(x => new SelectListItem(x, x));
+    
+    public string? CurrentImagePath { get; set; }
 
     public IActionResult OnGet(string slug)
     {
@@ -35,18 +37,21 @@ public class EditModel : PageModel
         Input.Name = equipment.Name;
         Input.ProducedElement = equipment.ProducedElement?.ToString();
         Input.ConsumedElement = equipment.ConsumedElement?.ToString();
+        CurrentImagePath = equipment.ImagePath;
 
         return Page();
     }
 
     public async Task<IActionResult> OnPost(string slug)
     {
-        if (!ModelState.IsValid)
-            return Page();
-
         var existingEquipment = _equipmentRepository.GetBySlug(slug);
         if (existingEquipment is null)
             return NotFound();
+
+        CurrentImagePath = existingEquipment.ImagePath;
+
+        if (!ModelState.IsValid)
+            return Page();
 
         var produced = ParseResourceType(Input.ProducedElement);
         var consumed = ParseResourceType(Input.ConsumedElement);

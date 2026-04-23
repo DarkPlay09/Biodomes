@@ -3,7 +3,7 @@
 <div class="entity-form__grid">
     <div class="entity-form__field">
         <label asp-for="Input.Name"></label>
-        <input asp-for="Input.Name" class="entity-form__control" />
+        <input asp-for="Input.Name" class="entity-form__control" placeholder="Panneau Solaire"/>
         <span asp-validation-for="Input.Name" class="entity-form__error"></span>
     </div>
 
@@ -35,7 +35,13 @@
 
             <label for="equipmentImageInput" class="entity-file-upload__label">
                 <div class="entity-file-upload__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <img class="entity-file-upload__icon-preview"
+                         data-file-icon-preview
+                         data-current-src="@(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? "" : $"{Context.Request.PathBase}{Model.CurrentImagePath}")"
+                         src="@(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? "" : $"{Context.Request.PathBase}{Model.CurrentImagePath}")"
+                         alt="Aperçu de l'image"
+                         @(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? "hidden" : null) />
+                    <svg data-file-icon-fallback viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" @(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? null : "hidden")>
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <path d="M7 10l5-5 5 5"></path>
                         <path d="M12 5v12"></path>
@@ -45,24 +51,21 @@
                 <div class="entity-file-upload__content">
                     <span class="entity-file-upload__title">Joindre une image</span>
                     <span class="entity-file-upload__subtitle">
-                        PNG, JPG ou WEBP • cliquez pour sélectionner
+                        PNG, JPG ou WEBP - cliquez pour sélectionner
                     </span>
                 </div>
 
                 <span class="entity-file-upload__button">Parcourir</span>
             </label>
 
-            <div class="entity-file-upload__meta">
-                <span class="entity-file-upload__filename" data-file-name>
-                    Aucun fichier choisi
-                </span>
-            </div>
-
-            <div class="entity-file-upload__preview-wrapper" data-file-preview-wrapper hidden>
-                <img src="" alt="Aperçu de l’image" class="entity-file-upload__preview" data-file-preview />
-            </div>
-        </div>
+            <span class="entity-file-upload__filename @(string.IsNullOrWhiteSpace(Model.CurrentImageFileName) ? "" : "entity-file-upload__filename--selected")"
+                  data-file-name
+                  data-current-name="@(Model.CurrentImageFileName ?? "Aucun fichier choisi")">
+                @(Model.CurrentImageFileName ?? "Aucun fichier choisi")
+            </span>
+</div>
 
         <span asp-validation-for="Input.ImageFile" class="entity-form__error"></span>
     </div>
 </div>
+

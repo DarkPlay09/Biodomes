@@ -4,12 +4,15 @@
     uploadBlocks.forEach(block => {
         const input = block.querySelector(".entity-file-upload__input");
         const fileName = block.querySelector("[data-file-name]");
-        const preview = block.querySelector("[data-file-preview]");
-        const previewWrapper = block.querySelector("[data-file-preview-wrapper]");
+        const iconPreview = block.querySelector("[data-file-icon-preview]");
+        const iconFallback = block.querySelector("[data-file-icon-fallback]");
 
         if (!input) {
             return;
         }
+
+        const currentName = fileName?.getAttribute("data-current-name") || "Aucun fichier choisi";
+        const currentIconSrc = iconPreview?.getAttribute("data-current-src") || "";
 
         input.addEventListener("change", () => {
             const file = input.files && input.files.length > 0
@@ -18,13 +21,16 @@
 
             if (!file) {
                 if (fileName) {
-                    fileName.textContent = "Aucun fichier choisi";
-                    fileName.classList.remove("entity-file-upload__filename--selected");
+                    fileName.textContent = currentName;
+                    fileName.classList.toggle(
+                        "entity-file-upload__filename--selected",
+                        currentName !== "Aucun fichier choisi");
                 }
 
-                if (preview && previewWrapper) {
-                    preview.src = "";
-                    previewWrapper.hidden = true;
+                if (iconPreview && iconFallback) {
+                    iconPreview.src = currentIconSrc;
+                    iconPreview.hidden = !currentIconSrc;
+                    iconFallback.hidden = !!currentIconSrc;
                 }
 
                 return;
@@ -35,19 +41,21 @@
                 fileName.classList.add("entity-file-upload__filename--selected");
             }
 
-            if (file.type.startsWith("image/") && preview && previewWrapper) {
-                const reader = new FileReader();
-
-                reader.onload = event => {
-                    preview.src = event.target?.result ?? "";
-                    previewWrapper.hidden = false;
-                };
-
-                reader.readAsDataURL(file);
-            } else if (preview && previewWrapper) {
-                preview.src = "";
-                previewWrapper.hidden = true;
+            if (!file.type.startsWith("image/")) {
+                return;
             }
+
+            const reader = new FileReader();
+
+            reader.onload = event => {
+                if (iconPreview && iconFallback) {
+                    iconPreview.src = event.target?.result ?? "";
+                    iconPreview.hidden = false;
+                    iconFallback.hidden = true;
+                }
+            };
+
+            reader.readAsDataURL(file);
         });
     });
 });
