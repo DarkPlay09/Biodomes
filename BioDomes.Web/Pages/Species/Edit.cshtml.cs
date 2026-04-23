@@ -1,4 +1,6 @@
+﻿using System.Security.Claims;
 using BioDomes.Domains;
+using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -33,30 +35,41 @@ public class EditModel : PageModel
 
     public IActionResult OnGet(string slug)
     {
-        var s = _repo.GetBySlug(slug);
-        if (s is null) return NotFound();
+        if (!TryGetCurrentUserId(out var currentUserId))
+            return Challenge();
 
-        Input.Name = s.Name;
-        Input.Classification = s.Classification.ToString();
-        Input.Diet = s.Diet.ToString();
-        Input.AdultSize = s.AdultSize;
-        Input.Weight = s.Weight;
-        CurrentImagePath = s.ImagePath;
+        var species = _repo.GetBySlug(slug);
+        if (species is null)
+            return NotFound();
+        if (species.Creator?.Id != currentUserId)
+            return Forbid();
+
+        Input.Name = species.Name;
+        Input.Classification = species.Classification.ToString();
+        Input.Diet = species.Diet.ToString();
+        Input.AdultSize = species.AdultSize;
+        Input.Weight = species.Weight;
+        CurrentImagePath = species.ImagePath;
 
         return Page();
     }
 
     public async Task<IActionResult> OnPost(string slug)
     {
+        if (!TryGetCurrentUserId(out var currentUserId))
+            return Challenge();
+
         var existingSpecies = _repo.GetBySlug(slug);
         if (existingSpecies is null)
             return NotFound();
+        if (existingSpecies.Creator?.Id != currentUserId)
+            return Forbid();
 
         CurrentImagePath = existingSpecies.ImagePath;
 
         if (!ModelState.IsValid)
             return Page();
-        
+
         var oldImagePath = existingSpecies.ImagePath;
         var imagePath = existingSpecies.ImagePath;
         var hasNewImage = false;
@@ -77,7 +90,7 @@ public class EditModel : PageModel
                 return Page();
             }
         }
-        
+
         if (hasNewImage)
         {
             _speciesImageStorage.Delete(oldImagePath);
@@ -101,11 +114,21 @@ public class EditModel : PageModel
             diet,
             Input.AdultSize,
             Input.Weight,
-            imagePath
-        );
+            imagePath,
+            new UserAccount { Id = currentUserId },
+            existingSpecies.IsPublicAvailable)
+        {
+            Id = existingSpecies.Id
+        };
 
         _repo.Update(slug, species);
 
         return RedirectToPage("/Species/Index");
+    }
+
+    private bool TryGetCurrentUserId(out int userId)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(userIdClaim, out userId) && userId > 0;
     }
 }

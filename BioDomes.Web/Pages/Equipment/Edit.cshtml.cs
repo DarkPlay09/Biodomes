@@ -30,9 +30,14 @@ public class EditModel : PageModel
 
     public IActionResult OnGet(string slug)
     {
+        if (!TryGetCurrentUserId(out var currentUserId))
+            return Challenge(); // aller à la page de connection
+
         var equipment = _equipmentRepository.GetBySlug(slug);
         if (equipment is null)
             return NotFound();
+        if (equipment.Creator?.Id != currentUserId)
+            return Forbid(); // interdiction de modifier
 
         Input.Name = equipment.Name;
         Input.ProducedElement = equipment.ProducedElement?.ToString();
@@ -44,9 +49,14 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPost(string slug)
     {
+        if (!TryGetCurrentUserId(out var currentUserId))
+            return Challenge();
+
         var existingEquipment = _equipmentRepository.GetBySlug(slug);
         if (existingEquipment is null)
             return NotFound();
+        if (existingEquipment.Creator?.Id != currentUserId)
+            return Forbid();
 
         CurrentImagePath = existingEquipment.ImagePath;
 
@@ -64,10 +74,6 @@ public class EditModel : PageModel
             ModelState.AddModelError(string.Empty, "Un equipement doit produire et/ou consommer au moins un element.");
             return Page();
         }
-
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (!int.TryParse(userIdClaim, out var userId) || userId <= 0)
-            return Challenge();
 
         var oldImagePath = existingEquipment.ImagePath;
         var imagePath = existingEquipment.ImagePath;
@@ -100,7 +106,7 @@ public class EditModel : PageModel
             produced,
             consumed,
             imagePath,
-            new UserAccount { Id = userId },
+            new UserAccount { Id = currentUserId },
             existingEquipment.IsPublicAvailable)
         {
             Id = existingEquipment.Id
@@ -121,5 +127,11 @@ public class EditModel : PageModel
 
         ModelState.AddModelError(string.Empty, $"Ressource invalide: {rawValue}.");
         return null;
+    }
+
+    private bool TryGetCurrentUserId(out int userId)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(userIdClaim, out userId) && userId > 0;
     }
 }
