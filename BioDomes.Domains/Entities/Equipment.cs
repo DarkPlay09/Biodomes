@@ -1,27 +1,34 @@
+using BioDomes.Domains.Enums;
 namespace BioDomes.Domains.Entities;
 
 public class Equipment
 {
+    public int Id { get; set; } // Primary key
     public string Name { get; set; }
-    public string Produces { get; set; }
-    public string Consumes { get; set; }
-    public string? ImageUrl { get; set; }
-    public string? CreatedByUserName { get; set; }
-    public bool IsPublic { get; set; }
+    public ResourceType? ProducedElement { get; set; }
+    public ResourceType? ConsumedElement { get; set; }
+    public string? ImagePath { get; set; }
+    public UserAccount? Creator { get; set; }
+    public bool IsPublicAvailable { get; set; }
 
     public Equipment(
         string name,
-        string produces, // Temporairement en string
-        string consumes, // Temporairement en string
-        string? imageUrl = null,
-        string? createdByUserName = null, // Temporairement en string
-        bool isPublic = false)
+        ResourceType? producedElement,
+        ResourceType? consumedElement,
+        string? imagePath = null,
+        UserAccount? creator = null,
+        bool isPublicAvailable = false)
     {
+        if (producedElement is null &&
+            consumedElement is null)
+        {
+            throw new ArgumentException("Un équipement doit produire et/ou consommer au moins un élément.");
+        }
         Name = name;
-        Produces = produces;
-        Consumes = consumes;
-        ImageUrl = imageUrl;
-        CreatedByUserName = createdByUserName;
-        IsPublic = isPublic;
+        ProducedElement = producedElement;
+        ConsumedElement = consumedElement;
+        ImagePath = imagePath;
+        Creator = creator;
+        IsPublicAvailable = isPublicAvailable;
     }
 }

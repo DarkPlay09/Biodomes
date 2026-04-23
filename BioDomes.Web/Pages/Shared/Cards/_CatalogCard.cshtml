@@ -1,0 +1,58 @@
+﻿@model BioDomes.Web.Pages.Shared.Cards.CatalogCardViewModel
+
+<article class="catalog-card">
+    <div class="catalog-card__media">
+        @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+        {
+            <img class="catalog-card__image"
+                 src="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "" : $"{Context.Request.PathBase}{Model.ImagePath}")"
+                 alt="@Model.Title" />
+        }
+        else
+        {
+            <img class="catalog-card__image catalog-card__image--placeholder"
+                 src="~/images/species/noImageSpecie.png"
+                 alt="Image non disponible" />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Badge))
+        {
+            <span class="catalog-card__badge">@Model.Badge</span>
+        }
+    </div>
+
+    <div class="catalog-card__content">
+        <h2 class="catalog-card__title">@Model.Title</h2>
+
+        <div class="catalog-card__meta">
+            @foreach (var item in Model.Meta)
+            {
+                <p>
+                    <span class="catalog-card__label">@item.Label</span>
+                    <span>@item.Value</span>
+                </p>
+            }
+        </div>
+
+        <div class="catalog-card__actions">
+            @if (!string.IsNullOrWhiteSpace(Model.EditPage))
+            {
+                <a class="catalog-card__link"
+                   asp-page="@Model.EditPage"
+                   asp-all-route-data="Model.EditRouteValues">
+                    Modifier
+                </a>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.DeletePage))
+            {
+                <form method="post"
+                      asp-page="@Model.DeletePage"
+                      asp-page-handler="Delete"
+                      asp-all-route-data="Model.DeleteRouteValues">
+                    <button type="submit" class="catalog-card__button">Supprimer</button>
+                </form>
+            }
+        </div>
+    </div>
+</article>

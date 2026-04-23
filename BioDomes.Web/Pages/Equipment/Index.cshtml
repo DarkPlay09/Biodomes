@@ -1,0 +1,20 @@
+﻿@page "/equipment"
+@model BioDomes.Web.Pages.Equipment.IndexModel
+@{
+    ViewData["Title"] = "Equipment";
+}
+
+<div class="layout-width entity-list-page">
+    <div class="entity-page-header">
+        <h1 class="hero-title">Equipements</h1>
+        <a class="action-button entity-page-header__action" asp-page="/Equipment/Add">+ Ajouter un nouvel equipement</a>
+    </div>
+
+    <div class="entity-grid">
+        @foreach (var card in Model.Cards)
+        {
+            <partial name="Cards/_CatalogCard" model="card" />
+        }
+    </div>
+</div>
+

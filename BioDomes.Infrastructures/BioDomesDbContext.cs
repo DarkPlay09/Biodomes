@@ -1,4 +1,5 @@
-﻿using BioDomes.Infrastructures.EntityFramework.Entities;
+using BioDomes.Domains.Enums;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.EntityFramework.Links;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,7 +13,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
         : base(options)
     {
     }
-    
+
     public DbSet<BiomeEntity> Biomes => Set<BiomeEntity>();
     public DbSet<SpeciesEntity> Species => Set<SpeciesEntity>();
     public DbSet<EquipmentEntity> Equipments => Set<EquipmentEntity>();
@@ -143,6 +144,59 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 AdultSize = 2.2,
                 Weight = 13,
                 ImagePath = "/images/species/boa-constrictor-d0e1f2a3.jpg",
+                IsPublicAvailable = true,
+                CreatorId = 1
+            }
+        );
+
+        modelBuilder.Entity<EquipmentEntity>().HasData(
+            new EquipmentEntity
+            {
+                Id = 1,
+                Name = "Helio Lamp A7F3K2Q1",
+                ImagePath = "/images/equipment/helio-lamp-a7f3k2q1.jpg",
+                ProducedElement = ResourceType.Lumiere,
+                ConsumedElement = ResourceType.Hydrogene,
+                IsPublicAvailable = true,
+                CreatorId = 1
+            },
+            new EquipmentEntity
+            {
+                Id = 2,
+                Name = "UV Array B9M4D8R2",
+                ImagePath = "/images/equipment/uv-array-b9m4d8r2.jpg",
+                ProducedElement = ResourceType.Lumiere,
+                ConsumedElement = ResourceType.Azote,
+                IsPublicAvailable = true,
+                CreatorId = 1
+            },
+            new EquipmentEntity
+            {
+                Id = 3,
+                Name = "Micro Pump C6P1T7L5",
+                ImagePath = "/images/equipment/micro-pump-c6p1t7l5.jpg",
+                ProducedElement = ResourceType.Eau,
+                ConsumedElement = ResourceType.Hydrogene,
+                IsPublicAvailable = true,
+                CreatorId = 1
+            },
+            new EquipmentEntity
+            {
+                Id = 4,
+                Name = "Nitro Filter D3X8N4V6",
+                ImagePath = "/images/equipment/nitro-filter-d3x8n4v6.jpg",
+                ProducedElement = ResourceType.Azote,
+                ConsumedElement = ResourceType.Eau,
+                IsPublicAvailable = true,
+                CreatorId = 1
+            },
+            new EquipmentEntity
+            {
+                Id = 5,
+                Name = "Hydro Cell E2R9J5S8",
+                ImagePath = "/images/equipment/hydro-cell-e2r9j5s8.jpg",
+                ProducedElement = ResourceType.Hydrogene,
+                ConsumedElement = ResourceType.Eau,
                 IsPublicAvailable = true,
                 CreatorId = 1
             }

@@ -1,0 +1,42 @@
+.entity-list-page {
+    padding-bottom: 4rem;
+}
+
+.entity-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+.entity-page-header .hero-title {
+    margin: 0;
+}
+
+.entity-page-header__action {
+    flex-shrink: 0;
+}
+
+.entity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .entity-page-header {
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 2rem;
+    }
+
+    .entity-page-header__action {
+        text-align: center;
+    }
+
+    .entity-grid {
+        gap: 1.5rem;
+    }
+}

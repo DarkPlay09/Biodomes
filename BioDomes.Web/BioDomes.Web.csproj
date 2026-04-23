@@ -25,5 +25,10 @@
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pages\Equipment\" />
+      <Folder Include="wwwroot\images\equipment\" />
     </ItemGroup></Project>
 

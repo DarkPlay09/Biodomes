@@ -4,7 +4,7 @@
     ViewData["Title"] = "Species";
 }
 
-<div class="layout-width species-list-page">
+<div class="layout-width entity-list-page">
     @if (!string.IsNullOrWhiteSpace(Model.LastInsertedSpeciesName))
     {
         <div class="alert">
@@ -12,15 +12,16 @@
         </div>
     }
 
-    <div class="species-page-header">
+    <div class="entity-page-header">
         <h1 class="hero-title">Espèces</h1>
-        <a class="action-button species-page-header__action" asp-page="/Species/Add">+ Ajouter une nouvelle espèce</a>
+        <a class="action-button entity-page-header__action" asp-page="/Species/Add">+ Ajouter une nouvelle espèce</a>
     </div>
 
-    <div class="species-grid">
-        @foreach (var s in Model.SpeciesList)
+    <div class="entity-grid">
+        @foreach (var card in Model.Cards)
         {
-            <partial name="Species/_SpeciesCard" model="s"/>
+            <partial name="Cards/_CatalogCard" model="card" />
         }
     </div>
 </div>
+

@@ -1,4 +1,5 @@
 ﻿using BioDomes.Domains.Repositories;
+using BioDomes.Web.Pages.Shared.Cards;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -19,10 +20,33 @@ public class SpeciesModel : PageModel
     public string? LastInsertedSpeciesName { get; set; }
 
     public IReadOnlyList<Domains.Entities.Species> SpeciesList { get; private set; } = new List<Domains.Entities.Species>();
+    public IReadOnlyList<CatalogCardViewModel> Cards { get; private set; } = new List<CatalogCardViewModel>();
     
     public void OnGet()
     {
         SpeciesList = _repository.GetAll();
+        
+        Cards = SpeciesList.Select(s => new CatalogCardViewModel
+        {
+            Title = s.Name,
+            ImagePath = s.ImagePath,
+            Badge = s.Classification.ToString(),
+            Meta = new List<CatalogCardMetaItem>
+            {
+                new() { Label = "Régime", Value = s.Diet.ToString() },
+                new() { Label = "Poids", Value = $"{s.Weight} kg" }
+            },
+            EditPage = "/Species/Edit",
+            EditRouteValues = new Dictionary<string, string>
+            {
+                ["slug"] = s.Name
+            },
+            DeletePage = "/Species/Index",
+            DeleteRouteValues = new Dictionary<string, string>
+            {
+                ["slug"] = s.Name
+            }
+        }).ToList();
     }
     
     public IActionResult OnPostDelete(string slug)

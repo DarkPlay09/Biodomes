@@ -14,8 +14,12 @@ public class EquipmentEntityTypeConfiguration : IEntityTypeConfiguration<Equipme
 
         builder.Property(x => x.Name).IsRequired().HasMaxLength(120);
         builder.Property(x => x.ImagePath).HasMaxLength(300);
-        builder.Property(x => x.ProducedElement).HasMaxLength(100);
-        builder.Property(x => x.ConsumedElement).HasMaxLength(100);
+        builder.Property(x => x.ProducedElement)
+            .HasConversion<string>() // stocke le nom de l'enum en DB à la place d'un ID
+            .HasMaxLength(100);
+        builder.Property(x => x.ConsumedElement)
+            .HasConversion<string>()
+            .HasMaxLength(100);
         builder.Property(x => x.IsPublicAvailable).IsRequired();
 
         builder.HasOne(x => x.Creator)

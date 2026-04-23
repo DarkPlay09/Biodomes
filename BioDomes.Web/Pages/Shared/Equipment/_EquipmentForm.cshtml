@@ -1,0 +1,31 @@
+@model BioDomes.Web.Pages.Equipment.EquipmentFormViewModel
+
+<div class="entity-form__grid">
+    <div class="entity-form__field">
+        <label asp-for="Input.Name"></label>
+        <input asp-for="Input.Name" class="entity-form__control" />
+        <span asp-validation-for="Input.Name" class="entity-form__error"></span>
+    </div>
+
+    <div class="entity-form__field">
+        <label asp-for="Input.ProducedElement"></label>
+        <select asp-for="Input.ProducedElement" asp-items="Model.ResourceOptions" class="entity-form__control">
+            <option value="">-- Aucun --</option>
+        </select>
+        <span asp-validation-for="Input.ProducedElement" class="entity-form__error"></span>
+    </div>
+
+    <div class="entity-form__field">
+        <label asp-for="Input.ConsumedElement"></label>
+        <select asp-for="Input.ConsumedElement" asp-items="Model.ResourceOptions" class="entity-form__control">
+            <option value="">-- Aucun --</option>
+        </select>
+        <span asp-validation-for="Input.ConsumedElement" class="entity-form__error"></span>
+    </div>
+
+    <div class="entity-form__field entity-form__field--full">
+        <label asp-for="Input.ImageFile"></label>
+        <input asp-for="Input.ImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" class="entity-form__control entity-form__control--file" />
+        <span asp-validation-for="Input.ImageFile" class="entity-form__error"></span>
+    </div>
+</div>

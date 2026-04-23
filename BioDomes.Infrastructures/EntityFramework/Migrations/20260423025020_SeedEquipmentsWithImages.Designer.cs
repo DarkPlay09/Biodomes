@@ -4,6 +4,7 @@ using BioDomes.Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BioDomes.Infrastructures.EntityFramework.Migrations
 {
     [DbContext(typeof(BioDomesDbContext))]
-    partial class BioDomesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260423025020_SeedEquipmentsWithImages")]
+    partial class SeedEquipmentsWithImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,58 +104,6 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Equipments", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ConsumedElement = "Hydrogene",
-                            CreatorId = 1,
-                            ImagePath = "/images/equipment/helio-lamp-a7f3k2q1.jpg",
-                            IsPublicAvailable = true,
-                            Name = "Helio Lamp A7F3K2Q1",
-                            ProducedElement = "Lumiere"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ConsumedElement = "Azote",
-                            CreatorId = 1,
-                            ImagePath = "/images/equipment/uv-array-b9m4d8r2.jpg",
-                            IsPublicAvailable = true,
-                            Name = "UV Array B9M4D8R2",
-                            ProducedElement = "Lumiere"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ConsumedElement = "Hydrogene",
-                            CreatorId = 1,
-                            ImagePath = "/images/equipment/micro-pump-c6p1t7l5.jpg",
-                            IsPublicAvailable = true,
-                            Name = "Micro Pump C6P1T7L5",
-                            ProducedElement = "Eau"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ConsumedElement = "Eau",
-                            CreatorId = 1,
-                            ImagePath = "/images/equipment/nitro-filter-d3x8n4v6.jpg",
-                            IsPublicAvailable = true,
-                            Name = "Nitro Filter D3X8N4V6",
-                            ProducedElement = "Azote"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ConsumedElement = "Eau",
-                            CreatorId = 1,
-                            ImagePath = "/images/equipment/hydro-cell-e2r9j5s8.jpg",
-                            IsPublicAvailable = true,
-                            Name = "Hydro Cell E2R9J5S8",
-                            ProducedElement = "Hydrogene"
-                        });
                 });
 
             modelBuilder.Entity("BioDomes.Infrastructures.EntityFramework.Entities.SpeciesEntity", b =>

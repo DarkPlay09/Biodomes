@@ -17,10 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddTransient<ReverseProxyLinksMiddleware>();
 builder.Services.AddScoped<ISpeciesRepository, EfSpeciesRepository>();
+builder.Services.AddScoped<IEquipmentRepository, EfEquipmentRepository>();
 builder.Services.AddScoped<ISpeciesMapper, SpeciesMapper>();
 builder.Services.AddScoped<IUserResolver, UserResolver>();
 builder.Services.AddScoped<ISpeciesSlugService, SpeciesSlugService>();
 builder.Services.AddScoped<ISpeciesImageStorage, SpeciesImageStorage>();
+builder.Services.AddScoped<IEquipmentImageStorage, EquipmentImageStorage>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
     pipeline.AddCssBundle("/css/bundle.css",
@@ -37,6 +39,7 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Dashboard");
     options.Conventions.AuthorizeFolder("/Species");
+    options.Conventions.AuthorizeFolder("/Equipment");
 });
 
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
