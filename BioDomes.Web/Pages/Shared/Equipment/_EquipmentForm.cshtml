@@ -25,7 +25,44 @@
 
     <div class="entity-form__field entity-form__field--full">
         <label asp-for="Input.ImageFile"></label>
-        <input asp-for="Input.ImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" class="entity-form__control entity-form__control--file" />
+
+        <div class="entity-file-upload" data-file-upload>
+            <input asp-for="Input.ImageFile"
+                   type="file"
+                   class="entity-file-upload__input"
+                   id="equipmentImageInput"
+                   accept=".png,.jpg,.jpeg,.webp,image/*" />
+
+            <label for="equipmentImageInput" class="entity-file-upload__label">
+                <div class="entity-file-upload__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <path d="M7 10l5-5 5 5"></path>
+                        <path d="M12 5v12"></path>
+                    </svg>
+                </div>
+
+                <div class="entity-file-upload__content">
+                    <span class="entity-file-upload__title">Joindre une image</span>
+                    <span class="entity-file-upload__subtitle">
+                        PNG, JPG ou WEBP • cliquez pour sélectionner
+                    </span>
+                </div>
+
+                <span class="entity-file-upload__button">Parcourir</span>
+            </label>
+
+            <div class="entity-file-upload__meta">
+                <span class="entity-file-upload__filename" data-file-name>
+                    Aucun fichier choisi
+                </span>
+            </div>
+
+            <div class="entity-file-upload__preview-wrapper" data-file-preview-wrapper hidden>
+                <img src="" alt="Aperçu de l’image" class="entity-file-upload__preview" data-file-preview />
+            </div>
+        </div>
+
         <span asp-validation-for="Input.ImageFile" class="entity-form__error"></span>
     </div>
 </div>

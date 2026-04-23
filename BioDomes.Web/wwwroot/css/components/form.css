@@ -173,3 +173,127 @@
         text-align: center;
     }
 }
+
+.entity-file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.entity-file-upload__input {
+    display: none;
+}
+
+.entity-file-upload__label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(11, 61, 57, 0.14);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.entity-file-upload__label:hover {
+    border-color: rgba(11, 61, 57, 0.4);
+    box-shadow: 0 0 0 4px rgba(11, 61, 57, 0.08);
+}
+
+.entity-file-upload__icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: rgba(11, 61, 57, 0.08);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.entity-file-upload__icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.entity-file-upload__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.entity-file-upload__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.entity-file-upload__subtitle {
+    font-size: 0.92rem;
+    color: var(--color-text-soft);
+}
+
+.entity-file-upload__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 110px;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: background-color 0.2s ease;
+}
+
+.entity-file-upload__label:hover .entity-file-upload__button {
+    background: var(--color-primary-dark);
+}
+
+.entity-file-upload__meta {
+    min-height: 1.2rem;
+}
+
+.entity-file-upload__filename {
+    font-size: 0.95rem;
+    color: var(--color-text-soft);
+}
+
+.entity-file-upload__filename--selected {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.entity-file-upload__preview-wrapper {
+    margin-top: 0.25rem;
+}
+
+.entity-file-upload__preview {
+    width: 100%;
+    max-width: 320px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid rgba(11, 61, 57, 0.12);
+    box-shadow: var(--shadow-light);
+}
+
+@media (max-width: 768px) {
+    .entity-file-upload__label {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .entity-file-upload__button {
+        width: 100%;
+    }
+
+    .entity-file-upload__preview {
+        max-width: 100%;
+        height: 220px;
+    }
+}
