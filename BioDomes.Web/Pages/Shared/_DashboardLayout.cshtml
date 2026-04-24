@@ -1,0 +1,117 @@
+﻿@using BioDomes.Infrastructures.EntityFramework.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<UserEntity> SignInManager
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - BioDomes</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/pages/dashboard.css" asp-append-version="true"/>
+</head>
+<body class="dashboard-shell-body">
+<div class="dashboard-mobile-overlay" id="dashboardOverlay"></div>
+
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <div class="dashboard-sidebar__top">
+            <div class="dashboard-sidebar__brand">
+                <img class="brand-logo" src="~/images/logo_biodomes.png" alt="Logo BioDomes"/>
+                <span>BioDomes</span>
+            </div>
+
+            <button type="button"
+                    class="dashboard-sidebar__close"
+                    id="dashboardSidebarClose"
+                    aria-label="Fermer le menu">
+                ✕
+            </button>
+        </div>
+
+        <nav class="dashboard-sidebar__nav">
+            <a asp-page="/Dashboard/Index" class="dashboard-sidebar__link dashboard-sidebar__link--active">
+                <span>Tableau de bord</span>
+            </a>
+
+            <a asp-page="/Biomes/Index" class="dashboard-sidebar__link">
+                <span>Mes biomes</span>
+            </a>
+
+            <a asp-page="/Species/Index" class="dashboard-sidebar__link">
+                <span>Espèces</span>
+            </a>
+
+            <a asp-page="/Equipment/Index" class="dashboard-sidebar__link">
+                <span>Équipements</span>
+            </a>
+
+            <a href="#" class="dashboard-sidebar__link">
+                <span>Rapports</span>
+            </a>
+        </nav>
+
+        <div class="dashboard-sidebar__bottom">
+            <div class="dashboard-sidebar__profile">
+                <div class="dashboard-sidebar__avatar">
+                    @(User.Identity?.Name?.Substring(0, 1).ToUpperInvariant() ?? "B")
+                </div>
+
+                <div>
+                    <strong>@(User.Identity?.Name ?? "Chercheur")</strong>
+                    <span>Chercheur connecté</span>
+                </div>
+            </div>
+
+            <div class="dashboard-sidebar__account-actions">
+                <a asp-area="Identity"
+                   asp-page="/Account/Manage/Index"
+                   class="dashboard-sidebar__action-link">
+                    Modifier mon profil
+                </a>
+
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-area="Identity"
+                          asp-page="/Account/Logout"
+                          asp-route-returnUrl="/"
+                          method="post"
+                          class="dashboard-sidebar__logout-form">
+                        <button type="submit" class="dashboard-sidebar__logout-button">
+                            Déconnexion
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-content">
+        <header class="dashboard-topbar">
+            <div class="dashboard-topbar__left">
+                <button type="button"
+                        class="dashboard-menu-toggle"
+                        id="dashboardMenuToggle"
+                        aria-label="Ouvrir le menu">
+                    ☰
+                </button>
+
+                <div>
+                    <h1>@(ViewData["DashboardTitle"] ?? "Dashboard")</h1>
+                    <p>@(ViewData["DashboardSubtitle"] ?? "")</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-page">
+            @RenderBody()
+        </div>
+    </main>
+</div>
+
+<script src="~/js/dashboard-sidebar.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

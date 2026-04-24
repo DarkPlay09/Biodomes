@@ -29,6 +29,7 @@
 
     <ItemGroup>
       <Folder Include="Pages\Equipment\" />
+      <Folder Include="wwwroot\images\dashboard\" />
       <Folder Include="wwwroot\images\equipment\" />
     </ItemGroup></Project>
 
