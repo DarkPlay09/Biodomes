@@ -623,3 +623,56 @@ a {
 .auth-input[readonly] {
     background: #f8fafc;
 }
+
+/* =========================
+   Auth - Manage Profile
+   ========================= */
+
+.auth-card--manage {
+    width: min(100%, 38rem);
+}
+
+.auth-manage-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.65rem;
+    margin: -1rem 0 1.8rem;
+}
+
+.auth-manage-nav__link {
+    min-height: 2.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--bio-border);
+    border-radius: 0.9rem;
+    background: #ffffff;
+    color: var(--bio-muted);
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-align: center;
+    transition:
+            background 0.18s ease,
+            border-color 0.18s ease,
+            color 0.18s ease,
+            transform 0.18s ease;
+}
+
+.auth-manage-nav__link:hover {
+    border-color: #80b6ab;
+    color: var(--bio-primary);
+    transform: translateY(-1px);
+}
+
+.auth-manage-nav__link.is-active {
+    background: var(--bio-primary);
+    border-color: var(--bio-primary);
+    color: #ffffff;
+}
+
+@media (max-width: 640px) {
+    .auth-manage-nav {
+        grid-template-columns: 1fr;
+    }
+}

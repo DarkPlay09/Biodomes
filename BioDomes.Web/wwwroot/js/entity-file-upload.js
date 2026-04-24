@@ -6,6 +6,7 @@
         const fileName = block.querySelector("[data-file-name]");
         const preview = block.querySelector("[data-file-preview]");
         const previewWrapper = block.querySelector("[data-file-preview-wrapper]");
+        const placeholder = block.querySelector("[data-file-placeholder]");
 
         if (!input) {
             return;
@@ -22,9 +23,17 @@
                     fileName.classList.remove("entity-file-upload__filename--selected");
                 }
 
-                if (preview && previewWrapper) {
+                if (preview) {
                     preview.src = "";
+                    preview.style.display = "none";
+                }
+
+                if (previewWrapper) {
                     previewWrapper.hidden = true;
+                }
+
+                if (placeholder) {
+                    placeholder.style.display = "flex";
                 }
 
                 return;
@@ -35,19 +44,41 @@
                 fileName.classList.add("entity-file-upload__filename--selected");
             }
 
-            if (file.type.startsWith("image/") && preview && previewWrapper) {
-                const reader = new FileReader();
+            if (!file.type.startsWith("image/")) {
+                if (preview) {
+                    preview.src = "";
+                    preview.style.display = "none";
+                }
 
-                reader.onload = event => {
-                    preview.src = event.target?.result ?? "";
-                    previewWrapper.hidden = false;
-                };
+                if (previewWrapper) {
+                    previewWrapper.hidden = true;
+                }
 
-                reader.readAsDataURL(file);
-            } else if (preview && previewWrapper) {
-                preview.src = "";
-                previewWrapper.hidden = true;
+                if (placeholder) {
+                    placeholder.style.display = "flex";
+                }
+
+                return;
             }
+
+            const reader = new FileReader();
+
+            reader.onload = event => {
+                if (preview) {
+                    preview.src = event.target?.result ?? "";
+                    preview.style.display = "block";
+                }
+
+                if (previewWrapper) {
+                    previewWrapper.hidden = false;
+                }
+
+                if (placeholder) {
+                    placeholder.style.display = "none";
+                }
+            };
+
+            reader.readAsDataURL(file);
         });
     });
 });

@@ -2,6 +2,16 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<UserEntity> SignInManager
 
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+
+    var isDashboardPage = currentPage.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase);
+    var isBiomesPage = currentPage.StartsWith("/Biomes", StringComparison.OrdinalIgnoreCase);
+    var isSpeciesPage = currentPage.StartsWith("/Species", StringComparison.OrdinalIgnoreCase);
+    var isEquipmentPage = currentPage.StartsWith("/Equipment", StringComparison.OrdinalIgnoreCase);
+    var isProfileManagePage = currentPage.StartsWith("/Account/Manage", StringComparison.OrdinalIgnoreCase);
+}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -32,19 +42,27 @@
         </div>
 
         <nav class="dashboard-sidebar__nav">
-            <a asp-page="/Dashboard/Index" class="dashboard-sidebar__link dashboard-sidebar__link--active">
+            <a asp-area=""
+               asp-page="/Dashboard/Index"
+               class="dashboard-sidebar__link @(isDashboardPage ? "dashboard-sidebar__link--active" : "")">
                 <span>Tableau de bord</span>
             </a>
 
-            <a asp-page="/Biomes/Index" class="dashboard-sidebar__link">
+            <a asp-area=""
+               asp-page="/Biomes/Index"
+               class="dashboard-sidebar__link @(isBiomesPage ? "dashboard-sidebar__link--active" : "")">
                 <span>Mes biomes</span>
             </a>
 
-            <a asp-page="/Species/Index" class="dashboard-sidebar__link">
+            <a asp-area=""
+               asp-page="/Species/Index"
+               class="dashboard-sidebar__link @(isSpeciesPage ? "dashboard-sidebar__link--active" : "")">
                 <span>Espèces</span>
             </a>
 
-            <a asp-page="/Equipment/Index" class="dashboard-sidebar__link">
+            <a asp-area=""
+               asp-page="/Equipment/Index"
+               class="dashboard-sidebar__link @(isEquipmentPage ? "dashboard-sidebar__link--active" : "")">
                 <span>Équipements</span>
             </a>
 
@@ -68,7 +86,7 @@
             <div class="dashboard-sidebar__account-actions">
                 <a asp-area="Identity"
                    asp-page="/Account/Manage/Index"
-                   class="dashboard-sidebar__action-link">
+                   class="dashboard-sidebar__action-link @(isProfileManagePage ? "dashboard-sidebar__action-link--active" : "")">
                     Modifier mon profil
                 </a>
 
