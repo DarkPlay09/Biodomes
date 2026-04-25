@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -18,14 +19,19 @@ namespace BioDomes.Web.Pages.Species;
 public class DetailsModel : PageModel
 {
     private readonly ISpeciesRepository _repository;
+    private readonly ISlugService _slugService;
 
     /// <summary>
     /// Initialise la page de détail avec le repository des espèces.
     /// </summary>
     /// <param name="repository">Repository permettant de récupérer une espèce.</param>
-    public DetailsModel(ISpeciesRepository repository)
+    /// <param name="slugService">Service slug pour les liens des espèces.</param>
+    public DetailsModel(
+        ISpeciesRepository repository,
+        ISlugService slugService)
     {
         _repository = repository;
+        _slugService = slugService;
     }
 
     /// <summary>
@@ -78,7 +84,7 @@ public class DetailsModel : PageModel
         {
             Id = species.Id,
             Name = species.Name,
-            Slug = ToSlug(species.Name),
+            Slug = _slugService.ToSlug(species.Name),
             ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
                 ? "/images/species/noImageSpecie.png"
                 : species.ImagePath,

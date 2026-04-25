@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -20,10 +21,11 @@ public class SpeciesModel : PageModel
     /// <summary>
     /// Nombre maximal d'espèces affichées par page.
     /// </summary>
-    private const int SpeciesPerPage = 12;
+    private const int SpeciesPerPage = 8;
 
     private readonly ISpeciesRepository _repository;
     private readonly IWebHostEnvironment _environment;
+    private readonly ISlugService _slugService;
 
     /// <summary>
     /// Initialise la page catalogue avec le repository des espèces
@@ -31,12 +33,15 @@ public class SpeciesModel : PageModel
     /// </summary>
     /// <param name="repository">Repository permettant de lire et supprimer les espèces.</param>
     /// <param name="environment">Environnement web donnant accès au dossier wwwroot.</param>
+    /// <param name="slugService">Service slug pour les liens des espèces.</param>
     public SpeciesModel(
         ISpeciesRepository repository,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        ISlugService slugService)
     {
         _repository = repository;
         _environment = environment;
+        _slugService = slugService;
     }
 
     /// <summary>
@@ -336,7 +341,7 @@ public class SpeciesModel : PageModel
         {
             Id = species.Id,
             Name = species.Name,
-            Slug = ToSlug(species.Name),
+            Slug = _slugService.ToSlug(species.Name),
             ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
                 ? "/images/species/noImageSpecie.png"
                 : species.ImagePath,

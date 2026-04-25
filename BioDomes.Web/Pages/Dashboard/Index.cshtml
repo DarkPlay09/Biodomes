@@ -11,32 +11,52 @@
 <section class="dashboard-kpi-grid">
     <article class="dashboard-kpi-card">
         <div class="dashboard-kpi-card__top">
-            <!-- créer les logos sur photoshop -->
+            <div class="dashboard-kpi-card__icon dashboard-kpi-card__icon--blue">
+                <img class="dashboard-kpi-card__icon-img"
+                     src="~/images/dashboard/icons/forest.png"
+                     alt="Icône forêt" />
+            </div>
         </div>
+
         <p class="dashboard-kpi-card__label">Mes biomes</p>
         <h2 class="dashboard-kpi-card__value">@Model.BiomeCount</h2>
     </article>
 
     <article class="dashboard-kpi-card">
         <div class="dashboard-kpi-card__top">
-            <!-- créer les logos sur photoshop -->
+            <div class="dashboard-kpi-card__icon dashboard-kpi-card__icon--amber">
+                <img class="dashboard-kpi-card__icon-img"
+                     src="~/images/dashboard/icons/paws.png"
+                     alt="Icône espèces" />
+            </div>
         </div>
+
         <p class="dashboard-kpi-card__label">Mes espèces</p>
         <h2 class="dashboard-kpi-card__value">@Model.SpeciesCount</h2>
     </article>
 
     <article class="dashboard-kpi-card">
         <div class="dashboard-kpi-card__top">
-            <!-- créer les logos sur photoshop -->
+            <div class="dashboard-kpi-card__icon dashboard-kpi-card__icon--purple">
+                <img class="dashboard-kpi-card__icon-img"
+                     src="~/images/dashboard/icons/beaker.png"
+                     alt="Icône équipements" />
+            </div>
         </div>
+
         <p class="dashboard-kpi-card__label">Mes équipements</p>
         <h2 class="dashboard-kpi-card__value">@Model.EquipmentCount</h2>
     </article>
 
     <article class="dashboard-kpi-card">
         <div class="dashboard-kpi-card__top">
-            <!-- créer les logos sur photoshop -->
+            <div class="dashboard-kpi-card__icon dashboard-kpi-card__icon--green">
+                <img class="dashboard-kpi-card__icon-img"
+                     src="~/images/dashboard/icons/line.png"
+                     alt="Icône équilibre" />
+            </div>
         </div>
+
         <p class="dashboard-kpi-card__label">Biomes équilibrés</p>
         <h2 class="dashboard-kpi-card__value">@Model.BalancedBiomesPercent%</h2>
     </article>
