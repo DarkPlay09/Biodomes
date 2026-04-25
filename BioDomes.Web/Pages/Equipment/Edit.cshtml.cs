@@ -8,36 +8,63 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BioDomes.Web.Pages.Equipment;
 
+/// <summary>
+/// PageModel responsable de la modification d'un équipement existant.
+/// Elle vérifie que l'utilisateur connecté est bien le créateur de l'équipement
+/// avant d'autoriser l'affichage ou l'enregistrement des modifications.
+/// </summary>
 public class EditModel : PageModel
 {
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IEquipmentImageStorage _equipmentImageStorage;
 
+    /// <summary>
+    /// Initialise la page de modification avec les services d'accès aux équipements
+    /// et de gestion des images.
+    /// </summary>
+    /// <param name="equipmentRepository">Repository permettant de lire et modifier les équipements.</param>
+    /// <param name="equipmentImageStorage">Service responsable de l'enregistrement et de la suppression des images.</param>
     public EditModel(IEquipmentRepository equipmentRepository, IEquipmentImageStorage equipmentImageStorage)
     {
         _equipmentRepository = equipmentRepository;
         _equipmentImageStorage = equipmentImageStorage;
     }
 
+    /// <summary>
+    /// Données du formulaire de modification.
+    /// </summary>
     [BindProperty]
     public EquipmentInputModel Input { get; set; } = new();
 
+    /// <summary>
+    /// Liste des ressources disponibles pour les listes déroulantes du formulaire.
+    /// </summary>
     public IEnumerable<SelectListItem> ResourceOptions =>
         Enum.GetNames<ResourceType>()
             .Select(x => new SelectListItem(x, x));
-    
+
+    /// <summary>
+    /// Chemin de l'image actuellement associée à l'équipement.
+    /// Utilisé pour afficher l'aperçu dans le formulaire.
+    /// </summary>
     public string? CurrentImagePath { get; set; }
 
+    /// <summary>
+    /// Charge l'équipement à modifier et préremplit le formulaire.
+    /// </summary>
+    /// <param name="slug">Slug de l'équipement ciblé.</param>
+    /// <returns>La page préremplie, une erreur 404, une interdiction ou une demande de connexion.</returns>
     public IActionResult OnGet(string slug)
     {
         if (!TryGetCurrentUserId(out var currentUserId))
-            return Challenge(); // aller à la page de connection
+            return Challenge(); // Aller à la page de connexion.
 
         var equipment = _equipmentRepository.GetBySlug(slug);
         if (equipment is null)
             return NotFound();
+
         if (equipment.Creator.Id != currentUserId)
-            return Forbid(); // interdiction de modifier
+            return Forbid(); // Interdiction de modifier l'équipement d'un autre utilisateur.
 
         Input.Name = equipment.Name;
         Input.ProducedElement = equipment.ProducedElement?.ToString();
@@ -47,6 +74,13 @@ public class EditModel : PageModel
         return Page();
     }
 
+    /// <summary>
+    /// Traite l'enregistrement des modifications d'un équipement.
+    /// La méthode vérifie les droits, valide les données, remplace éventuellement l'image,
+    /// puis met à jour l'équipement via le repository.
+    /// </summary>
+    /// <param name="slug">Slug de l'équipement à modifier.</param>
+    /// <returns>La page avec les erreurs éventuelles ou une redirection vers la liste des équipements.</returns>
     public async Task<IActionResult> OnPost(string slug)
     {
         if (!TryGetCurrentUserId(out var currentUserId))
@@ -55,6 +89,7 @@ public class EditModel : PageModel
         var existingEquipment = _equipmentRepository.GetBySlug(slug);
         if (existingEquipment is null)
             return NotFound();
+
         if (existingEquipment.Creator.Id != currentUserId)
             return Forbid();
 
@@ -69,6 +104,7 @@ public class EditModel : PageModel
         if (!ModelState.IsValid)
             return Page();
 
+        // Un équipement doit rester utile dans l'écosystème : produire et/ou consommer une ressource.
         if (produced is null && consumed is null)
         {
             ModelState.AddModelError(string.Empty, "Un equipement doit produire et/ou consommer au moins un element.");
@@ -79,6 +115,7 @@ public class EditModel : PageModel
         var imagePath = existingEquipment.ImagePath;
         var hasNewImage = false;
 
+        // Si une nouvelle image est fournie, elle remplace l'ancienne.
         if (Input.ImageFile is not null)
         {
             try
@@ -101,6 +138,7 @@ public class EditModel : PageModel
             _equipmentImageStorage.Delete(oldImagePath);
         }
 
+        // Reconstruction de l'objet métier avec les nouvelles valeurs du formulaire.
         var equipment = new Domains.Entities.Equipment(
             Input.Name!,
             produced,
@@ -117,6 +155,11 @@ public class EditModel : PageModel
         return RedirectToPage("/Equipment/Index");
     }
 
+    /// <summary>
+    /// Convertit une valeur texte du formulaire en <see cref="ResourceType"/>.
+    /// </summary>
+    /// <param name="rawValue">Valeur textuelle à convertir.</param>
+    /// <returns>Le type de ressource correspondant, ou null si aucune valeur n'a été fournie.</returns>
     private ResourceType? ParseResourceType(string? rawValue)
     {
         if (string.IsNullOrWhiteSpace(rawValue))
@@ -129,6 +172,11 @@ public class EditModel : PageModel
         return null;
     }
 
+    /// <summary>
+    /// Récupère l'identifiant de l'utilisateur connecté depuis les claims Identity.
+    /// </summary>
+    /// <param name="userId">Identifiant de l'utilisateur si la récupération réussit.</param>
+    /// <returns>True si un identifiant valide a été trouvé, sinon false.</returns>
     private bool TryGetCurrentUserId(out int userId)
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
