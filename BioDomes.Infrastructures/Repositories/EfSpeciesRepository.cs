@@ -1,6 +1,8 @@
 ﻿using BioDomes.Domains.Entities;
 using BioDomes.Domains.Repositories;
-using BioDomes.Infrastructures.SpeciesMapper;
+using BioDomes.Infrastructures.Mappers.Species;
+using BioDomes.Infrastructures.Services.Identity;
+using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.EntityFrameworkCore;
 
 namespace BioDomes.Infrastructures.Repositories;
@@ -10,13 +12,13 @@ public class EfSpeciesRepository : ISpeciesRepository
     private readonly BioDomesDbContext _context;
     private readonly ISpeciesMapper _speciesMapper;
     private readonly IUserResolver _userResolver;
-    private readonly ISpeciesSlugService _slugService;
+    private readonly ISlugService _slugService;
 
     public EfSpeciesRepository(
         BioDomesDbContext context,
         ISpeciesMapper speciesMapper,
         IUserResolver userResolver,
-        ISpeciesSlugService slugService)
+        ISlugService slugService)
     {
         _context = context;
         _speciesMapper = speciesMapper;

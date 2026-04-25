@@ -41,7 +41,7 @@ public class EditModel : PageModel
         var species = _repo.GetBySlug(slug);
         if (species is null)
             return NotFound();
-        if (species.Creator?.Id != currentUserId)
+        if (species.Creator.Id != currentUserId)
             return Forbid();
 
         Input.Name = species.Name;
@@ -62,7 +62,7 @@ public class EditModel : PageModel
         var existingSpecies = _repo.GetBySlug(slug);
         if (existingSpecies is null)
             return NotFound();
-        if (existingSpecies.Creator?.Id != currentUserId)
+        if (existingSpecies.Creator.Id != currentUserId)
             return Forbid();
 
         CurrentImagePath = existingSpecies.ImagePath;

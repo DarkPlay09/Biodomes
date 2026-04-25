@@ -5,6 +5,7 @@ namespace BioDomes.Domains.Entities;
 
 public class Biome
 {
+    public int Id { get; set; } // Primary key
     public string Name { get; private set; }
     public double Temperature { get; private set; }
     public double AbsoluteHumidity { get; private set; }
@@ -19,16 +20,16 @@ public class Biome
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Le nom du biome est requis.", nameof(name));
-
         Name = name;
-        Creator = creator;
+        Creator = creator ?? 
+                  throw new ArgumentException("Le créateur du biome est requis.", nameof(creator));
 
         UpdateConditions(temperature, absoluteHumidity);
     }
 
     public void UpdateConditions(double temperature, double absoluteHumidity)
     {
-        EnsureHumidityIsValid(temperature, absoluteHumidity);
+        EnsureDataIsValid(temperature, absoluteHumidity);
 
         Temperature = temperature;
         AbsoluteHumidity = absoluteHumidity;
@@ -54,8 +55,17 @@ public class Biome
         };
     }
 
-    private static void EnsureHumidityIsValid(double temperature, double absoluteHumidity)
+    private static void EnsureDataIsValid(double temperature, double absoluteHumidity)
     {
+        if (absoluteHumidity < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(absoluteHumidity), "L'humidité absolue ne peut pas être négative.");
+        }
+
+        if (temperature <= -100)
+        {
+            throw new ArgumentOutOfRangeException(nameof(temperature), "La température ne peut pas être inférieur à -100°C.");
+        }
         var maxHumidity = ComputeMaxAbsoluteHumidity(temperature);
         if (absoluteHumidity <= maxHumidity)
             return;

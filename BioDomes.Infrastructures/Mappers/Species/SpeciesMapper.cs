@@ -1,15 +1,14 @@
-﻿using System.Globalization;
-using BioDomes.Domains.Entities;
+﻿using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 
-namespace BioDomes.Infrastructures.SpeciesMapper;
+namespace BioDomes.Infrastructures.Mappers.Species;
 
 public class SpeciesMapper : ISpeciesMapper
 {
-    public Species ToDomain(SpeciesEntity entity)
+    public Domains.Entities.Species ToDomain(SpeciesEntity entity)
     {
-        return new Species(
+        return new Domains.Entities.Species(
             entity.Name,
             ParseClassification(entity.Classification),
             ParseDiet(entity.Diet),
@@ -24,7 +23,7 @@ public class SpeciesMapper : ISpeciesMapper
         };
     }
 
-    public SpeciesEntity ToEntity(Species species, int creatorId)
+    public SpeciesEntity ToEntity(Domains.Entities.Species species, int creatorId)
     {
         return new SpeciesEntity
         {
@@ -39,7 +38,7 @@ public class SpeciesMapper : ISpeciesMapper
         };
     }
 
-    public void UpdateEntity(SpeciesEntity target, Species source, int creatorId)
+    public void UpdateEntity(SpeciesEntity target, Domains.Entities.Species source, int creatorId)
     {
         target.Name = source.Name;
         target.Classification = ToDbClassification(source.Classification);

@@ -1,7 +1,8 @@
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Repositories;
-using BioDomes.Infrastructures.EntityFramework.Entities;
-using BioDomes.Infrastructures.SpeciesMapper;
+using BioDomes.Infrastructures.Mappers.Equipment;
+using BioDomes.Infrastructures.Services.Identity;
+using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.EntityFrameworkCore;
 
 namespace BioDomes.Infrastructures.Repositories;
@@ -9,15 +10,18 @@ namespace BioDomes.Infrastructures.Repositories;
 public class EfEquipmentRepository : IEquipmentRepository
 {
     private readonly BioDomesDbContext _context;
+    private readonly IEquipmentMapper _equipmentMapper;
     private readonly IUserResolver _userResolver;
-    private readonly ISpeciesSlugService _slugService;
+    private readonly ISlugService _slugService;
 
     public EfEquipmentRepository(
         BioDomesDbContext context,
+        IEquipmentMapper equipmentMapper,
         IUserResolver userResolver,
-        ISpeciesSlugService slugService)
+        ISlugService slugService)
     {
         _context = context;
+        _equipmentMapper = equipmentMapper;
         _userResolver = userResolver;
         _slugService = slugService;
     }
@@ -29,7 +33,7 @@ public class EfEquipmentRepository : IEquipmentRepository
             .Include(e => e.Creator)
             .OrderBy(e => e.Name)
             .ToList()
-            .Select(ToDomain)
+            .Select(_equipmentMapper.ToDomain)
             .ToList();
     }
 
@@ -43,7 +47,7 @@ public class EfEquipmentRepository : IEquipmentRepository
             .ToList()
             .FirstOrDefault(e => _slugService.ToSlug(e.Name) == normalizedSlug);
 
-        return entity is null ? null : ToDomain(entity);
+        return entity is null ? null : _equipmentMapper.ToDomain(entity);
     }
 
     public void Add(Equipment equipment)
@@ -59,7 +63,7 @@ public class EfEquipmentRepository : IEquipmentRepository
             throw new InvalidOperationException("Un equipement avec ce nom existe deja.");
 
         var creatorId = _userResolver.GetUserId(equipment.Creator);
-        var entity = ToEntity(equipment, creatorId);
+        var entity = _equipmentMapper.ToEntity(equipment, creatorId);
 
         _context.Equipments.Add(entity);
         _context.SaveChanges();
@@ -77,7 +81,7 @@ public class EfEquipmentRepository : IEquipmentRepository
             return;
 
         var creatorId = _userResolver.GetUserId(equipment.Creator);
-        UpdateEntity(entity, equipment, creatorId);
+        _equipmentMapper.UpdateEntity(entity, equipment, creatorId);
 
         _context.SaveChanges();
     }
@@ -95,49 +99,5 @@ public class EfEquipmentRepository : IEquipmentRepository
 
         _context.Equipments.Remove(entity);
         _context.SaveChanges();
-    }
-
-    private static Equipment ToDomain(EquipmentEntity entity)
-    {
-        return new Equipment(
-            entity.Name,
-            entity.ProducedElement,
-            entity.ConsumedElement,
-            entity.ImagePath,
-            entity.Creator is null
-                ? null
-                : new UserAccount
-                {
-                    Id = entity.Creator.Id,
-                    UserName = entity.Creator.UserName ?? string.Empty,
-                    Email = entity.Creator.Email ?? string.Empty
-                },
-            entity.IsPublicAvailable)
-        {
-            Id = entity.Id
-        };
-    }
-
-    private static EquipmentEntity ToEntity(Equipment equipment, int creatorId)
-    {
-        return new EquipmentEntity
-        {
-            Name = equipment.Name,
-            ProducedElement = equipment.ProducedElement,
-            ConsumedElement = equipment.ConsumedElement,
-            ImagePath = equipment.ImagePath,
-            IsPublicAvailable = equipment.IsPublicAvailable,
-            CreatorId = creatorId
-        };
-    }
-
-    private static void UpdateEntity(EquipmentEntity entity, Equipment equipment, int creatorId)
-    {
-        entity.Name = equipment.Name;
-        entity.ProducedElement = equipment.ProducedElement;
-        entity.ConsumedElement = equipment.ConsumedElement;
-        entity.ImagePath = equipment.ImagePath;
-        entity.IsPublicAvailable = equipment.IsPublicAvailable;
-        entity.CreatorId = creatorId;
     }
 }

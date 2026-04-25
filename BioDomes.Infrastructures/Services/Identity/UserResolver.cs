@@ -1,7 +1,7 @@
 ﻿using BioDomes.Domains.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BioDomes.Infrastructures.SpeciesMapper;
+namespace BioDomes.Infrastructures.Services.Identity;
 
 public class UserResolver : IUserResolver
 {
@@ -12,9 +12,9 @@ public class UserResolver : IUserResolver
         _context = context;
     }
 
-    public int GetUserId(UserAccount? creator)
+    public int GetUserId(UserAccount creator)
     {
-        if (creator is null || creator.Id <= 0)
+        if (creator.Id <= 0)
             throw new InvalidOperationException("Creator.Id est obligatoire.");
 
         var exists = _context.Users

@@ -26,12 +26,12 @@ public class IndexModel : PageModel
             return Challenge();
 
         EquipmentList = _repository.GetAll()
-            .Where(e => e.IsPublicAvailable || e.Creator?.Id == currentUserId)
+            .Where(e => e.IsPublicAvailable || e.Creator.Id == currentUserId)
             .ToList();
 
         Cards = EquipmentList.Select(e =>
         {
-            var isOwner = e.Creator?.Id == currentUserId;
+            var isOwner = e.Creator.Id == currentUserId;
 
             return new CatalogCardViewModel
             {
@@ -64,7 +64,7 @@ public class IndexModel : PageModel
         var equipment = _repository.GetBySlug(slug);
         if (equipment is null)
             return NotFound();
-        if (equipment.Creator?.Id != currentUserId)
+        if (equipment.Creator.Id != currentUserId)
             return Forbid();
 
         _repository.DeleteBySlug(slug);

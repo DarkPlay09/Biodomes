@@ -29,12 +29,12 @@ public class SpeciesModel : PageModel
             return Challenge();
 
         SpeciesList = _repository.GetAll()
-            .Where(s => s.IsPublicAvailable || s.Creator?.Id == currentUserId)
+            .Where(s => s.IsPublicAvailable || s.Creator.Id == currentUserId)
             .ToList();
 
         Cards = SpeciesList.Select(s =>
         {
-            var isOwner = s.Creator?.Id == currentUserId;
+            var isOwner = s.Creator.Id == currentUserId;
 
             return new CatalogCardViewModel
             {
@@ -68,7 +68,7 @@ public class SpeciesModel : PageModel
         var species = _repository.GetBySlug(slug);
         if (species is null)
             return NotFound();
-        if (species.Creator?.Id != currentUserId)
+        if (species.Creator.Id != currentUserId)
             return Forbid();
 
         _repository.DeleteBySlug(slug);

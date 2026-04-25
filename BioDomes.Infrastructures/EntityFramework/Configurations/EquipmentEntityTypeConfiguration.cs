@@ -8,7 +8,12 @@ public class EquipmentEntityTypeConfiguration : IEntityTypeConfiguration<Equipme
 {
     public void Configure(EntityTypeBuilder<EquipmentEntity> builder)
     {
-        builder.ToTable("Equipments");
+        builder.ToTable("Equipments", t =>
+        {
+            t.HasCheckConstraint("CK_Equipment_Name_NotBlank", "[Name] <> ''");
+            t.HasCheckConstraint("CK_Equipment_ProducedOrConsumed_Required", 
+                "[ProducedElement] IS NOT NULL OR [ConsumedElement] IS NOT NULL");
+        });
 
         builder.HasKey(x => x.Id);
 

@@ -36,7 +36,7 @@ public class EditModel : PageModel
         var equipment = _equipmentRepository.GetBySlug(slug);
         if (equipment is null)
             return NotFound();
-        if (equipment.Creator?.Id != currentUserId)
+        if (equipment.Creator.Id != currentUserId)
             return Forbid(); // interdiction de modifier
 
         Input.Name = equipment.Name;
@@ -55,7 +55,7 @@ public class EditModel : PageModel
         var existingEquipment = _equipmentRepository.GetBySlug(slug);
         if (existingEquipment is null)
             return NotFound();
-        if (existingEquipment.Creator?.Id != currentUserId)
+        if (existingEquipment.Creator.Id != currentUserId)
             return Forbid();
 
         CurrentImagePath = existingEquipment.ImagePath;

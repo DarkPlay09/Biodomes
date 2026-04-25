@@ -7,11 +7,13 @@ namespace BioDomes.Infrastructures;
 
 public class InMemorySpeciesRepository : ISpeciesRepository
 {
+    private static readonly UserAccount InMemoryCreator = new() { Id = 1, UserName = "in-memory" };
+
     private readonly List<Species> _species = new()
     {
-        new("Aloe vera", SpeciesClassification.Plantes, DietType.Photosynthese, 0.8, 15),
-        new("Loup gris", SpeciesClassification.Mammiferes, DietType.Carnivore, 1.6, 45000),
-        new("Raton laveur", SpeciesClassification.Mammiferes, DietType.Omnivore, 0.6, 9000),
+        new("Aloe vera", SpeciesClassification.Plantes, DietType.Photosynthese, 0.8, 15, null, InMemoryCreator),
+        new("Loup gris", SpeciesClassification.Mammiferes, DietType.Carnivore, 1.6, 45000, null, InMemoryCreator),
+        new("Raton laveur", SpeciesClassification.Mammiferes, DietType.Omnivore, 0.6, 9000, null, InMemoryCreator),
     };
 
     public IReadOnlyList<Species> GetAll() => _species;

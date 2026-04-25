@@ -8,7 +8,11 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserEntity>
 {
     public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
-        builder.ToTable("Users");
+        builder.ToTable("Users", t =>
+        {
+            t.HasCheckConstraint("CK_Users_BirthDate_NotFuture", "[BirthDate] <= GETDATE()");
+            t.HasCheckConstraint("CK_Users_Role_AllowedValues", "[Role] IN ('User', 'Admin')");
+        });
 
         builder.HasKey(x => x.Id);
 

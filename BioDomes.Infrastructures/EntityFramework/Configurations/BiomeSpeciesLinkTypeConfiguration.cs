@@ -8,7 +8,11 @@ public class BiomeSpeciesLinkTypeConfiguration : IEntityTypeConfiguration<BiomeS
 {
     public void Configure(EntityTypeBuilder<BiomeSpeciesLink> builder)
     {
-        builder.ToTable("BiomeSpecies");
+        builder.ToTable("BiomeSpecies", t =>
+        {
+            t.HasCheckConstraint("CK_BiomeSpecies_IndividualCount_Positive", "[IndividualCount] > 0");
+        });
+
 
         builder.HasKey(x => new { x.BiomeId, x.SpeciesId });
 

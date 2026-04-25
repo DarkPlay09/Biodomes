@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using System.Text;
 
-namespace BioDomes.Infrastructures.SpeciesMapper;
+namespace BioDomes.Infrastructures.Services.Slug;
 
-public class SpeciesSlugService : ISpeciesSlugService
+public class SlugService : ISlugService
 {
     public string ToSlug(string value)
     {
