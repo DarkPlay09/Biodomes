@@ -15,7 +15,16 @@ public class SpeciesMapper : ISpeciesMapper
             entity.AdultSize,
             entity.Weight,
             entity.ImagePath,
-            new UserAccount { Id = entity.CreatorId },
+            new UserAccount
+            {
+                Id = entity.CreatorId,
+                UserName = entity.Creator?.UserName ?? string.Empty,
+                Email = entity.Creator?.Email ?? string.Empty,
+                AvatarPath = entity.Creator?.AvatarPath,
+                BirthDate = entity.Creator?.BirthDate ?? default,
+                ResearchOrganisation = entity.Creator?.ResearchOrganization,
+                IsAdmin = entity.Creator?.Role == "Admin"
+            },
             entity.IsPublicAvailable
         )
         {

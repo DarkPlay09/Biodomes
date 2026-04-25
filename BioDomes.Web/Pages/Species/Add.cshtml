@@ -1,6 +1,14 @@
 @page "/species/add"
 @model BioDomes.Web.Pages.Species.AddModel
 
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Ajouter une espèce";
+    ViewData["DashboardTitle"] = "Ajouter une espèce";
+    ViewData["DashboardSubtitle"] = "Ajoute une nouvelle espèce au catalogue BioDomes.";
+}
+
 <div class="layout-width">
     <section class="entity-form-page">
         <div class="entity-form-page__intro">
@@ -16,17 +24,14 @@
 
         <div class="entity-form-card">
             <form method="post" enctype="multipart/form-data" class="entity-form">
+                <input type="hidden" asp-for="ReturnUrl" />
+                
                 <div asp-validation-summary="ModelOnly" class="entity-form__summary"></div>
 
-                <partial name="Species/_SpeciesForm" model="new SpeciesFormViewModel
-                         {
-                             Input = Model.Input,
-                             ClassificationOptions = Model.ClassificationOptions,
-                             DietOptions = Model.DietOptions
-                         }"/>
+                <partial name="Species/_SpeciesForm" model="new SpeciesFormViewModel { Input = Model.Input, ClassificationOptions = Model.ClassificationOptions, DietOptions = Model.DietOptions }"/>
 
                 <div class="entity-form__actions">
-                    <a asp-page="/Species/Index" class="entity-form__back">Retour</a>
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
                     <button type="submit" class="action-button">Créer l'espèce</button>
                 </div>
             </form>

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BioDomes.Web.Areas.Identity.Pages.Account;
 
+// TODO : Empêcher un retour sur la page de connexion si déjà connecté (faire de même pour s'inscrire, mot de passe oublié).
+
 /// <summary>
 /// Gère l’authentification d’un utilisateur sur la plateforme BioDomes.
 /// </summary>

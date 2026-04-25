@@ -30,6 +30,7 @@ public class EfSpeciesRepository : ISpeciesRepository
     {
         return _context.Species
             .AsNoTracking()
+            .Include(s => s.Creator)
             .OrderBy(s => s.Name)
             .ToList()
             .Select(_speciesMapper.ToDomain)
@@ -42,6 +43,7 @@ public class EfSpeciesRepository : ISpeciesRepository
 
         var entity = _context.Species
             .AsNoTracking()
+            .Include(s => s.Creator)
             .ToList()
             .FirstOrDefault(s => _slugService.ToSlug(s.Name) == normalizedSlug);
 

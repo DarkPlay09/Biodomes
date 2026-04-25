@@ -35,6 +35,18 @@ public class AddModel : PageModel
 
     public void OnGet()
     {
+        if (!string.IsNullOrWhiteSpace(ReturnUrl))
+        {
+            return;
+        }
+
+        var referer = Request.Headers.Referer.ToString();
+
+        if (!string.IsNullOrWhiteSpace(referer)
+            && Uri.TryCreate(referer, UriKind.Absolute, out var refererUri))
+        {
+            ReturnUrl = refererUri.PathAndQuery;
+        }
     }
 
     public async Task<IActionResult> OnPost()
@@ -98,6 +110,12 @@ public class AddModel : PageModel
         }
 
         LastInsertedSpeciesName = Input.Name;
+
+        if (Url.IsLocalUrl(ReturnUrl))
+        {
+            return LocalRedirect(ReturnUrl);
+        }
+
         return RedirectToPage("/Species/Index");
     }
 
@@ -106,4 +124,12 @@ public class AddModel : PageModel
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return int.TryParse(userIdClaim, out userId) && userId > 0;
     }
+    
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
+
+    public string SafeReturnUrl =>
+        Url.IsLocalUrl(ReturnUrl)
+            ? ReturnUrl
+            : Url.Page("/Species/Index")!;
 }

@@ -123,7 +123,12 @@ public class EditModel : PageModel
 
         _repo.Update(slug, species);
 
-        return RedirectToPage("/Species/Index");
+        if (Url.IsLocalUrl(ReturnUrl))
+        {
+            return LocalRedirect(ReturnUrl);
+        }
+
+        return RedirectToPage("./Index");
     }
 
     private bool TryGetCurrentUserId(out int userId)
@@ -131,4 +136,12 @@ public class EditModel : PageModel
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return int.TryParse(userIdClaim, out userId) && userId > 0;
     }
+    
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
+
+    public string SafeReturnUrl =>
+        Url.IsLocalUrl(ReturnUrl)
+            ? ReturnUrl
+            : Url.Page("/Species/Index")!;
 }

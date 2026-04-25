@@ -13,30 +13,20 @@
 
         <div class="entity-form-card">
             <form method="post" enctype="multipart/form-data" class="entity-form">
+                <input type="hidden" asp-for="ReturnUrl" />
+                
                 <div asp-validation-summary="ModelOnly" class="entity-form__summary"></div>
 
-                <partial name="Species/_SpeciesForm" model="new SpeciesFormViewModel
-                 {
-                     Input = Model.Input,
-                     ClassificationOptions = Model.ClassificationOptions,
-                     DietOptions = Model.DietOptions,
-                     CurrentImagePath = Model.CurrentImagePath,
-                     CurrentImageFileName = string.IsNullOrWhiteSpace(Model.CurrentImagePath)
-                         ? null
-                         : System.IO.Path.GetFileName(Model.CurrentImagePath)
-                 }"/>
+                <partial name="Species/_SpeciesForm" model="new SpeciesFormViewModel { Input = Model.Input, ClassificationOptions = Model.ClassificationOptions, DietOptions = Model.DietOptions, CurrentImagePath = Model.CurrentImagePath, CurrentImageFileName = string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? null : System.IO.Path.GetFileName(Model.CurrentImagePath) }"/>
 
                 <div class="entity-form__actions">
-                    <a asp-page="/Species/Index" class="entity-form__back">Retour</a>
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
                     <button type="submit" class="action-button">Enregistrer</button>
                 </div>
             </form>
         </div>
     </section>
 </div>
-
-
-<a asp-page="/Species">Retour à la liste</a>
 
 @section Scripts
 {

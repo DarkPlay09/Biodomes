@@ -12,6 +12,8 @@
 }
 
 .dashboard-sidebar {
+    position: sticky;
+    top: 0;
     background: #ffffff;
     border-right: 1px solid rgba(11, 61, 57, 0.08);
     padding: 1rem;
@@ -19,6 +21,7 @@
     grid-template-rows: auto 1fr auto;
     gap: 1rem;
     min-height: 100vh;
+    max-height: 100vh;
     overflow: hidden;
 }
 

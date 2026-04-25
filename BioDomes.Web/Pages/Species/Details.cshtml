@@ -1,0 +1,91 @@
+﻿@page "/species/details/{slug}"
+@model BioDomes.Web.Pages.Species.DetailsModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = Model.SpeciesDetails.Name;
+    ViewData["DashboardTitle"] = "Fiche espèce détaillée";
+    ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
+    
+    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+}
+
+<section class="species-details">
+    <nav class="species-details-breadcrumb" aria-label="Fil d'Ariane">
+        <a asp-page="./Index">Espèces</a>
+        <span>›</span>
+        <span>@Model.SpeciesDetails.ClassificationLabel</span>
+        <span>›</span>
+        <strong>@Model.SpeciesDetails.Name</strong>
+    </nav>
+
+    <div class="species-details-layout">
+        <article class="species-details-image-card">
+            <img src="@Model.SpeciesDetails.ImagePath"
+                 alt="Image de @Model.SpeciesDetails.Name" />
+
+            <div class="species-details-badges">
+                <span class="species-details-badge @Model.SpeciesDetails.VisibilityCssClass">
+                    @Model.SpeciesDetails.VisibilityLabel
+                </span>
+            </div>
+        </article>
+
+        <article class="species-details-content">
+            <header class="species-details-header">
+                <h2>@Model.SpeciesDetails.Name</h2>
+            </header>
+
+            <div class="species-details-stats">
+                <div class="species-details-stat">
+                    <span class="species-details-stat__icon">♟</span>
+                    <small>Classification</small>
+                    <strong>@Model.SpeciesDetails.ClassificationLabel</strong>
+                </div>
+
+                <div class="species-details-stat">
+                    <span class="species-details-stat__icon">🍽</span>
+                    <small>Régime</small>
+                    <strong>@Model.SpeciesDetails.DietLabel</strong>
+                </div>
+
+                <div class="species-details-stat">
+                    <span class="species-details-stat__icon">▰</span>
+                    <small>Taille adulte</small>
+                    <strong>@Model.SpeciesDetails.AdultSizeLabel</strong>
+                </div>
+
+                <div class="species-details-stat">
+                    <span class="species-details-stat__icon">●</span>
+                    <small>Poids</small>
+                    <strong>@Model.SpeciesDetails.WeightLabel</strong>
+                </div>
+
+                <div class="species-details-stat">
+                    <span class="species-details-stat__icon">◉</span>
+                    <small>Visibilité</small>
+                    <strong>@Model.SpeciesDetails.VisibilityLabel</strong>
+                </div>
+
+                <div class="species-details-stat">
+                    <span class="species-details-stat__icon">👤</span>
+                    <small>Créateur</small>
+                    <strong>@Model.SpeciesDetails.OwnerName</strong>
+                </div>
+            </div>
+            
+            @if (Model.SpeciesDetails.IsOwner)
+            {
+                <div class="species-details-actions">
+                    <a asp-page="./Edit"
+                       asp-route-slug="@Model.SpeciesDetails.Slug"
+                       asp-route-returnUrl="@currentUrl"
+                       class="species-details-edit-button">
+                        Modifier la fiche
+                    </a>
+                </div>
+            }
+        </article>
+    </div>
+</section>
