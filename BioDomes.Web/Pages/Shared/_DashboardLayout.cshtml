@@ -1,6 +1,7 @@
 ﻿@using BioDomes.Infrastructures.EntityFramework.Entities
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<UserEntity> SignInManager
+@inject UserManager<UserEntity> UserManager
 
 @{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
@@ -10,6 +11,16 @@
     var isSpeciesPage = currentPage.StartsWith("/Species", StringComparison.OrdinalIgnoreCase);
     var isEquipmentPage = currentPage.StartsWith("/Equipment", StringComparison.OrdinalIgnoreCase);
     var isProfileManagePage = currentPage.StartsWith("/Account/Manage", StringComparison.OrdinalIgnoreCase);
+
+    var dashboardUser = SignInManager.IsSignedIn(User)
+        ? await UserManager.GetUserAsync(User)
+        : null;
+
+    var displayName = dashboardUser?.UserName ?? User.Identity?.Name ?? "Chercheur";
+    var avatarPath = dashboardUser?.AvatarPath;
+    var avatarInitial = string.IsNullOrWhiteSpace(displayName)
+        ? "B"
+        : displayName.Substring(0, 1).ToUpperInvariant();
 }
 
 <!DOCTYPE html>
@@ -74,11 +85,18 @@
         <div class="dashboard-sidebar__bottom">
             <div class="dashboard-sidebar__profile">
                 <div class="dashboard-sidebar__avatar">
-                    @(User.Identity?.Name?.Substring(0, 1).ToUpperInvariant() ?? "B")
+                    @if (!string.IsNullOrWhiteSpace(avatarPath))
+                    {
+                        <img src="@avatarPath" alt="Photo de profil de @displayName" />
+                    }
+                    else
+                    {
+                        <span>@avatarInitial</span>
+                    }
                 </div>
 
                 <div>
-                    <strong>@(User.Identity?.Name ?? "Chercheur")</strong>
+                    <strong>@displayName</strong>
                     <span>Chercheur connecté</span>
                 </div>
             </div>
