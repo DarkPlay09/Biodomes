@@ -1,4 +1,4 @@
-﻿using BioDomes.Domains.Repositories;
+﻿using System.Globalization;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,21 +9,21 @@ namespace BioDomes.Web.Pages.Dashboard;
 [Authorize]
 public class IndexModel : PageModel
 {
-    private readonly ISpeciesRepository _speciesRepository;
     private readonly UserManager<UserEntity> _userManager;
 
-    public IndexModel(
-        ISpeciesRepository speciesRepository,
-        UserManager<UserEntity> userManager)
+    public IndexModel(UserManager<UserEntity> userManager)
     {
-        _speciesRepository = speciesRepository;
         _userManager = userManager;
     }
 
     public string DisplayName { get; private set; } = "Chercheur";
-    public int SpeciesCount { get; private set; }
-    public bool EmailConfirmed { get; private set; }
-    public string Role { get; private set; } = "User";
+    public string RoleLabel { get; private set; } = "Chercheur principal";
+    public string CurrentDateLabel { get; private set; } = string.Empty;
+
+    public int BiomeCount { get; private set; } = 12;
+    public int SpeciesCount { get; private set; } = 148;
+    public int EquipmentCount { get; private set; } = 45;
+    public int BalancedBiomesPercent { get; private set; } = 85;
 
     public async Task OnGetAsync()
     {
@@ -31,11 +31,19 @@ public class IndexModel : PageModel
 
         if (user is not null)
         {
-            DisplayName = string.IsNullOrWhiteSpace(user.UserName) ? "Chercheur" : user.UserName;
-            EmailConfirmed = user.EmailConfirmed;
-            Role = string.IsNullOrWhiteSpace(user.Role) ? "User" : user.Role;
+            DisplayName = string.IsNullOrWhiteSpace(user.UserName)
+                ? "Chercheur"
+                : user.UserName;
         }
 
-        SpeciesCount = _speciesRepository.GetAll().Count;
+        var culture = new CultureInfo("fr-BE");
+        CurrentDateLabel = DateTime.Now.ToString("dddd d MMMM yyyy", culture);
+
+        // TODO plus tard :
+        // remplacer les valeurs mockées par des vraies stats depuis les repositories
+        // BiomeCount = ...
+        // SpeciesCount = ...
+        // EquipmentCount = ...
+        // BalancedBiomesPercent = ...
     }
 }

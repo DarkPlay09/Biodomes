@@ -1,0 +1,112 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Mon profil";
+    ViewData["DashboardTitle"] = "Mon profil";
+    ViewData["DashboardSubtitle"] = "Modifie tes informations personnelles.";
+    ViewData["ActivePage"] = "Profile";
+}
+
+<section class="dashboard-manage-wrapper">
+    <div class="dashboard-manage-container">
+        <div class="dashboard-manage-card dashboard-card">
+            <header class="dashboard-manage-card__header">
+                <h2>Modifier mon profil</h2>
+                <p>Personnalise tes informations de compte.</p>
+            </header>
+
+            <partial name="_ManageNav" />
+
+            @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+            {
+                <div class="auth-status-message auth-status-message--success">
+                    @Model.StatusMessage
+                </div>
+            }
+
+            <form method="post" enctype="multipart/form-data" class="auth-form register-form">
+                <div asp-validation-summary="ModelOnly" class="auth-validation" role="alert"></div>
+
+                <div class="register-avatar-block" data-file-upload>
+                    <input asp-for="Input.AvatarFile"
+                           class="register-avatar-input entity-file-upload__input"
+                           accept=".jpg,.jpeg,.png,.webp" />
+
+                    <label class="register-avatar-label" asp-for="Input.AvatarFile">
+                        <span class="register-avatar-frame">
+                            <img data-file-preview
+                                 class="register-avatar-preview"
+                                 src="@Model.CurrentAvatarPath"
+                                 alt="Aperçu de l’avatar"
+                                 style="display:@(string.IsNullOrWhiteSpace(Model.CurrentAvatarPath) ? "none" : "block");" />
+
+                            <span data-file-placeholder
+                                  class="register-avatar-placeholder"
+                                  style="display:@(string.IsNullOrWhiteSpace(Model.CurrentAvatarPath) ? "flex" : "none");">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M20 21a8 8 0 0 0-16 0"
+                                          stroke="currentColor"
+                                          stroke-width="2"
+                                          stroke-linecap="round" />
+                                    <path d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
+                                          stroke="currentColor"
+                                          stroke-width="2" />
+                                </svg>
+                            </span>
+                        </span>
+
+                        <span class="register-avatar-edit">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14"
+                                      stroke="currentColor"
+                                      stroke-width="2"
+                                      stroke-linecap="round" />
+                            </svg>
+                        </span>
+                    </label>
+                </div>
+
+                <span asp-validation-for="Input.AvatarFile" class="auth-field-error"></span>
+
+                <p class="register-help-text">
+                    Formats acceptés : JPG, PNG ou WEBP. Taille maximale : 2 Mo.
+                </p>
+
+                <div class="auth-field">
+                    <label class="auth-label">Email</label>
+                    <input class="auth-input register-input"
+                           value="@Model.Email"
+                           readonly />
+                </div>
+
+                <div class="register-grid">
+                    <div class="auth-field">
+                        <label asp-for="Input.BirthDate" class="auth-label"></label>
+                        <input asp-for="Input.BirthDate"
+                               class="auth-input register-input"
+                               type="date" />
+                        <span asp-validation-for="Input.BirthDate" class="auth-field-error"></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="Input.ResearchOrganization" class="auth-label"></label>
+                        <input asp-for="Input.ResearchOrganization"
+                               class="auth-input register-input"
+                               placeholder="Ex. HELMo Lab" />
+                        <span asp-validation-for="Input.ResearchOrganization" class="auth-field-error"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit register-submit">
+                    Enregistrer les modifications
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/entity-file-upload.js" asp-append-version="true"></script>
+}
