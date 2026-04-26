@@ -84,8 +84,65 @@
                        class="species-details-edit-button">
                         Modifier la fiche
                     </a>
+
+                    <form id="deleteSpeciesForm"
+                          method="post"
+                          asp-page-handler="Delete"
+                          asp-route-slug="@Model.SpeciesDetails.Slug"
+                          asp-route-returnUrl="@currentUrl"
+                          class="species-details-delete-form">
+                        <button type="button"
+                                class="species-details-delete-button"
+                                data-open-delete-modal>
+                            Supprimer l'espèce
+                        </button>
+                    </form>
                 </div>
             }
         </article>
     </div>
+    
+    <div class="custom-modal" id="deleteConfirmModal" aria-hidden="true">
+        <div class="custom-modal__overlay" data-close-delete-modal></div>
+
+        <div class="custom-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+            <button type="button"
+                    class="custom-modal__close"
+                    aria-label="Fermer"
+                    data-close-delete-modal>
+                ×
+            </button>
+
+            <div class="custom-modal__icon">
+                !
+            </div>
+
+            <h3 class="custom-modal__title" id="deleteModalTitle">
+                Confirmer la suppression
+            </h3>
+
+            <p class="custom-modal__text">
+                Voulez-vous vraiment supprimer cette espèce ?
+                Cette action est <strong>définitive</strong>.
+            </p>
+
+            <div class="custom-modal__actions">
+                <button type="button"
+                        class="custom-modal__button custom-modal__button--secondary"
+                        data-close-delete-modal>
+                    Annuler
+                </button>
+
+                <button type="button"
+                        class="custom-modal__button custom-modal__button--danger"
+                        id="confirmDeleteButton">
+                    Oui, supprimer
+                </button>
+            </div>
+        </div>
+    </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/species-details.js" asp-append-version="true"></script>
+}

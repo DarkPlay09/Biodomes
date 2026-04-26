@@ -20,18 +20,22 @@ public class DetailsModel : PageModel
 {
     private readonly ISpeciesRepository _repository;
     private readonly ISlugService _slugService;
+    private readonly ISpeciesImageStorage _speciesImageStorage;
 
     /// <summary>
     /// Initialise la page de détail avec le repository des espèces.
     /// </summary>
     /// <param name="repository">Repository permettant de récupérer une espèce.</param>
     /// <param name="slugService">Service slug pour les liens des espèces.</param>
+    /// <param name="speciesImageStorage">Service responsable de la suppression des images d'espèces.</param>
     public DetailsModel(
         ISpeciesRepository repository,
-        ISlugService slugService)
+        ISlugService slugService,
+        ISpeciesImageStorage speciesImageStorage)
     {
         _repository = repository;
         _slugService = slugService;
+        _speciesImageStorage = speciesImageStorage;
     }
 
     /// <summary>
@@ -70,6 +74,39 @@ public class DetailsModel : PageModel
         SpeciesDetails = MapToDetails(species, isOwner);
 
         return Page();
+    }
+    
+    /// <summary>
+    /// Supprime l'espèce courante si l'utilisateur connecté en est le créateur.
+    /// L'image associée est également supprimée du stockage.
+    /// </summary>
+    /// <param name="slug">Slug de l'espèce à supprimer.</param>
+    /// <returns>Une redirection vers le catalogue ou une erreur si l'action est interdite.</returns>
+    public IActionResult OnPostDelete(string slug)
+    {
+        if (!TryGetCurrentUserId(out var currentUserId))
+        {
+            return Challenge();
+        }
+
+        var species = _repository.GetBySlug(slug);
+
+        if (species is null)
+        {
+            return NotFound();
+        }
+
+        if (species.Creator.Id != currentUserId)
+        {
+            return Forbid();
+        }
+
+        _repository.DeleteBySlug(slug);
+        _speciesImageStorage.Delete(species.ImagePath);
+
+        TempData["SuccessMessage"] = $"L'espèce « {species.Name} » a bien été supprimée.";
+
+        return RedirectToPage("./Index");
     }
 
     /// <summary>
