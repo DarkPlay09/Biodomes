@@ -36,6 +36,25 @@
 <body class="dashboard-shell-body">
 <div class="dashboard-mobile-overlay" id="dashboardOverlay"></div>
 
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="dashboard-toast dashboard-toast--success" data-dashboard-toast>
+        <div class="dashboard-toast__icon">✓</div>
+
+        <div class="dashboard-toast__content">
+            <strong>Succès</strong>
+            <p>@successMessage</p>
+        </div>
+
+        <button type="button"
+                class="dashboard-toast__close"
+                data-dashboard-toast-close
+                aria-label="Fermer la notification">
+            ×
+        </button>
+    </div>
+}
+
 <div class="dashboard-shell">
     <aside class="dashboard-sidebar" id="dashboardSidebar">
         <div class="dashboard-sidebar__top">
@@ -148,6 +167,7 @@
 </div>
 
 <script src="~/js/dashboard-sidebar.js" asp-append-version="true"></script>
+<script src="~/js/dashboard-toast.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

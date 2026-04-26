@@ -2,6 +2,7 @@
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,6 +17,7 @@ namespace BioDomes.Web.Pages.Species;
 public class AddModel : PageModel
 {
     private readonly ISpeciesRepository _repo;
+    private  readonly ISlugService _slugService;
     private readonly ISpeciesImageStorage _speciesImageStorage;
 
     /// <summary>
@@ -24,10 +26,15 @@ public class AddModel : PageModel
     /// </summary>
     /// <param name="repo">Repository permettant de créer une espèce.</param>
     /// <param name="speciesImageStorage">Service responsable de l'enregistrement des images d'espèces.</param>
-    public AddModel(ISpeciesRepository repo, ISpeciesImageStorage speciesImageStorage)
+    /// <param name="slugService">Service permettant de générer le slug de l'espèce après sa création.</param>
+    public AddModel(
+        ISpeciesRepository repo,
+        ISpeciesImageStorage speciesImageStorage,
+        ISlugService slugService)
     {
         _repo = repo;
         _speciesImageStorage = speciesImageStorage;
+        _slugService = slugService;
     }
 
     /// <summary>
@@ -162,6 +169,8 @@ public class AddModel : PageModel
         try
         {
             _repo.Add(species);
+            
+            TempData["SuccessMessage"] = $"L'espèce « {Input.Name} » a bien été ajoutée.";
         }
         catch (InvalidOperationException)
         {
@@ -175,8 +184,10 @@ public class AddModel : PageModel
         {
             return LocalRedirect(ReturnUrl);
         }
-
-        return RedirectToPage("/Species/Index");
+        
+        var newSlug = _slugService.ToSlug(Input.Name!);
+        
+        return RedirectToPage("./Details", new { slug = newSlug });
     }
 
     /// <summary>

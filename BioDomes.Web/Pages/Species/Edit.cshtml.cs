@@ -26,7 +26,7 @@ public class EditModel : PageModel
     /// </summary>
     /// <param name="repo">Repository permettant de récupérer et modifier une espèce.</param>
     /// <param name="speciesImageStorage">Service responsable de l'enregistrement et de la suppression des images.</param>
-    /// <param name="_slugService">Service responsable du slug des especes.</param>
+    /// <param name="slugService">Service permettant de générer le slug de l'espèce après sa création.</param>
     public EditModel(
         ISpeciesRepository repo,
         ISpeciesImageStorage speciesImageStorage,
@@ -185,6 +185,8 @@ public class EditModel : PageModel
         };
 
         _repo.Update(slug, species);
+
+        TempData["SuccessMessage"] = $"L'espèce « {Input.Name} » a bien été modifiée.";
 
         var newSlug = _slugService.ToSlug(Input.Name!);
 
