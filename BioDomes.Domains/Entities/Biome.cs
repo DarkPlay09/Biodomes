@@ -1,4 +1,4 @@
-using BioDomes.Domains.Enums;
+﻿using BioDomes.Domains.Enums;
 using System.Globalization;
 
 namespace BioDomes.Domains.Entities;
@@ -11,18 +11,21 @@ public class Biome
     public double AbsoluteHumidity { get; private set; }
     public BiomeState State { get; private set; }
     public UserAccount Creator { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
 
     public Biome(
         string name,
         double temperature,
         double absoluteHumidity,
-        UserAccount creator) 
+        UserAccount creator,
+        DateTime? updatedAt = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Le nom du biome est requis.", nameof(name));
+
         Name = name;
-        Creator = creator ?? 
-                  throw new ArgumentException("Le créateur du biome est requis.", nameof(creator));
+        Creator = creator ?? throw new ArgumentException("Le créateur du biome est requis.", nameof(creator));
+        UpdatedAt = updatedAt ?? DateTime.UtcNow;
 
         UpdateConditions(temperature, absoluteHumidity);
     }
@@ -64,8 +67,9 @@ public class Biome
 
         if (temperature <= -100)
         {
-            throw new ArgumentOutOfRangeException(nameof(temperature), "La température ne peut pas être inférieur à -100°C.");
+            throw new ArgumentOutOfRangeException(nameof(temperature), "La température ne peut pas être inférieure à -100°C.");
         }
+
         var maxHumidity = ComputeMaxAbsoluteHumidity(temperature);
         if (absoluteHumidity <= maxHumidity)
             return;
