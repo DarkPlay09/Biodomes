@@ -1,16 +1,16 @@
 ﻿@page "/species/{slug:kebab:speciesSlug}"
 @model BioDomes.Web.Pages.Species.EditModel
 
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Modifier une espèce";
+    ViewData["DashboardTitle"] = "Modifier une espèce";
+    ViewData["DashboardSubtitle"] = "Mets à jour les informations, caractéristiques et visuels d’une espèce du catalogue BioDomes.";
+}
+
 <div class="layout-width">
     <section class="entity-form-page">
-        <div class="entity-form-page__intro">
-            <span class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Modification
-            </span>
-            <h1 class="hero-title">Modifier une espèce</h1>
-        </div>
-
         <div class="entity-form-card">
             <form method="post" enctype="multipart/form-data" class="entity-form">
                 <input type="hidden" asp-for="ReturnUrl" />

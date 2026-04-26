@@ -1,9 +1,12 @@
 ﻿@page "/biome"
 @model BioDomes.Web.Pages.Biome.IndexModel
-@using BioDomes.Domains.Enums
 
 @{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
     ViewData["Title"] = "Mes biomes";
+    ViewData["DashboardTitle"] = "Mes biomes";
+    ViewData["DashboardSubtitle"] = "Consulte, crée et gère tes environnements BioDomes.";
 }
 
 <div class="layout-width entity-list-page">
