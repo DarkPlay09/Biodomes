@@ -127,10 +127,17 @@ public class RegisterModel : PageModel
     /// </summary>
     /// <param name="returnUrl">URL de retour éventuelle après l’inscription.</param>
     /// <returns>Une tâche asynchrone représentant l’initialisation de la page.</returns>
-    public async Task OnGetAsync(string? returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         ReturnUrl = returnUrl ?? Url.Content("~/");
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+        return Page();
     }
 
     /// <summary>
@@ -147,6 +154,11 @@ public class RegisterModel : PageModel
     /// </remarks>
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         returnUrl ??= Url.Content("~/");
         ReturnUrl = returnUrl;
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();

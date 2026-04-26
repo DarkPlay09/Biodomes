@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BioDomes.Web.Areas.Identity.Pages.Account;
 
-// TODO : Empêcher un retour sur la page de connexion si déjà connecté (faire de même pour s'inscrire, mot de passe oublié).
-
 /// <summary>
 /// Gère l’authentification d’un utilisateur sur la plateforme BioDomes.
 /// </summary>
@@ -107,8 +105,13 @@ public class LoginModel : PageModel
     /// <item><description>initialise l’URL de retour.</description></item>
     /// </list>
     /// </remarks>
-    public async Task OnGetAsync(string returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         if (!string.IsNullOrEmpty(ErrorMessage))
         {
             ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -120,6 +123,8 @@ public class LoginModel : PageModel
 
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         ReturnUrl = returnUrl;
+        
+        return Page();
     }
 
     /// <summary>
