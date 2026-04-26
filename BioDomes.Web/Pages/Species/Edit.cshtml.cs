@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using BioDomes.Domains;
+using BioDomes.Infrastructures.Services.Slug;
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
@@ -18,6 +18,7 @@ public class EditModel : PageModel
 {
     private readonly ISpeciesRepository _repo;
     private readonly ISpeciesImageStorage _speciesImageStorage;
+    private readonly ISlugService _slugService;
 
     /// <summary>
     /// Initialise la page de modification avec le repository des espèces
@@ -25,10 +26,15 @@ public class EditModel : PageModel
     /// </summary>
     /// <param name="repo">Repository permettant de récupérer et modifier une espèce.</param>
     /// <param name="speciesImageStorage">Service responsable de l'enregistrement et de la suppression des images.</param>
-    public EditModel(ISpeciesRepository repo, ISpeciesImageStorage speciesImageStorage)
+    /// <param name="_slugService">Service responsable du slug des especes.</param>
+    public EditModel(
+        ISpeciesRepository repo,
+        ISpeciesImageStorage speciesImageStorage,
+        ISlugService slugService)
     {
         _repo = repo;
         _speciesImageStorage = speciesImageStorage;
+        _slugService = slugService;
     }
 
     /// <summary>
@@ -180,12 +186,9 @@ public class EditModel : PageModel
 
         _repo.Update(slug, species);
 
-        if (Url.IsLocalUrl(ReturnUrl))
-        {
-            return LocalRedirect(ReturnUrl);
-        }
+        var newSlug = _slugService.ToSlug(Input.Name!);
 
-        return RedirectToPage("./Index");
+        return RedirectToPage("./Details", new { slug = newSlug });
     }
 
     /// <summary>
