@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
+using System.Globalization;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures.Services.Slug;
@@ -11,15 +12,16 @@ public class IndexModel : PageModel
 {
     private readonly IBiomeRepository _biomeRepository;
     private readonly ISlugService _slugService;
-    
+
     public sealed record BiomeRowVm(
         int Id,
         string Name,
-        double Temperature,
-        double AbsoluteHumidity,
+        string TemperatureDisplay,
+        string AbsoluteHumidityDisplay,
         BiomeState State,
-        string Slug
-        );
+        string Slug,
+        string LastUpdatedDisplay
+    );
 
     public List<BiomeRowVm> Rows { get; private set; } = [];
 
@@ -28,20 +30,21 @@ public class IndexModel : PageModel
         _biomeRepository = biomeRepository;
         _slugService = slugService;
     }
-    
+
     public IReadOnlyList<Domains.Entities.Biome> Biomes { get; set; } = [];
     public int TotalCount { get; private set; }
     public int OptimalCount { get; private set; }
     public int InstableCount { get; private set; }
     public int CritiqueCount { get; private set; }
-    
+
     public IActionResult OnGet()
     {
         if (!TryGetCurrentUserId(out var userId))
             return Challenge();
-        
+
         Biomes = _biomeRepository.GetAllByCreator(userId);
-        
+        var fr = CultureInfo.GetCultureInfo("fr-BE");
+
         TotalCount = Biomes.Count;
         OptimalCount = Biomes.Count(b => b.State == BiomeState.Optimal);
         InstableCount = Biomes.Count(b => b.State == BiomeState.Instable);
@@ -51,12 +54,13 @@ public class IndexModel : PageModel
             .Select(b => new BiomeRowVm(
                 b.Id,
                 b.Name,
-                b.Temperature,
-                b.AbsoluteHumidity,
+                $"{b.Temperature.ToString("0.0", fr)} °C",
+                $"{b.AbsoluteHumidity.ToString("0.00", fr)} g/m³",
                 b.State,
-                _slugService.ToSlug(b.Name)))
+                _slugService.ToSlug(b.Name),
+                b.UpdatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm", fr)))
             .ToList();
-        
+
         return Page();
     }
 
@@ -71,11 +75,11 @@ public class IndexModel : PageModel
 
         if (biome.Creator.Id != userId)
             return Forbid();
-        
+
         _biomeRepository.DeleteBySlug(slug);
         return RedirectToPage();
     }
-    
+
     private bool TryGetCurrentUserId(out int userId)
     {
         var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);

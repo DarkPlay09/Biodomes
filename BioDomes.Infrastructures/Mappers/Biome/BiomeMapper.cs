@@ -11,7 +11,8 @@ public class BiomeMapper : IBiomeMapper
             entity.Name,
             entity.Temperature,
             entity.AbsoluteHumidity,
-            new UserAccount { Id = entity.CreatorId }
+            new UserAccount { Id = entity.CreatorId },
+            entity.UpdatedAt
             )
         {
             Id = entity.Id
