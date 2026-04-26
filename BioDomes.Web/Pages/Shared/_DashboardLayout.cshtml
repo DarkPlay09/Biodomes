@@ -7,7 +7,7 @@
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
 
     var isDashboardPage = currentPage.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase);
-    var isBiomesPage = currentPage.StartsWith("/Biomes", StringComparison.OrdinalIgnoreCase);
+    var isBiomesPage = currentPage.StartsWith("/Biome", StringComparison.OrdinalIgnoreCase);
     var isSpeciesPage = currentPage.StartsWith("/Species", StringComparison.OrdinalIgnoreCase);
     var isEquipmentPage = currentPage.StartsWith("/Equipment", StringComparison.OrdinalIgnoreCase);
     var isProfileManagePage = currentPage.StartsWith("/Account/Manage", StringComparison.OrdinalIgnoreCase);
@@ -60,7 +60,7 @@
             </a>
 
             <a asp-area=""
-               asp-page="/Biomes/Index"
+               asp-page="/Biome/Index"
                class="dashboard-sidebar__link @(isBiomesPage ? "dashboard-sidebar__link--active" : "")">
                 <span>Mes biomes</span>
             </a>

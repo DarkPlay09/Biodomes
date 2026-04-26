@@ -1,0 +1,117 @@
+﻿@page "/biome"
+@model BioDomes.Web.Pages.Biome.IndexModel
+@using BioDomes.Domains.Enums
+
+@{
+    ViewData["Title"] = "Mes biomes";
+}
+
+<div class="layout-width entity-list-page">
+        <div class="entity-page-header">
+            <div>
+                <h1 class="hero-title">Mes biomes</h1>
+                <p class="entity-list-page__subtitle">Gérez vos biomes et surveillez leur équilibre.</p>
+            </div>
+            <a asp-page="/Biome/Add" class="action-button entity-page-header__action">+ Créer un biome</a>
+        </div>
+
+        <div class="kpi-grid">
+            <article class="kpi-card kpi-card--total">
+                <div class="kpi-card__top">
+                    <h3>Total biomes</h3>
+                    <span class="kpi-card__icon kpi-card__icon--total" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z" />
+                            <path d="M7 16v6" />
+                            <path d="M13 19v3" />
+                            <path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5" />
+                        </svg>
+                    </span>
+                </div>
+                <strong>@Model.TotalCount</strong>
+            </article>
+            <article class="kpi-card kpi-card--optimal">
+                <div class="kpi-card__top">
+                    <h3>Optimal</h3>
+                    <span class="kpi-card__icon kpi-card__icon--optimal" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m9 12 2 2 4-4" />
+                        </svg>
+                    </span>
+                </div>
+                <strong>@Model.OptimalCount</strong>
+            </article>
+            <article class="kpi-card kpi-card--instable">
+                <div class="kpi-card__top">
+                    <h3>Instable</h3>
+                    <span class="kpi-card__icon kpi-card__icon--instable" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                            <path d="M12 9v4" />
+                            <path d="M12 17h.01" />
+                        </svg>
+                    </span>
+                </div>
+                <strong>@Model.InstableCount</strong>
+            </article>
+            <article class="kpi-card kpi-card--critique">
+                <div class="kpi-card__top">
+                    <h3>Critique</h3>
+                    <span class="kpi-card__icon kpi-card__icon--critique" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" x2="12" y1="8" y2="12" />
+                            <line x1="12" x2="12.01" y1="16" y2="16" />
+                        </svg>
+                    </span>
+                </div>
+                <strong>@Model.CritiqueCount</strong>
+            </article>
+        </div>
+
+        @if (!Model.Rows.Any())
+        {
+            <div class="entity-list-empty">
+                <p>Aucun biome pour le moment.</p>
+                <a asp-page="/Biome/Add" class="action-button">Créer mon premier biome</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-wrapper">
+                <table class="entity-table">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Température (°C)</th>
+                        <th>Humidité absolue (g/m³)</th>
+                        <th>État</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Rows)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Temperature</td>
+                            <td>@item.AbsoluteHumidity</td>
+                            <td>
+                                <span class="state-badge state-badge--@item.State.ToString().ToLowerInvariant()">
+                                    @item.State
+                                </span>
+                            </td>
+                            <td class="entity-table__actions">
+                                <a asp-page="/Biome/Edit" asp-route-slug="@item.Slug" class="action-button action-button--ghost">Modifier</a>
+                                <form method="post" asp-page-handler="Delete" asp-route-slug="@item.Slug">
+                                    <button type="submit" class="action-button action-button--danger">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+</div>

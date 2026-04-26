@@ -47,6 +47,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/Dashboard");
     options.Conventions.AuthorizeFolder("/Species");
     options.Conventions.AuthorizeFolder("/Equipment");
+    options.Conventions.AuthorizeFolder("/Biome");
 });
 
 builder.Services.AddDbContext<BioDomesDbContext>(options =>

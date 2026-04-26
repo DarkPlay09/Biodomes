@@ -416,7 +416,7 @@ public class SpeciesModel : PageModel
     /// </summary>
     /// <param name="value">Texte à transformer en slug.</param>
     /// <returns>Slug normalisé.</returns>
-    private static string ToSlug(string value)
+    private static string ToSlug(string value) //TODO : cette fonction n'est pas utilisée
     {
         var normalized = value
             .ToLowerInvariant()
