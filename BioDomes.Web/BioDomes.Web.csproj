@@ -30,5 +30,10 @@
     <ItemGroup>
       <Folder Include="Pages\Equipment\" />
       <Folder Include="wwwroot\images\equipment\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="wwwroot\js\species-details.js" />
+      <Content Remove="wwwroot\js\dashboard-toast.js" />
     </ItemGroup></Project>
 
