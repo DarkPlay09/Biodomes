@@ -1,0 +1,45 @@
+﻿.select-species-page__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-right: auto;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.species-filter-card .select-species-page__toggle-input {
+    width: 18px;
+    height: 18px;
+    min-height: 18px;
+    padding: 0;
+    border: 1px solid rgba(11, 61, 57, 0.22);
+    border-radius: 4px;
+    background: #ffffff;
+    accent-color: #0b3d39;
+    cursor: pointer;
+    box-shadow: none;
+    flex-shrink: 0;
+}
+
+.select-species-page .species-filter-card__actions {
+    align-items: center;
+}
+
+.select-species-page .species-filter-card__actions .dashboard-btn {
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+}
+
+.select-species-page__card--already {
+    position: relative;
+}
+
+.select-species-page__card--already .species-card__image img {
+    filter: grayscale(100%) brightness(0.82);
+}
+
+.select-species-page__card--already .species-card__body {
+    opacity: 0.78;
+}

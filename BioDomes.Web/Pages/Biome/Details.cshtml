@@ -32,7 +32,7 @@ else
             </div>
             <div class="biome-details-page__actions">
                 <a asp-page="/Biome/Edit" asp-route-slug="@Model.Details.Slug" class="biome-row-action biome-row-action--edit">Modifier le biome</a>
-                <a href="#" class="action-button">Gérer les espèces</a>
+                <a asp-page="/Biome/Species" asp-route-slug="@Model.Details.Slug" class="action-button">Gérer les espèces</a>
                 <form id="deleteEntityForm"
                       method="post"
                       asp-page-handler="Delete"
@@ -103,7 +103,7 @@ else
                 <div class="table-wrapper h-100">
                     <div class="biome-details-page__species-header">
                         <h2 class="biome-details-page__species-title">Espèces et populations</h2>
-                        <a href="#" class="action-button biome-details-page__species-add">+ Ajouter une espèce</a>
+                        <a asp-page="/Biome/SelectSpecies" asp-route-slug="@Model.Details.Slug" class="action-button biome-details-page__species-add">+ Ajouter une espèce</a>
                     </div>
                     <table class="entity-table">
                         <thead>
@@ -205,3 +205,4 @@ else
 @section Scripts {
     <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
 }
+

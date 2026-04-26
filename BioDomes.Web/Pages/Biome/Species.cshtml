@@ -1,0 +1,114 @@
+﻿@page "/biome/{slug}/species"
+@model BioDomes.Web.Pages.Biome.SpeciesModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Gérer les espèces";
+    ViewData["DashboardTitle"] = "Gérer les espèces";
+    ViewData["DashboardSubtitle"] = "Ajoute ou retire des espèces dans le biome.";
+}
+
+@if (Model.PageData is null)
+{
+    <div class="layout-width entity-list-page">
+        <div class="entity-list-empty">
+            <p>Biome introuvable.</p>
+            <a asp-page="/Biome/Index" class="action-button">Retour</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="layout-width entity-list-page">
+        <div class="entity-page-header">
+            <div>
+                <h1 class="hero-title">@Model.PageData.BiomeName</h1>
+                <p class="mb-0 text-muted">Gestion des espèces du biome</p>
+            </div>
+            <a asp-page="/Biome/Details" asp-route-slug="@Model.PageData.BiomeSlug" class="biome-row-action biome-row-action--edit">Retour aux details</a>
+        </div>
+
+        <div class="table-wrapper" style="margin-bottom: 1rem;">
+            <table class="entity-table">
+                <thead>
+                <tr>
+                    <th colspan="2">Ajouter une espèce</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        <form method="post" asp-page-handler="Add" asp-route-slug="@Model.PageData.BiomeSlug" style="display:flex; flex-wrap:wrap; gap:.75rem; align-items:flex-end;">
+                            <div style="min-width: 260px; flex: 1 1 260px;">
+                                <label asp-for="Input.SpeciesId">Espèce</label>
+                                <select asp-for="Input.SpeciesId" class="entity-form__control">
+                                    <option value="">-- Choisir une espèce --</option>
+                                    @foreach (var species in Model.PageData.AvailableSpecies)
+                                    {
+                                        <option value="@species.Id">@species.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Input.SpeciesId" class="entity-form__error"></span>
+                            </div>
+
+                            <div style="width: 180px;">
+                                <label asp-for="Input.IndividualCount">Individus</label>
+                                <input asp-for="Input.IndividualCount" type="number" min="1" class="entity-form__control" />
+                                <span asp-validation-for="Input.IndividualCount" class="entity-form__error"></span>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="action-button">Ajouter</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="entity-table">
+                <thead>
+                <tr>
+                    <th>Espèce</th>
+                    <th>Classification</th>
+                    <th>Régime</th>
+                    <th>Individus</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (!Model.PageData.LinkedSpecies.Any())
+                {
+                    <tr>
+                        <td colspan="5">Aucune espèce dans ce biome.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model.PageData.LinkedSpecies)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Classification</td>
+                            <td>@item.Diet</td>
+                            <td>@item.IndividualCount</td>
+                            <td class="entity-table__actions">
+                                <form method="post" asp-page-handler="Remove" asp-route-slug="@Model.PageData.BiomeSlug" asp-route-speciesId="@item.SpeciesId">
+                                    <button type="submit" class="biome-row-action biome-row-action--delete">Retirer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
