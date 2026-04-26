@@ -74,8 +74,8 @@
                    class="auth-input register-input"
                    autocomplete="email"
                    placeholder="nom@labo-recherche.fr" />
+            <p class="auth-help">Un lien de vérification sera envoyé.</p>
             <span asp-validation-for="Input.Email" class="auth-field-error"></span>
-            <p class="register-help-text">Un lien de vérification sera envoyé.</p>
         </div>
 
         <div class="auth-field register-field-full">
@@ -92,6 +92,7 @@
                    class="auth-input register-input"
                    autocomplete="new-password"
                    placeholder="••••••••" />
+            <p class="auth-help">Minimum 8 caractères requis.</p>
             <span asp-validation-for="Input.Password" class="auth-field-error"></span>
         </div>
 
@@ -101,6 +102,7 @@
                    class="auth-input register-input"
                    autocomplete="new-password"
                    placeholder="••••••••" />
+            <p class="auth-help">Répétez le même mot de passe.</p>
             <span asp-validation-for="Input.ConfirmPassword" class="auth-field-error"></span>
         </div>
     </div>
