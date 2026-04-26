@@ -19,7 +19,11 @@
     <div asp-validation-summary="ModelOnly" class="auth-validation"></div>
 
     <div class="register-avatar-block">
-        <input id="avatarInput" type="file" accept="image/*" class="register-avatar-input" />
+        <input asp-for="Input.AvatarFile"
+               id="avatarInput"
+               type="file"
+               accept=".jpg,.jpeg,.png,.webp"
+               class="register-avatar-input" />
 
         <label for="avatarInput" class="register-avatar-label" title="Choisir un avatar">
             <div class="register-avatar-frame">
@@ -42,6 +46,8 @@
                 </svg>
             </span>
         </label>
+        
+        <span asp-validation-for="Input.AvatarFile" class="auth-field-error"></span>
     </div>
 
     <div class="register-grid">
