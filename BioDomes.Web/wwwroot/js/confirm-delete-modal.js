@@ -3,7 +3,7 @@
     const openButton = document.querySelector("[data-open-delete-modal]");
     const closeButtons = document.querySelectorAll("[data-close-delete-modal]");
     const confirmButton = document.getElementById("confirmDeleteButton");
-    const deleteForm = document.getElementById("deleteSpeciesForm");
+    const deleteForm = document.getElementById("deleteEntityForm");
 
     if (!modal || !openButton || !confirmButton || !deleteForm) {
         return;

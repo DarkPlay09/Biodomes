@@ -85,7 +85,7 @@
                         Modifier la fiche
                     </a>
 
-                    <form id="deleteSpeciesForm"
+                    <form id="deleteEntityForm"
                           method="post"
                           asp-page-handler="Delete"
                           asp-route-slug="@Model.SpeciesDetails.Slug"
@@ -144,5 +144,5 @@
 </section>
 
 @section Scripts {
-    <script src="~/js/species-details.js" asp-append-version="true"></script>
+    <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
 }

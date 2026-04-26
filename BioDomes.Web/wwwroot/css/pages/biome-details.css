@@ -1,0 +1,229 @@
+.biome-details-page {
+    padding-bottom: 4.5rem;
+}
+
+.biome-details-page .entity-page-header {
+    align-items: flex-start;
+}
+
+.biome-details-page .hero-title {
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+}
+
+.biome-details-page__updated {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569 !important;
+}
+
+.biome-details-page__actions .action-button,
+.biome-details-page__actions .biome-row-action {
+    min-height: 65px;
+}
+
+.biome-details-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.biome-details-page .kpi-grid {
+    margin-top: 1.35rem;
+    margin-bottom: 3rem;
+}
+
+.biome-details-page__content {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(260px, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.biome-details-page .kpi-card {
+    min-height: 126px;
+}
+
+.biome-details-page .kpi-card h3 {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.biome-details-page .kpi-card strong {
+    font-size: 2.1rem;
+}
+
+.biome-details-page .table-wrapper {
+    box-shadow: var(--shadow-light);
+}
+
+.biome-details-page .entity-table {
+    min-width: 100%;
+}
+
+.biome-details-page .entity-table th {
+    font-size: 1rem;
+}
+
+.biome-details-page .entity-table td {
+    font-size: 0.98rem;
+}
+
+.biome-details-page__card-footer {
+    background: #fbfdfc;
+}
+
+.biome-details-page__card-footer .action-button,
+.biome-details-page__card-footer .biome-row-action {
+    min-height: 42px;
+}
+
+.biome-details-page__species-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.1rem;
+    border-bottom: 1px solid rgba(11, 61, 57, 0.08);
+    background: #ffffff;
+}
+
+.biome-details-page__species-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.biome-details-page__species-add {
+    min-height: 44px;
+    border-radius: 14px;
+}
+
+.biome-details-page__delete {
+    border: 2px solid #b42318;
+    background: #b42318;
+    color: #ffffff;
+}
+
+.biome-details-page__delete:hover {
+    border: 2px solid #b42318;
+    background: #b42318;
+    color: #ffffff;
+}
+
+.biome-details-page__chart-placeholder {
+    min-height: 150px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.biome-details-page__main-column .table-wrapper,
+.biome-details-page__side-column .table-wrapper {
+    border-radius: 18px;
+}
+
+.biome-details-page__main-column,
+.biome-details-page__side-column,
+.biome-details-page__chart-column {
+    margin-bottom: 1rem;
+}
+
+.biome-details-page__main-column {
+    grid-column: 1;
+}
+
+.biome-details-page__side-column {
+    grid-column: 2;
+}
+
+.biome-details-page__chart-column {
+    grid-column: 1 / -1;
+}
+
+.biome-details-page__side-column .entity-table td {
+    font-size: 0.95rem;
+}
+
+.biome-details-page__card-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1.2rem 1.1rem;
+}
+
+@media (max-width: 1199px) {
+    .biome-details-page .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .biome-details-page__content {
+        grid-template-columns: minmax(0, 1.8fr) minmax(240px, 1fr);
+    }
+}
+
+@media (max-width: 991px) {
+    .biome-details-page__content {
+        grid-template-columns: 1fr;
+    }
+
+    .biome-details-page__main-column,
+    .biome-details-page__side-column,
+    .biome-details-page__chart-column {
+        grid-column: 1;
+    }
+
+    .biome-details-page__actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .biome-details-page__actions .action-button,
+    .biome-details-page__actions .biome-row-action {
+        flex: 1 1 220px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .biome-details-page {
+        padding-bottom: 3rem;
+    }
+
+    .biome-details-page .kpi-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .biome-details-page .kpi-card strong {
+        font-size: 1.8rem;
+    }
+
+    .biome-details-page__actions .action-button,
+    .biome-details-page__actions .biome-row-action {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .biome-details-page__species-header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 0.8rem;
+    }
+
+    .biome-details-page__species-title {
+        font-size: 1.35rem;
+    }
+
+    .biome-details-page__species-add {
+        width: 100%;
+        text-align: center;
+    }
+
+    .biome-details-page .entity-table th,
+    .biome-details-page .entity-table td {
+        padding: 0.75rem 0.7rem;
+        font-size: 0.92rem;
+    }
+}
