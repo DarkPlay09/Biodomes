@@ -23,6 +23,7 @@
             + Ajouter une espèce
         </a>
     </header>
+    
     @if (!string.IsNullOrWhiteSpace(Model.LastInsertedSpeciesName))
     {
         <div class="species-catalog__success">
@@ -121,8 +122,6 @@
                     ? "Public"
                     : "Privé";
 
-                var idLabel = $"BD-{species.Id:0000}";
-
                 <article class="species-card">
                     <div class="species-card__image">
                         <img src="@species.ImagePath" alt="Image de @species.Name"/>
@@ -137,7 +136,9 @@
                                asp-route-slug="@species.Slug"
                                class="species-card__edit"
                                aria-label="Modifier @species.Name">
-                                ✎
+                                <div class="species-card-edit__icon" aria-hidden="true">
+                                    <img src="~/images/species/icons/pen.png" alt="Icon modifier" />
+                                </div>
                             </a>
                         }
                     </div>

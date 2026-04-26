@@ -2,6 +2,7 @@ using System.Security.Claims;
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,6 +18,7 @@ public class EditModel : PageModel
 {
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IEquipmentImageStorage _equipmentImageStorage;
+    private readonly ISlugService _slugService;
 
     /// <summary>
     /// Initialise la page de modification avec les services d'accès aux équipements
@@ -24,10 +26,15 @@ public class EditModel : PageModel
     /// </summary>
     /// <param name="equipmentRepository">Repository permettant de lire et modifier les équipements.</param>
     /// <param name="equipmentImageStorage">Service responsable de l'enregistrement et de la suppression des images.</param>
-    public EditModel(IEquipmentRepository equipmentRepository, IEquipmentImageStorage equipmentImageStorage)
+    /// <param name="slugService">Service permettant de générer le slug de l'équipement après sa modification.</param>
+    public EditModel(
+        IEquipmentRepository equipmentRepository,
+        IEquipmentImageStorage equipmentImageStorage,
+        ISlugService slugService)
     {
         _equipmentRepository = equipmentRepository;
         _equipmentImageStorage = equipmentImageStorage;
+        _slugService = slugService;
     }
 
     /// <summary>
@@ -48,14 +55,30 @@ public class EditModel : PageModel
     /// Utilisé pour afficher l'aperçu dans le formulaire.
     /// </summary>
     public string? CurrentImagePath { get; set; }
+    
+    /// <summary>
+    /// URL de retour vers la page précédente.
+    /// </summary>
+    [BindProperty]
+    public string? ReturnUrl { get; set; }
+
+    /// <summary>
+    /// URL de retour sécurisée.
+    /// </summary>
+    public string SafeReturnUrl =>
+        Url.IsLocalUrl(ReturnUrl)
+            ? ReturnUrl
+            : Url.Page("/Equipment/Index") ?? "/equipment";
 
     /// <summary>
     /// Charge l'équipement à modifier et préremplit le formulaire.
     /// </summary>
     /// <param name="slug">Slug de l'équipement ciblé.</param>
     /// <returns>La page préremplie, une erreur 404, une interdiction ou une demande de connexion.</returns>
-    public IActionResult OnGet(string slug)
+    public IActionResult OnGet(string slug, string? returnUrl = null)
     {
+        ReturnUrl = returnUrl;
+        
         if (!TryGetCurrentUserId(out var currentUserId))
             return Challenge(); // Aller à la page de connexion.
 
@@ -151,8 +174,12 @@ public class EditModel : PageModel
         };
 
         _equipmentRepository.Update(slug, equipment);
+        
+        TempData["SuccessMessage"] = $"L'équipement « {Input.Name} » a bien été modifié.";
+        
+        var newSlug = _slugService.ToSlug(equipment.Name);
 
-        return RedirectToPage("/Equipment/Index");
+        return RedirectToPage("./Details", new { slug = newSlug });
     }
 
     /// <summary>
