@@ -52,7 +52,9 @@
 
     <div class="register-grid">
         <div class="auth-field">
-            <label asp-for="Input.UserName" class="auth-label"></label>
+            <label asp-for="Input.UserName" class="auth-label">
+                Nom d'utilisateur <span class="auth-required" aria-hidden="true">*</span>
+            </label>
             <input asp-for="Input.UserName"
                    class="auth-input register-input"
                    autocomplete="username"
@@ -61,7 +63,9 @@
         </div>
 
         <div class="auth-field">
-            <label asp-for="Input.BirthDate" class="auth-label"></label>
+            <label asp-for="Input.BirthDate" class="auth-label">
+                Date de naissance <span class="auth-required" aria-hidden="true">*</span>
+            </label>
             <input asp-for="Input.BirthDate"
                    class="auth-input register-input"
                    placeholder="jj / mm / aaaa" />
@@ -69,7 +73,9 @@
         </div>
 
         <div class="auth-field register-field-full">
-            <label asp-for="Input.Email" class="auth-label"></label>
+            <label asp-for="Input.Email" class="auth-label">
+                Email professionnel <span class="auth-required" aria-hidden="true">*</span>
+            </label>
             <input asp-for="Input.Email"
                    class="auth-input register-input"
                    autocomplete="email"
@@ -87,7 +93,9 @@
         </div>
 
         <div class="auth-field">
-            <label asp-for="Input.Password" class="auth-label"></label>
+            <label asp-for="Input.Password" class="auth-label">
+                Mot de passe <span class="auth-required" aria-hidden="true">*</span>
+            </label>
             <input asp-for="Input.Password"
                    class="auth-input register-input"
                    autocomplete="new-password"
@@ -97,7 +105,9 @@
         </div>
 
         <div class="auth-field">
-            <label asp-for="Input.ConfirmPassword" class="auth-label"></label>
+            <label asp-for="Input.ConfirmPassword" class="auth-label">
+                Confirmation <span class="auth-required" aria-hidden="true">*</span>
+            </label>
             <input asp-for="Input.ConfirmPassword"
                    class="auth-input register-input"
                    autocomplete="new-password"
@@ -110,6 +120,10 @@
     <button type="submit" class="auth-submit register-submit">
         Créer mon profil
     </button>
+    
+    <p class="auth-required-note">
+        Les champs marqués d’un <span aria-hidden="true">*</span> sont obligatoires.
+    </p>
 
     <p class="auth-register">
         Déjà membre ?

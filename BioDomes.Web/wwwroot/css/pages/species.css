@@ -563,6 +563,23 @@
     transform: translateY(-1px);
 }
 
+/* =========================
+   Champs obligatoires
+   ========================= */
+
+.entity-form__required {
+    color: var(--bio-error, #b42318);
+    font-weight: 300;
+}
+
+.entity-form__required-note {
+    margin: 1.25rem 0 0;
+    color: var(--color-text-soft);
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.5;
+}
+
 @media (max-width: 1200px) {
     .species-details-layout {
         grid-template-columns: 1fr;

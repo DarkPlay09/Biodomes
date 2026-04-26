@@ -14,7 +14,9 @@
     <div asp-validation-summary="ModelOnly" class="auth-validation"></div>
 
     <div class="auth-field">
-        <label asp-for="Input.Identifier" class="auth-label"></label>
+        <label asp-for="Input.Identifier" class="auth-label">
+            Email ou Nom d'utilisateur <span class="auth-required" aria-hidden="true">*</span>
+        </label>
         <div class="auth-input-wrap">
             <span class="auth-input-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -32,7 +34,9 @@
 
     <div class="auth-field">
         <div class="auth-label-row">
-            <label asp-for="Input.Password" class="auth-label"></label>
+            <label asp-for="Input.Password" class="auth-label">
+                Mot de passe <span class="auth-required" aria-hidden="true">*</span>
+            </label>
             <a asp-page="./ForgotPassword" class="auth-link auth-link--small">Oublié ?</a>
         </div>
 
@@ -84,6 +88,10 @@
     </div>
 
     <button type="submit" class="auth-submit">Se connecter au réseau</button>
+    
+    <p class="auth-required-note">
+        Les champs marqués d’un <span aria-hidden="true">*</span> sont obligatoires.
+    </p>
 
     <p class="auth-register">
         Nouveau membre ?
