@@ -3,7 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -26,6 +28,7 @@ public class SpeciesModel : PageModel
     private readonly ISpeciesRepository _repository;
     private readonly IWebHostEnvironment _environment;
     private readonly ISlugService _slugService;
+    private readonly UserManager<UserEntity> _userManager;
 
     /// <summary>
     /// Initialise la page catalogue avec le repository des espèces
@@ -34,14 +37,17 @@ public class SpeciesModel : PageModel
     /// <param name="repository">Repository permettant de lire et supprimer les espèces.</param>
     /// <param name="environment">Environnement web donnant accès au dossier wwwroot.</param>
     /// <param name="slugService">Service slug pour les liens des espèces.</param>
+    /// <param name="userManager">...</param>
     public SpeciesModel(
         ISpeciesRepository repository,
         IWebHostEnvironment environment,
-        ISlugService slugService)
+        ISlugService slugService,
+        UserManager<UserEntity> userManager)
     {
         _repository = repository;
         _environment = environment;
         _slugService = slugService;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -138,14 +144,15 @@ public class SpeciesModel : PageModel
     /// calcule la pagination et prépare les cartes du catalogue.
     /// </summary>
     /// <returns>La page catalogue ou une demande de connexion.</returns>
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGetAsync()
     {
         if (!TryGetCurrentUserId(out var currentUserId))
         {
             return Challenge();
         }
 
-        // L'utilisateur voit les espèces publiques ainsi que ses propres espèces privées.
+        var isAdmin = await IsCurrentUserAdminAsync();
+
         var visibleSpecies = _repository.GetAll()
             .Where(species => species.IsPublicAvailable || species.Creator.Id == currentUserId)
             .ToList();
@@ -179,7 +186,7 @@ public class SpeciesModel : PageModel
         SpeciesCards = filteredSpecies
             .Skip((PageNumber - 1) * SpeciesPerPage)
             .Take(SpeciesPerPage)
-            .Select(species => MapToCatalogItem(species, currentUserId))
+            .Select(species => MapToCatalogItem(species, currentUserId, isAdmin))
             .ToList();
 
         VisiblePages = BuildVisiblePages(PageNumber, TotalPages);
@@ -335,8 +342,13 @@ public class SpeciesModel : PageModel
     /// <param name="species">Espèce à afficher.</param>
     /// <param name="currentUserId">Identifiant de l'utilisateur connecté.</param>
     /// <returns>Carte prête à être affichée.</returns>
-    private SpeciesCatalogItemViewModel MapToCatalogItem(SpeciesEntity species, int currentUserId)
+    private SpeciesCatalogItemViewModel MapToCatalogItem(
+        SpeciesEntity species,
+        int currentUserId,
+        bool isAdmin)
     {
+        var isOwner = species.Creator.Id == currentUserId;
+
         return new SpeciesCatalogItemViewModel
         {
             Id = species.Id,
@@ -350,8 +362,21 @@ public class SpeciesModel : PageModel
             AdultSizeLabel = FormatSize(species.AdultSize),
             WeightLabel = FormatWeight(species.Weight),
             IsPublicAvailable = species.IsPublicAvailable,
-            CanEdit = species.Creator.Id == currentUserId
+            CanEdit = CanManageSpecies(isOwner, isAdmin, species.IsPublicAvailable)
         };
+    }
+    
+    private async Task<bool> IsCurrentUserAdminAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CanManageSpecies(bool isOwner, bool isAdmin, bool isPublicAvailable)
+    {
+        return (isOwner && !isPublicAvailable)
+               || (isAdmin && isPublicAvailable);
     }
 
     /// <summary>

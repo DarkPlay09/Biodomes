@@ -3,6 +3,8 @@ using BioDomes.Infrastructures.Services.Slug;
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.EntityFramework.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,6 +21,8 @@ public class EditModel : PageModel
     private readonly ISpeciesRepository _repo;
     private readonly ISpeciesImageStorage _speciesImageStorage;
     private readonly ISlugService _slugService;
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly IBiomeRepository _biomeRepository;
 
     /// <summary>
     /// Initialise la page de modification avec le repository des espèces
@@ -27,14 +31,20 @@ public class EditModel : PageModel
     /// <param name="repo">Repository permettant de récupérer et modifier une espèce.</param>
     /// <param name="speciesImageStorage">Service responsable de l'enregistrement et de la suppression des images.</param>
     /// <param name="slugService">Service permettant de générer le slug de l'espèce après sa modification.</param>
+    /// <param name="userManager">...</param>
+    /// <param name="biomeRepository">...</param>
     public EditModel(
         ISpeciesRepository repo,
         ISpeciesImageStorage speciesImageStorage,
-        ISlugService slugService)
+        ISlugService slugService,
+        UserManager<UserEntity> userManager,
+        IBiomeRepository biomeRepository)
     {
         _repo = repo;
         _speciesImageStorage = speciesImageStorage;
         _slugService = slugService;
+        _userManager = userManager;
+        _biomeRepository = biomeRepository;
     }
 
     /// <summary>
@@ -77,6 +87,10 @@ public class EditModel : PageModel
         Url.IsLocalUrl(ReturnUrl)
             ? ReturnUrl
             : Url.Page("/Species/Index")!;
+    
+    public int ImpactedBiomesCount { get; private set; }
+
+    public bool ShowImpactWarning => ImpactedBiomesCount > 0;
 
     /// <summary>
     /// Charge l'espèce à modifier et préremplit le formulaire.
@@ -84,17 +98,27 @@ public class EditModel : PageModel
     /// </summary>
     /// <param name="slug">Slug de l'espèce à modifier.</param>
     /// <returns>La page préremplie, une erreur 404, une interdiction ou une demande de connexion.</returns>
-    public IActionResult OnGet(string slug)
+    public async Task<IActionResult> OnGetAsync(string slug)
     {
         if (!TryGetCurrentUserId(out var currentUserId))
+        {
             return Challenge();
+        }
 
         var species = _repo.GetBySlug(slug);
-        if (species is null)
-            return NotFound();
 
-        if (species.Creator.Id != currentUserId)
+        if (species is null)
+        {
+            return NotFound();
+        }
+
+        var isOwner = species.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
+
+        if (!CanManageSpecies(isOwner, isAdmin, species.IsPublicAvailable))
+        {
             return Forbid();
+        }
 
         Input.Name = species.Name;
         Input.Classification = species.Classification.ToString();
@@ -102,6 +126,7 @@ public class EditModel : PageModel
         Input.AdultSize = species.AdultSize;
         Input.Weight = species.Weight;
         CurrentImagePath = species.ImagePath;
+        ImpactedBiomesCount = _biomeRepository.CountBiomesUsingSpecies(species.Id);
 
         return Page();
     }
@@ -122,8 +147,15 @@ public class EditModel : PageModel
         if (existingSpecies is null)
             return NotFound();
 
-        if (existingSpecies.Creator.Id != currentUserId)
+        var isOwner = existingSpecies.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
+
+        if (!CanManageSpecies(isOwner, isAdmin, existingSpecies.IsPublicAvailable))
+        {
             return Forbid();
+        }
+
+        ImpactedBiomesCount = _biomeRepository.CountBiomesUsingSpecies(existingSpecies.Id);
 
         CurrentImagePath = existingSpecies.ImagePath;
 
@@ -178,19 +210,33 @@ public class EditModel : PageModel
             Input.AdultSize,
             Input.Weight,
             imagePath,
-            new UserAccount { Id = currentUserId },
+            existingSpecies.Creator,
             existingSpecies.IsPublicAvailable)
         {
             Id = existingSpecies.Id
         };
 
         _repo.Update(slug, species);
+        
+        var dietChanged = existingSpecies.Diet != diet;
+        var weightChanged = Math.Abs(existingSpecies.Weight - Input.Weight) > 0.0001;
+
+        if (ImpactedBiomesCount > 0 && (dietChanged || weightChanged))
+        {
+            TempData["WarningMessage"] =
+                $"Attention : cette espèce est utilisée dans {ImpactedBiomesCount} biome(s). " +
+                "Modifier son poids ou son régime alimentaire peut impacter ces biomes.";
+        }
 
         TempData["SuccessMessage"] = $"L'espèce « {Input.Name} » a bien été modifiée.";
 
         var newSlug = _slugService.ToSlug(Input.Name!);
 
-        return RedirectToPage("./Details", new { slug = newSlug });
+        return RedirectToPage("./Details", new
+        {
+            slug = newSlug,
+            returnUrl = SafeReturnUrl
+        });
     }
 
     /// <summary>
@@ -202,5 +248,18 @@ public class EditModel : PageModel
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return int.TryParse(userIdClaim, out userId) && userId > 0;
+    }
+    
+    private async Task<bool> IsCurrentUserAdminAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CanManageSpecies(bool isOwner, bool isAdmin, bool isPublicAvailable)
+    {
+        return (isOwner && !isPublicAvailable)
+               || (isAdmin && isPublicAvailable);
     }
 }

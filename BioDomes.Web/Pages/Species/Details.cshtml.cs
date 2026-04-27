@@ -24,6 +24,7 @@ public class DetailsModel : PageModel
     private readonly ISlugService _slugService;
     private readonly ISpeciesImageStorage _speciesImageStorage;
     private readonly UserManager<UserEntity> _userManager;
+    private readonly IBiomeRepository _biomeRepository;
 
     /// <summary>
     /// Initialise la page de détail avec le repository des espèces.
@@ -32,16 +33,19 @@ public class DetailsModel : PageModel
     /// <param name="slugService">Service slug pour les liens des espèces.</param>
     /// <param name="speciesImageStorage">Service responsable de la suppression des images d'espèces.</param>
     /// <param name="userManager">...</param>
+    /// <param name="biomeRepository">...</param>
     public DetailsModel(
         ISpeciesRepository repository,
         ISlugService slugService,
         ISpeciesImageStorage speciesImageStorage,
-        UserManager<UserEntity> userManager)
+        UserManager<UserEntity> userManager,
+        IBiomeRepository biomeRepository)
     {
         _repository = repository;
         _slugService = slugService;
         _speciesImageStorage = speciesImageStorage;
         _userManager = userManager;
+        _biomeRepository = biomeRepository;
     }
 
     /// <summary>
@@ -94,7 +98,9 @@ public class DetailsModel : PageModel
             return Forbid();
         }
 
-        SpeciesDetails = MapToDetails(species, isOwner);
+        var impactedBiomesCount = _biomeRepository.CountBiomesUsingSpecies(species.Id);
+
+        SpeciesDetails = MapToDetails(species, isOwner, isAdmin, impactedBiomesCount);
 
         return Page();
     }
@@ -116,8 +122,10 @@ public class DetailsModel : PageModel
     /// </summary>
     /// <param name="slug">Slug de l'espèce à supprimer.</param>
     /// <returns>Une redirection vers le catalogue ou une erreur si l'action est interdite.</returns>
-    public IActionResult OnPostDelete(string slug)
+    public async Task<IActionResult> OnPostDeleteAsync(string slug, string? returnUrl = null)
     {
+        ReturnUrl = returnUrl;
+
         if (!TryGetCurrentUserId(out var currentUserId))
         {
             return Challenge();
@@ -130,9 +138,22 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        if (species.Creator.Id != currentUserId)
+        var isOwner = species.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
+
+        if (!CanManageSpecies(isOwner, isAdmin, species.IsPublicAvailable))
         {
             return Forbid();
+        }
+
+        var impactedBiomesCount = _biomeRepository.CountBiomesUsingSpecies(species.Id);
+
+        if (impactedBiomesCount > 0)
+        {
+            TempData["ErrorMessage"] =
+                $"Suppression impossible : l'espèce « {species.Name} » est utilisée dans {impactedBiomesCount} biome(s).";
+
+            return RedirectToPage(new { slug, returnUrl });
         }
 
         _repository.DeleteBySlug(slug);
@@ -140,7 +161,7 @@ public class DetailsModel : PageModel
 
         TempData["SuccessMessage"] = $"L'espèce « {species.Name} » a bien été supprimée.";
 
-        return RedirectToPage("./Index");
+        return LocalRedirect(SafeReturnUrl);
     }
 
     /// <summary>
@@ -294,6 +315,43 @@ public class DetailsModel : PageModel
 
         return int.TryParse(userIdClaim, out userId) && userId > 0;
     }
+    
+    private SpeciesDetailsViewModel MapToDetails(
+        SpeciesEntity species,
+        bool isOwner,
+        bool isAdmin,
+        int impactedBiomesCount)
+    {
+        return new SpeciesDetailsViewModel
+        {
+            Id = species.Id,
+            Name = species.Name,
+            Slug = _slugService.ToSlug(species.Name),
+            ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
+                ? "/images/species/noImageSpecie.png"
+                : species.ImagePath,
+            ClassificationLabel = FormatClassification(species.Classification),
+            DietLabel = FormatDiet(species.Diet),
+            AdultSizeLabel = FormatSize(species.AdultSize),
+            WeightLabel = FormatWeight(species.Weight),
+            VisibilityLabel = species.IsPublicAvailable ? "Publique" : "Privée",
+            VisibilityCssClass = species.IsPublicAvailable
+                ? "species-details-badge--public"
+                : "species-details-badge--private",
+            OwnerName = string.IsNullOrWhiteSpace(species.Creator.UserName)
+                ? "Créateur inconnu"
+                : species.Creator.UserName,
+            IsOwner = isOwner,
+            CanManage = CanManageSpecies(isOwner, isAdmin, species.IsPublicAvailable),
+            ImpactedBiomesCount = impactedBiomesCount
+        };
+    }
+    
+    private static bool CanManageSpecies(bool isOwner, bool isAdmin, bool isPublicAvailable)
+    {
+        return (isOwner && !isPublicAvailable)
+               || (isAdmin && isPublicAvailable);
+    }
 
     /// <summary>
     /// ViewModel contenant les informations affichées sur la fiche détaillée d'une espèce.
@@ -359,5 +417,15 @@ public class DetailsModel : PageModel
         /// Slug utilisé pour générer les liens vers cette espèce.
         /// </summary>
         public string Slug { get; set; } = string.Empty;
+        
+        /// <summary>
+        /// Indique si l'utilisateur connecté peut modifier ou supprimer cette espèce.
+        /// </summary>
+        public bool CanManage { get; set; }
+
+        /// <summary>
+        /// Nombre de biomes qui utilisent cette espèce.
+        /// </summary>
+        public int ImpactedBiomesCount { get; set; }
     }
 }
