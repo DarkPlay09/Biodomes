@@ -49,6 +49,9 @@ public class SelectSpeciesModel : PageModel
     [BindProperty(SupportsGet = true)]
     public bool IncludeAlreadyInBiome { get; set; }
 
+    [BindProperty]
+    public List<int> SelectedSpeciesIds { get; set; } = [];
+
     public int TotalPages { get; private set; }
     public string BiomeName { get; private set; } = string.Empty;
     public string BiomeSlug { get; private set; } = string.Empty;
@@ -168,6 +171,73 @@ public class SelectSpeciesModel : PageModel
 
         _context.SaveChanges();
         TempData["SuccessMessage"] = "Espèce ajoutée au biome.";
+
+        return RedirectToPage("/Biome/Species", new { slug = _slugService.ToSlug(biome.Name) });
+    }
+
+    public IActionResult OnPostConfirmSelection(string slug)
+    {
+        if (!TryGetCurrentUserId(out var currentUserId))
+            return Challenge();
+
+        var biome = _biomeRepository.GetBySlug(slug);
+        if (biome is null)
+            return NotFound();
+
+        if (biome.Creator.Id != currentUserId)
+            return Forbid();
+
+        var selectedIds = SelectedSpeciesIds
+            .Distinct()
+            .ToList();
+
+        if (selectedIds.Count == 0)
+        {
+            TempData["SuccessMessage"] = "Aucune espèce sélectionnée.";
+            return RedirectToPage(new { slug = _slugService.ToSlug(biome.Name) });
+        }
+
+        var allowedSpeciesIds = _context.Species
+            .AsNoTracking()
+            .Where(s => selectedIds.Contains(s.Id))
+            .Where(s => s.IsPublicAvailable || s.CreatorId == currentUserId)
+            .Select(s => s.Id)
+            .ToHashSet();
+
+        var existingLinks = _context.BiomeSpeciesLinks
+            .Where(link => link.BiomeId == biome.Id && allowedSpeciesIds.Contains(link.SpeciesId))
+            .ToList();
+
+        var existingBySpeciesId = existingLinks.ToDictionary(link => link.SpeciesId, link => link);
+        var addedSpeciesCount = 0;
+
+        foreach (var speciesIdValue in allowedSpeciesIds)
+        {
+            if (existingBySpeciesId.TryGetValue(speciesIdValue, out var existingLink))
+            {
+                existingLink.IndividualCount += 1;
+            }
+            else
+            {
+                _context.BiomeSpeciesLinks.Add(new()
+                {
+                    BiomeId = biome.Id,
+                    SpeciesId = speciesIdValue,
+                    IndividualCount = 1
+                });
+            }
+
+            addedSpeciesCount++;
+        }
+
+        if (addedSpeciesCount == 0)
+        {
+            TempData["SuccessMessage"] = "Aucune espèce valide à ajouter.";
+            return RedirectToPage(new { slug = _slugService.ToSlug(biome.Name) });
+        }
+
+        _context.SaveChanges();
+        TempData["SuccessMessage"] = $"{addedSpeciesCount} espèce(s) ajoutée(s) au biome.";
 
         return RedirectToPage("/Biome/Species", new { slug = _slugService.ToSlug(biome.Name) });
     }

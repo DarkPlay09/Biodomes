@@ -15,7 +15,7 @@
     var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
 }
 
-<section class="species-catalog select-species-page">
+<section class="species-catalog select-species-page" data-biome-slug="@Model.BiomeSlug">
     <header class="species-catalog__header">
         <a asp-page="/Biome/Species"
            asp-route-slug="@Model.BiomeSlug"
@@ -23,11 +23,19 @@
             ← Retour à la gestion du biome
         </a>
 
-        <a asp-page="/Species/Add"
-           asp-route-returnUrl="@currentUrl"
-           class="action-button">
-            + Créer une espèce
-        </a>
+        <div class="select-species-page__header-actions">
+            <button type="submit"
+                    form="confirmSelectionForm"
+                    class="action-button">
+                Valider la sélection
+            </button>
+
+            <a asp-page="/Species/Add"
+               asp-route-returnUrl="@currentUrl"
+               class="action-button">
+                + Créer une espèce
+            </a>
+        </div>
     </header>
 
     <div class="species-catalog__success">
@@ -126,48 +134,47 @@
     }
     else
     {
-        <div class="species-grid">
-            @foreach (var species in Model.SpeciesCards)
-            {
-                var statusClass = species.IsPublicAvailable
-                    ? "species-card__status--public"
-                    : "species-card__status--private";
+        <form method="post"
+              asp-page-handler="ConfirmSelection"
+              asp-route-slug="@Model.BiomeSlug"
+              id="confirmSelectionForm">
+            <div class="species-grid">
+                @foreach (var species in Model.SpeciesCards)
+                {
+                    var statusClass = species.IsPublicAvailable
+                        ? "species-card__status--public"
+                        : "species-card__status--private";
 
-                var statusLabel = species.IsPublicAvailable
-                    ? "Public"
-                    : "Privé";
+                    var statusLabel = species.IsPublicAvailable
+                        ? "Public"
+                        : "Privé";
 
-                <article class="species-card @(species.IsAlreadyInBiome ? "select-species-page__card--already" : "")">
-                    <div class="species-card__image">
-                        <img src="@species.ImagePath" alt="Image de @species.Name" />
+                    var selectorId = $"select-species-{species.Id}";
 
-                        <span class="species-card__status @statusClass">
-                            @statusLabel
-                        </span>
-                    </div>
+                    <article class="species-card @(species.IsAlreadyInBiome ? "select-species-page__card--already" : "")">
 
-                    <div class="species-card__body">
-                        <div class="species-card__title-block">
-                            <p>@species.ClassificationLabel</p>
-                            <h3>@species.Name</h3>
-                        </div>
+                        <a asp-page="/Species/Details"
+                           asp-route-slug="@species.Slug"
+                           class="select-species-page__card-link">
 
-                        <dl class="species-card__meta">
-                            <div>
-                                <dt>Régime</dt>
-                                <dd>@species.DietLabel</dd>
+                            <div class="species-card__image">
+                                <img src="@species.ImagePath" alt="Image de @species.Name" />
+                                <span class="species-card__status @statusClass">@statusLabel</span>
                             </div>
 
-                            <div>
-                                <dt>Taille</dt>
-                                <dd>@species.AdultSizeLabel</dd>
-                            </div>
+                            <div class="species-card__body">
+                                <div class="species-card__title-block">
+                                    <p>@species.ClassificationLabel</p>
+                                    <h3>@species.Name</h3>
+                                </div>
 
-                            <div>
-                                <dt>Poids</dt>
-                                <dd>@species.WeightLabel</dd>
+                                <dl class="species-card__meta">
+                                    <div><dt>Régime</dt><dd>@species.DietLabel</dd></div>
+                                    <div><dt>Taille</dt><dd>@species.AdultSizeLabel</dd></div>
+                                    <div><dt>Poids</dt><dd>@species.WeightLabel</dd></div>
+                                </dl>
                             </div>
-                        </dl>
+                        </a>
 
                         <div class="species-card__footer">
                             @if (species.IsAlreadyInBiome)
@@ -178,20 +185,21 @@
                             }
                             else
                             {
-                                <form method="post"
-                                      asp-page-handler="AddToBiome"
-                                      asp-route-slug="@Model.BiomeSlug"
-                                      asp-route-speciesId="@species.Id">
-                                    <button type="submit" class="dashboard-btn dashboard-btn--primary">
-                                        + Ajouter au biome
-                                    </button>
-                                </form>
+                                <input id="@selectorId"
+                                       type="checkbox"
+                                       class="select-species-page__select-checkbox"
+                                       data-species-id="@species.Id"
+                                       value="@species.Id" />
+
+                                <label for="@selectorId" class="select-species-page__select-button">
+                                    Ajouter dans le biome
+                                </label>
                             }
                         </div>
-                    </div>
-                </article>
-            }
-        </div>
+                    </article>
+                }
+            </div>
+        </form>
     }
 
     @if (Model.TotalPages > 1)
@@ -266,3 +274,7 @@
         </footer>
     }
 </section>
+
+@section Scripts {
+    <script src="~/js/select-species-selection.js" asp-append-version="true"></script>
+}
