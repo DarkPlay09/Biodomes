@@ -21,16 +21,22 @@
     </nav>
 
     <div class="species-details-layout">
-        <article class="species-details-image-card">
-            <img src="@Model.SpeciesDetails.ImagePath"
-                 alt="Image de @Model.SpeciesDetails.Name" />
+        <div class="species-details-media">
+            <article class="species-details-image-card">
+                <img src="@Model.SpeciesDetails.ImagePath"
+                     alt="Image de @Model.SpeciesDetails.Name" />
 
-            <div class="species-details-badges">
-                <span class="species-details-badge @Model.SpeciesDetails.VisibilityCssClass">
-                    @Model.SpeciesDetails.VisibilityLabel
-                </span>
-            </div>
-        </article>
+                <div class="species-details-badges">
+                    <span class="species-details-badge @Model.SpeciesDetails.VisibilityCssClass">
+                        @Model.SpeciesDetails.VisibilityLabel
+                    </span>
+                </div>
+            </article>
+
+            <a href="@Model.SafeReturnUrl" class="species-details-back">
+                Retour
+            </a>
+        </div>
 
         <article class="species-details-content">
             <header class="species-details-header">

@@ -3,7 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -21,6 +23,7 @@ public class DetailsModel : PageModel
     private readonly ISpeciesRepository _repository;
     private readonly ISlugService _slugService;
     private readonly ISpeciesImageStorage _speciesImageStorage;
+    private readonly UserManager<UserEntity> _userManager;
 
     /// <summary>
     /// Initialise la page de détail avec le repository des espèces.
@@ -28,20 +31,37 @@ public class DetailsModel : PageModel
     /// <param name="repository">Repository permettant de récupérer une espèce.</param>
     /// <param name="slugService">Service slug pour les liens des espèces.</param>
     /// <param name="speciesImageStorage">Service responsable de la suppression des images d'espèces.</param>
+    /// <param name="userManager">...</param>
     public DetailsModel(
         ISpeciesRepository repository,
         ISlugService slugService,
-        ISpeciesImageStorage speciesImageStorage)
+        ISpeciesImageStorage speciesImageStorage,
+        UserManager<UserEntity> userManager)
     {
         _repository = repository;
         _slugService = slugService;
         _speciesImageStorage = speciesImageStorage;
+        _userManager = userManager;
     }
 
     /// <summary>
     /// Données détaillées de l'espèce à afficher dans la vue.
     /// </summary>
     public SpeciesDetailsViewModel SpeciesDetails { get; private set; } = new();
+    
+    /// <summary>
+    /// URL de retour vers la page précédemment visitée.
+    /// </summary>
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
+
+    /// <summary>
+    /// URL de retour sécurisée.
+    /// </summary>
+    public string SafeReturnUrl =>
+        Url.IsLocalUrl(ReturnUrl)
+            ? ReturnUrl
+            : Url.Page("./Index") ?? "/species";
 
     /// <summary>
     /// Charge la fiche détaillée d'une espèce à partir de son slug.
@@ -50,8 +70,10 @@ public class DetailsModel : PageModel
     /// </summary>
     /// <param name="slug">Slug de l'espèce à afficher.</param>
     /// <returns>La page de détail, une erreur 404, une interdiction ou une demande de connexion.</returns>
-    public IActionResult OnGet(string slug)
+    public async Task<IActionResult> OnGetAsync(string slug, string? returnUrl = null)
     {
+        ReturnUrl = returnUrl;
+
         if (!TryGetCurrentUserId(out var currentUserId))
         {
             return Challenge();
@@ -65,8 +87,9 @@ public class DetailsModel : PageModel
         }
 
         var isOwner = species.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
 
-        if (!species.IsPublicAvailable && !isOwner)
+        if (!species.IsPublicAvailable && !isOwner && !isAdmin)
         {
             return Forbid();
         }
@@ -74,6 +97,17 @@ public class DetailsModel : PageModel
         SpeciesDetails = MapToDetails(species, isOwner);
 
         return Page();
+    }
+    
+    /// <summary>
+    /// Vérifie si l'utilisateur connecté est administrateur.
+    /// </summary>
+    /// <returns>True si l'utilisateur connecté est administrateur, sinon false.</returns>
+    private async Task<bool> IsCurrentUserAdminAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
     }
     
     /// <summary>
