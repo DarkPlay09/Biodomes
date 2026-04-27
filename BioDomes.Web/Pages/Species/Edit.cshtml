@@ -16,6 +16,15 @@
                 <input type="hidden" asp-for="ReturnUrl" />
                 
                 <div asp-validation-summary="ModelOnly" class="entity-form__summary"></div>
+                
+                @if (Model.ShowImpactWarning)
+                {
+                    <div class="entity-impact-warning">
+                        <strong>Attention :</strong>
+                        cette espèce est utilisée dans @Model.ImpactedBiomesCount biome(s).
+                        Modifier son poids ou son régime alimentaire peut impacter ces biomes.
+                    </div>
+                }
 
                 <partial name="Species/_SpeciesForm" model="new SpeciesFormViewModel { Input = Model.Input, ClassificationOptions = Model.ClassificationOptions, DietOptions = Model.DietOptions, CurrentImagePath = Model.CurrentImagePath, CurrentImageFileName = string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? null : System.IO.Path.GetFileName(Model.CurrentImagePath) }"/>
 
@@ -23,6 +32,10 @@
                     <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
                     <button type="submit" class="action-button">Enregistrer</button>
                 </div>
+                
+                <p class="entity-form__required-note">
+                    Les champs marqués d’un <span class="entity-form__required" aria-hidden="true">*</span> sont obligatoires.
+                </p>
             </form>
         </div>
     </section>

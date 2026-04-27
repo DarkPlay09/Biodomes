@@ -1,36 +1,20 @@
-﻿@page "/species"
-@model BioDomes.Web.Pages.Species.SpeciesModel
+﻿@page "/admin/species"
+@model BioDomes.Web.Pages.Admin.Species.IndexModel
 
 @{
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
-    ViewData["Title"] = "Catalogue des espèces";
-    ViewData["DashboardTitle"] = "Catalogue des espèces";
-    ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les espèces enregistrées dans BioDomes.";
+    ViewData["Title"] = "Validation des espèces";
+    ViewData["DashboardTitle"] = "Validation des espèces";
+    ViewData["DashboardSubtitle"] = "Gère la visibilité des espèces créées par les utilisateurs.";
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
     var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
     var visibilityPrivateSelected = Model.VisibilityFilter == "private" ? "selected" : null;
-
     var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
 }
 
 <section class="species-catalog">
-    <header class="species-catalog__header">
-        <a asp-page="./Add"
-           asp-route-returnUrl="@currentUrl"
-           class="action-button">
-            + Ajouter une espèce
-        </a>
-    </header>
-    
-    @if (!string.IsNullOrWhiteSpace(Model.LastInsertedSpeciesName))
-    {
-        <div class="species-catalog__success">
-            Espèce ajoutée : <strong>@Model.LastInsertedSpeciesName</strong>
-        </div>
-    }
-
     <form method="get" class="species-filter-card">
         <div class="species-filter-card__search">
             <label for="Search">Recherche</label>
@@ -38,7 +22,7 @@
                    name="Search"
                    value="@Model.Search"
                    type="search"
-                   placeholder="Rechercher par nom, classification ou régime..."/>
+                   placeholder="Rechercher par nom, créateur, classification ou régime..." />
         </div>
 
         <div class="species-filter-card__select">
@@ -77,8 +61,8 @@
             <label for="VisibilityFilter">Visibilité</label>
             <select id="VisibilityFilter" name="VisibilityFilter">
                 <option value="" selected="@visibilityAllSelected">Toutes</option>
-                <option value="public" selected="@visibilityPublicSelected">Publiques</option>
-                <option value="private" selected="@visibilityPrivateSelected">Privées</option>
+                <option value="public" selected="@visibilityPublicSelected">Disponibles</option>
+                <option value="private" selected="@visibilityPrivateSelected">Non visibles</option>
             </select>
         </div>
 
@@ -93,85 +77,84 @@
         </div>
     </form>
 
-    @if (Model.SpeciesCards.Count == 0)
+    @if (Model.SpeciesList.Count == 0)
     {
         <div class="species-empty-card">
-            <div class="species-empty-card__icon">+</div>
+            <div class="species-empty-card__icon" aria-hidden="true"></div>
 
             <h3>Aucune espèce trouvée</h3>
 
             <p>
-                Modifie ta recherche ou ajoute une nouvelle espèce au catalogue.
+                Aucune espèce créée par un utilisateur ne correspond aux filtres sélectionnés.
             </p>
-
-            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
-                Ajouter une espèce
-            </a>
         </div>
     }
     else
     {
-        <div class="species-grid">
-            @foreach (var species in Model.SpeciesCards)
+        <div class="admin-species-list">
+            @foreach (var species in Model.SpeciesList)
             {
                 var statusClass = species.IsPublicAvailable
-                    ? "species-card__status--public"
-                    : "species-card__status--private";
+                    ? "admin-species-card__status--visible"
+                    : "admin-species-card__status--hidden";
 
                 var statusLabel = species.IsPublicAvailable
-                    ? "Public"
-                    : "Privé";
+                    ? "Disponible"
+                    : "Non visible";
 
-                <article class="species-card">
-                    <div class="species-card__image">
-                        <img src="@species.ImagePath" alt="Image de @species.Name"/>
-
-                        <span class="species-card__status @statusClass">
-                            @statusLabel
-                        </span>
-
-                        @if (species.CanEdit)
-                        {
-                            <a asp-page="./Edit"
-                               asp-route-slug="@species.Slug"
-                               class="species-card__edit"
-                               aria-label="Modifier @species.Name">
-                                <div class="species-card-edit__icon" aria-hidden="true">
-                                    <img src="~/images/species/icons/pen.png" alt="Icon modifier" />
-                                </div>
-                            </a>
-                        }
+                <article class="admin-species-card">
+                    <div class="admin-species-card__image">
+                        <img src="@species.ImagePath" alt="Image de @species.Name" />
                     </div>
 
-                    <div class="species-card__body">
-                        <div class="species-card__title-block">
-                            <p>@species.ClassificationLabel</p>
+                    <div class="admin-species-card__content">
+                        <div>
+                            <p class="admin-species-card__eyebrow">
+                                @species.ClassificationLabel
+                            </p>
+
                             <h3>@species.Name</h3>
+
+                            <dl class="admin-species-card__meta">
+                                <div>
+                                    <dt>Régime</dt>
+                                    <dd>@species.DietLabel</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Créateur</dt>
+                                    <dd>@species.CreatorName</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Visibilité</dt>
+                                    <dd>@species.VisibilityLabel</dd>
+                                </div>
+                            </dl>
                         </div>
 
-                        <dl class="species-card__meta">
-                            <div>
-                                <dt>Régime</dt>
-                                <dd>@species.DietLabel</dd>
-                            </div>
+                        @{
+                            var actionButtonClass = species.IsPublicAvailable
+                                ? "admin-species-card__button admin-species-card__button--hidden"
+                                : "admin-species-card__button admin-species-card__button--visible";
+                        }
 
-                            <div>
-                                <dt>Taille</dt>
-                                <dd>@species.AdultSizeLabel</dd>
-                            </div>
-
-                            <div>
-                                <dt>Poids</dt>
-                                <dd>@species.WeightLabel</dd>
-                            </div>
-                        </dl>
-
-                        <div class="species-card__footer">
-                            <a asp-page="./Details"
+                        <div class="admin-species-card__actions">
+                            <a asp-page="/Species/Details"
                                asp-route-slug="@species.Slug"
-                               asp-route-returnUrl="@currentUrl">
-                                Voir la fiche →
+                               asp-route-returnUrl="@currentUrl"
+                               class="admin-species-card__button admin-species-card__button--ghost">
+                                Voir la fiche
                             </a>
+
+                            <form method="post"
+                                  asp-page-handler="SetVisibility"
+                                  asp-route-slug="@species.Slug"
+                                  asp-route-makePublic="@(!species.IsPublicAvailable)">
+                                <button type="submit" class="@actionButtonClass">
+                                    @(species.IsPublicAvailable ? "Rendre non visible" : "Rendre disponible")
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </article>
@@ -186,7 +169,7 @@
                 Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
             </div>
 
-            <nav aria-label="Pagination des espèces">
+            <nav aria-label="Pagination des espèces à valider">
                 @if (Model.PageNumber <= 1)
                 {
                     <span class="species-pagination__link species-pagination__link--disabled">

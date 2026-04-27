@@ -1,12 +1,12 @@
-﻿@page "/equipment"
-@model BioDomes.Web.Pages.Equipment.IndexModel
+﻿@page "/admin/equipment"
+@model BioDomes.Web.Pages.Admin.Equipment.IndexModel
 
 @{
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
-    ViewData["Title"] = "Catalogue des équipements";
-    ViewData["DashboardTitle"] = "Catalogue des équipements";
-    ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les équipements enregistrés dans BioDomes.";
+    ViewData["Title"] = "Validation des équipements";
+    ViewData["DashboardTitle"] = "Validation des équipements";
+    ViewData["DashboardSubtitle"] = "Gère la visibilité des équipements créés par les utilisateurs.";
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
     var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
@@ -16,21 +16,6 @@
 }
 
 <section class="species-catalog">
-    <header class="species-catalog__header">
-        <a asp-page="./Add"
-           asp-route-returnUrl="@currentUrl"
-           class="action-button">
-            + Ajouter un équipement
-        </a>
-    </header>
-    
-    @if (!string.IsNullOrWhiteSpace(Model.LastInsertedEquipmentName))
-    {
-        <div class="species-catalog__success">
-            Equipement ajouté : <strong>@Model.LastInsertedEquipmentName</strong>
-        </div>
-    }
-
     <form method="get" class="species-filter-card">
         <div class="species-filter-card__search">
             <label for="Search">Recherche</label>
@@ -38,7 +23,7 @@
                    name="Search"
                    value="@Model.Search"
                    type="search"
-                   placeholder="Rechercher par nom ou ressource..." />
+                   placeholder="Rechercher par nom, créateur ou ressource..." />
         </div>
 
         <div class="species-filter-card__select">
@@ -77,8 +62,8 @@
             <label for="VisibilityFilter">Visibilité</label>
             <select id="VisibilityFilter" name="VisibilityFilter">
                 <option value="" selected="@visibilityAllSelected">Toutes</option>
-                <option value="public" selected="@visibilityPublicSelected">Publiques</option>
-                <option value="private" selected="@visibilityPrivateSelected">Privées</option>
+                <option value="public" selected="@visibilityPublicSelected">Disponibles</option>
+                <option value="private" selected="@visibilityPrivateSelected">Non visibles</option>
             </select>
         </div>
 
@@ -93,81 +78,80 @@
         </div>
     </form>
 
-    @if (Model.EquipmentCards.Count == 0)
+    @if (Model.EquipmentList.Count == 0)
     {
         <div class="species-empty-card">
-            <div class="species-empty-card__icon">+</div>
+            <div class="species-empty-card__icon" aria-hidden="true"></div>
 
             <h3>Aucun équipement trouvé</h3>
 
             <p>
-                Modifie ta recherche ou ajoute un nouvel équipement au catalogue.
+                Aucun équipement créé par un utilisateur ne correspond aux filtres sélectionnés.
             </p>
-
-            <a asp-page="./Add"
-               asp-route-returnUrl="@currentUrl"
-               class="action-button">
-                + Ajouter un équipement
-            </a>
         </div>
     }
     else
     {
-        <div class="species-grid">
-            @foreach (var equipment in Model.EquipmentCards)
+        <div class="admin-species-list">
+            @foreach (var equipment in Model.EquipmentList)
             {
-                var statusClass = equipment.IsPublicAvailable
-                    ? "species-card__status--public"
-                    : "species-card__status--private";
+                var actionButtonClass = equipment.IsPublicAvailable
+                    ? "admin-species-card__button admin-species-card__button--hidden"
+                    : "admin-species-card__button admin-species-card__button--visible";
 
-                var statusLabel = equipment.IsPublicAvailable
-                    ? "Public"
-                    : "Privé";
-
-                <article class="species-card">
-                    <div class="species-card__image">
+                <article class="admin-species-card">
+                    <div class="admin-species-card__image">
                         <img src="@equipment.ImagePath" alt="Image de @equipment.Name" />
-
-                        <span class="species-card__status @statusClass">
-                            @statusLabel
-                        </span>
-
-                        @if (equipment.CanEdit)
-                        {
-                            <a asp-page="./Edit"
-                               asp-route-slug="@equipment.Slug"
-                               asp-route-returnUrl="@currentUrl"
-                               class="species-card__edit"
-                               aria-label="Modifier @equipment.Name">
-                                <div class="species-card-edit__icon" aria-hidden="true">
-                                    <img src="~/images/species/icons/pen.png" alt="Icon modifier" />
-                                </div>
-                            </a>
-                        }
                     </div>
 
-                    <div class="species-card__body">
-                        <div class="species-card__title-block">
+                    <div class="admin-species-card__content">
+                        <div>
                             <h3>@equipment.Name</h3>
+
+                            <dl class="admin-species-card__meta">
+                                <div>
+                                    <dt>Produit</dt>
+                                    <dd>@equipment.ProducedElementLabel</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Consomme</dt>
+                                    <dd>@equipment.ConsumedElementLabel</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Créateur</dt>
+                                    <dd>@equipment.CreatorName</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Visibilité</dt>
+                                    <dd>@equipment.VisibilityLabel</dd>
+                                </div>
+                            </dl>
                         </div>
 
-                        <dl class="species-card__meta">
-                            <div>
-                                <dt>Produit</dt>
-                                <dd>@equipment.ProducedElementLabel</dd>
-                            </div>
-
-                            <div>
-                                <dt>Consomme</dt>
-                                <dd>@equipment.ConsumedElementLabel</dd>
-                            </div>
-                        </dl>
-
-                        <div class="species-card__footer">
-                            <a asp-page="./Details"
-                               asp-route-slug="@equipment.Slug">
-                                Voir la fiche →
+                        <div class="admin-species-card__actions">
+                            <a asp-page="/Equipment/Details"
+                               asp-route-slug="@equipment.Slug"
+                               asp-route-returnUrl="@currentUrl"
+                               class="admin-species-card__button admin-species-card__button--ghost">
+                                Voir la fiche
                             </a>
+
+                            <form method="post"
+                                  asp-page-handler="SetVisibility"
+                                  asp-route-slug="@equipment.Slug"
+                                  asp-route-makePublic="@(!equipment.IsPublicAvailable)"
+                                  asp-route-Search="@Model.Search"
+                                  asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                                  asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                                  asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                                  asp-route-PageNumber="@Model.PageNumber">
+                                <button type="submit" class="@actionButtonClass">
+                                    @(equipment.IsPublicAvailable ? "Rendre non visible" : "Rendre disponible")
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </article>
@@ -182,7 +166,7 @@
                 Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
             </div>
 
-            <nav aria-label="Pagination des équipements">
+            <nav aria-label="Pagination des équipements à valider">
                 @if (Model.PageNumber <= 1)
                 {
                     <span class="species-pagination__link species-pagination__link--disabled">

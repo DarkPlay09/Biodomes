@@ -96,4 +96,18 @@ public class EfBiomeRepository : IBiomeRepository
         _context.Biomes.Remove(entity);
         _context.SaveChanges();
     }
+    
+    public int CountBiomesUsingSpecies(int speciesId)
+    {
+        return _context.Biomes
+            .AsNoTracking()
+            .Count(biome => biome.BiomeSpeciesLinks.Any(link => link.SpeciesId == speciesId));
+    }
+    
+    public int CountBiomesUsingEquipment(int equipmentId)
+    {
+        return _context.Biomes
+            .AsNoTracking()
+            .Count(biome => biome.BiomeEquipmentLinks.Any(link => link.EquipmentId == equipmentId));
+    }
 }

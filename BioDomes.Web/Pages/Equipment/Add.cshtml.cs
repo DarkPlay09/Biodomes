@@ -42,12 +42,29 @@ public class AddModel : PageModel
     public IEnumerable<SelectListItem> ResourceOptions =>
         Enum.GetNames<ResourceType>()
             .Select(x => new SelectListItem(x, x));
+    
+    /// <summary>
+    /// URL de retour vers la page précédente.
+    /// </summary>
+    [BindProperty]
+    public string? ReturnUrl { get; set; }
+
+    /// <summary>
+    /// URL de retour sécurisée.
+    /// </summary>
+    public string SafeReturnUrl =>
+        Url.IsLocalUrl(ReturnUrl)
+            ? ReturnUrl
+            : Url.Page("/Equipment/Index") ?? "/equipment";
 
     /// <summary>
     /// Affiche simplement le formulaire d'ajout d'équipement.
     /// </summary>
-    public void OnGet()
+    public IActionResult OnGet(string? returnUrl = null)
     {
+        ReturnUrl = returnUrl;
+
+        return Page();
     }
 
     /// <summary>
@@ -113,6 +130,8 @@ public class AddModel : PageModel
         try
         {
             _equipmentRepository.Add(equipment);
+            
+            TempData["SuccessMessage"] = $"L'équipement « {Input.Name} » a bien été ajouté.";
         }
         catch (InvalidOperationException ex)
         {
@@ -120,7 +139,7 @@ public class AddModel : PageModel
             return Page();
         }
 
-        return RedirectToPage("/Equipment/Index");
+        return LocalRedirect(SafeReturnUrl);
     }
 
     /// <summary>

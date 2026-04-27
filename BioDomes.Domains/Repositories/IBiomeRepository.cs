@@ -9,4 +9,6 @@ public interface IBiomeRepository
     IReadOnlyList<Biome> GetAllByCreator(int creatorId);
     void Update(string slug, Biome biome);
     void DeleteBySlug(string slug);
+    int CountBiomesUsingSpecies(int speciesId);
+    int CountBiomesUsingEquipment(int equipmentId);
 }

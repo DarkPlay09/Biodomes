@@ -59,4 +59,8 @@ public class SpeciesInputModel
     /// </summary>
     [Display(Name = "Image")]
     public IFormFile? ImageFile { get; set; }
+    
+    public bool CanManage { get; set; }
+
+    public int ImpactedBiomesCount { get; set; }
 }

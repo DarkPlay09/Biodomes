@@ -1,34 +1,32 @@
-﻿@page "/species/details/{slug}"
-@model BioDomes.Web.Pages.Species.DetailsModel
+﻿@page "/equipment/details/{slug}"
+@model BioDomes.Web.Pages.Equipment.DetailsModel
 
 @{
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
-    ViewData["Title"] = Model.SpeciesDetails.Name;
-    ViewData["DashboardTitle"] = "Fiche espèce détaillée";
-    ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
+    ViewData["Title"] = Model.EquipmentDetails.Name;
+    ViewData["DashboardTitle"] = "Fiche équipement détaillée";
+    ViewData["DashboardSubtitle"] = "Consulte les informations principales de cet équipement.";
     
     var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
 }
 
 <section class="species-details">
     <nav class="species-details-breadcrumb" aria-label="Fil d'Ariane">
-        <a asp-page="./Index">Espèces</a>
+        <a asp-page="./Index">Équipements</a>
         <span>›</span>
-        <span>@Model.SpeciesDetails.ClassificationLabel</span>
-        <span>›</span>
-        <strong>@Model.SpeciesDetails.Name</strong>
+        <strong>@Model.EquipmentDetails.Name</strong>
     </nav>
 
     <div class="species-details-layout">
         <div class="species-details-media">
             <article class="species-details-image-card">
-                <img src="@Model.SpeciesDetails.ImagePath"
-                     alt="Image de @Model.SpeciesDetails.Name" />
+                <img src="@Model.EquipmentDetails.ImagePath"
+                     alt="Image de @Model.EquipmentDetails.Name" />
 
                 <div class="species-details-badges">
-                    <span class="species-details-badge @Model.SpeciesDetails.VisibilityCssClass">
-                        @Model.SpeciesDetails.VisibilityLabel
+                    <span class="species-details-badge @Model.EquipmentDetails.VisibilityCssClass">
+                        @Model.EquipmentDetails.VisibilityLabel
                     </span>
                 </div>
             </article>
@@ -40,52 +38,40 @@
 
         <article class="species-details-content">
             <header class="species-details-header">
-                <h2>@Model.SpeciesDetails.Name</h2>
+                <h2>@Model.EquipmentDetails.Name</h2>
             </header>
 
-            <div class="species-details-stats">
+            <div class="equipement-details-stats">
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/category.png" alt="Icon classification" />
-                    <small>Classification</small>
-                    <strong>@Model.SpeciesDetails.ClassificationLabel</strong>
+                    <img class="species-details-stat__icon" src="~/images/equipment/icons/produces.png" alt="Icon produit" />
+                    <small>Produit</small>
+                    <strong>@Model.EquipmentDetails.ProducedElementLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/cutlery.png" alt="Icon alimentation" />
-                    <small>Régime</small>
-                    <strong>@Model.SpeciesDetails.DietLabel</strong>
-                </div>
-
-                <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/height.png" alt="Icon taille" />
-                    <small>Taille adulte</small>
-                    <strong>@Model.SpeciesDetails.AdultSizeLabel</strong>
-                </div>
-
-                <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/weight.png" alt="Icon poids" />
-                    <small>Poids</small>
-                    <strong>@Model.SpeciesDetails.WeightLabel</strong>
+                    <img class="species-details-stat__icon" src="~/images/equipment/icons/consumes.png" alt="Icon consomme" />
+                    <small>Consomme</small>
+                    <strong>@Model.EquipmentDetails.ConsumedElementLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
                     <img class="species-details-stat__icon" src="~/images/species/icons/visibility.png" alt="Icon visibilité" />
                     <small>Visibilité</small>
-                    <strong>@Model.SpeciesDetails.VisibilityLabel</strong>
+                    <strong>@Model.EquipmentDetails.VisibilityLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
                     <img class="species-details-stat__icon" src="~/images/species/icons/user.png" alt="Icon créateur" />
                     <small>Créateur</small>
-                    <strong>@Model.SpeciesDetails.OwnerName</strong>
+                    <strong>@Model.EquipmentDetails.OwnerName</strong>
                 </div>
             </div>
             
-            @if (Model.SpeciesDetails.CanManage)
+            @if (Model.EquipmentDetails.CanManage)
             {
                 <div class="species-details-actions">
                     <a asp-page="./Edit"
-                       asp-route-slug="@Model.SpeciesDetails.Slug"
+                       asp-route-slug="@Model.EquipmentDetails.Slug"
                        asp-route-returnUrl="@currentUrl"
                        class="species-details-edit-button">
                         Modifier la fiche
@@ -94,15 +80,15 @@
                     <form id="deleteEntityForm"
                           method="post"
                           asp-page-handler="Delete"
-                          asp-route-slug="@Model.SpeciesDetails.Slug"
+                          asp-route-slug="@Model.EquipmentDetails.Slug"
                           asp-route-returnUrl="@Model.SafeReturnUrl"
                           class="species-details-delete-form">
-                        @if (Model.SpeciesDetails.ImpactedBiomesCount == 0)
+                        @if (Model.EquipmentDetails.ImpactedBiomesCount == 0)
                         {
                             <button type="button"
                                     class="species-details-delete-button"
                                     data-open-delete-modal>
-                                Supprimer l'espèce
+                                Supprimer l'équipement
                             </button>
                         }
                         else
@@ -114,7 +100,7 @@
                             </button>
 
                             <p class="species-details-delete-help">
-                                Cette espèce est utilisée dans @Model.SpeciesDetails.ImpactedBiomesCount biome(s).
+                                Cet équipement est utilisé dans @Model.EquipmentDetails.ImpactedBiomesCount biome(s).
                             </p>
                         }
                     </form>
@@ -143,7 +129,7 @@
             </h3>
 
             <p class="custom-modal__text">
-                Voulez-vous vraiment supprimer cette espèce ?
+                Voulez-vous vraiment supprimer cet équipement ?
                 Cette action est <strong>définitive</strong>.
             </p>
 
