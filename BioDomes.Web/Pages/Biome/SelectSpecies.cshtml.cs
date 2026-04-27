@@ -1,12 +1,9 @@
 ﻿using System.Security.Claims;
-using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
+using BioDomes.Domains.Queries.Species;
 using BioDomes.Domains.Repositories;
-using BioDomes.Infrastructures;
-using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace BioDomes.Web.Pages.Biome;
 
@@ -15,20 +12,10 @@ public class SelectSpeciesModel : PageModel
     private const int SpeciesPerPage = 8;
 
     private readonly IBiomeRepository _biomeRepository;
-    private readonly ISpeciesRepository _speciesRepository;
-    private readonly BioDomesDbContext _context;
-    private readonly ISlugService _slugService;
 
-    public SelectSpeciesModel(
-        IBiomeRepository biomeRepository,
-        ISpeciesRepository speciesRepository,
-        BioDomesDbContext context,
-        ISlugService slugService)
+    public SelectSpeciesModel(IBiomeRepository biomeRepository)
     {
         _biomeRepository = biomeRepository;
-        _speciesRepository = speciesRepository;
-        _context = context;
-        _slugService = slugService;
     }
 
     [BindProperty(SupportsGet = true)]
@@ -77,26 +64,21 @@ public class SelectSpeciesModel : PageModel
         if (biome.Creator.Id != currentUserId)
             return Forbid();
 
-        BiomeName = biome.Name;
-        BiomeSlug = _slugService.ToSlug(biome.Name);
+        var pageData = _biomeRepository.GetSelectSpeciesPageData(slug, currentUserId);
+        if (pageData is null)
+            return NotFound();
 
-        var linkedSpeciesIds = _context.BiomeSpeciesLinks
-            .AsNoTracking()
-            .Where(link => link.BiomeId == biome.Id)
-            .Select(link => link.SpeciesId)
-            .ToHashSet();
+        BiomeName = pageData.BiomeName;
+        BiomeSlug = pageData.BiomeSlug;
 
-        var visibleSpecies = _speciesRepository.GetAll()
-            .Where(species => species.IsPublicAvailable || species.Creator.Id == currentUserId);
-
-        var filtered = ApplyFilters(visibleSpecies)
+        var filtered = ApplyFilters(pageData.Species)
             .OrderBy(species => species.Name)
             .ToList();
 
         if (!IncludeAlreadyInBiome)
         {
             filtered = filtered
-                .Where(species => !linkedSpeciesIds.Contains(species.Id))
+                .Where(species => !species.IsAlreadyInBiome)
                 .ToList();
         }
 
@@ -108,71 +90,26 @@ public class SelectSpeciesModel : PageModel
             .Take(SpeciesPerPage)
             .Select(species => new SelectSpeciesCatalogItemViewModel
             {
-                Id = species.Id,
+                Id = species.SpeciesId,
                 Name = species.Name,
-                Slug = _slugService.ToSlug(species.Name),
+                Slug = species.Slug,
                 ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
                     ? "/images/species/noImageSpecie.png"
                     : species.ImagePath,
-                ClassificationLabel = FormatClassification(species.Classification),
-                DietLabel = FormatDiet(species.Diet),
+                ClassificationLabel = species.Classification,
+                DietLabel = species.Diet,
                 AdultSizeLabel = $"{species.AdultSize:0.##} m",
                 WeightLabel = species.Weight >= 1000
                     ? $"{species.Weight / 1000:0.##} t"
                     : $"{species.Weight:0.##} kg",
                 IsPublicAvailable = species.IsPublicAvailable,
-                IsAlreadyInBiome = linkedSpeciesIds.Contains(species.Id)
+                IsAlreadyInBiome = species.IsAlreadyInBiome
             })
             .ToList();
 
         VisiblePages = BuildVisiblePages(PageNumber, TotalPages);
 
         return Page();
-    }
-
-    public IActionResult OnPostAddToBiome(string slug, int speciesId)
-    {
-        if (!TryGetCurrentUserId(out var currentUserId))
-            return Challenge();
-
-        var biome = _biomeRepository.GetBySlug(slug);
-        if (biome is null)
-            return NotFound();
-
-        if (biome.Creator.Id != currentUserId)
-            return Forbid();
-
-        var species = _context.Species
-            .AsNoTracking()
-            .FirstOrDefault(s => s.Id == speciesId);
-
-        if (species is null)
-            return NotFound();
-
-        if (!species.IsPublicAvailable && species.CreatorId != currentUserId)
-            return Forbid();
-
-        var existing = _context.BiomeSpeciesLinks
-            .FirstOrDefault(link => link.BiomeId == biome.Id && link.SpeciesId == speciesId);
-
-        if (existing is null)
-        {
-            _context.BiomeSpeciesLinks.Add(new()
-            {
-                BiomeId = biome.Id,
-                SpeciesId = speciesId,
-                IndividualCount = 1
-            });
-        }
-        else
-        {
-            existing.IndividualCount += 1;
-        }
-
-        _context.SaveChanges();
-        TempData["SuccessMessage"] = "Espèce ajoutée au biome.";
-
-        return RedirectToPage("/Biome/Species", new { slug = _slugService.ToSlug(biome.Name) });
     }
 
     public IActionResult OnPostConfirmSelection(string slug)
@@ -194,55 +131,16 @@ public class SelectSpeciesModel : PageModel
         if (selectedIds.Count == 0)
         {
             TempData["SuccessMessage"] = "Aucune espèce sélectionnée.";
-            return RedirectToPage(new { slug = _slugService.ToSlug(biome.Name) });
+            return RedirectToPage(new { slug });
         }
 
-        var allowedSpeciesIds = _context.Species
-            .AsNoTracking()
-            .Where(s => selectedIds.Contains(s.Id))
-            .Where(s => s.IsPublicAvailable || s.CreatorId == currentUserId)
-            .Select(s => s.Id)
-            .ToHashSet();
+        _biomeRepository.AddSpeciesToBiome(biome.Id, selectedIds, 1);
+        TempData["SuccessMessage"] = $"{selectedIds.Count} espèce(s) ajoutée(s) au biome.";
 
-        var existingLinks = _context.BiomeSpeciesLinks
-            .Where(link => link.BiomeId == biome.Id && allowedSpeciesIds.Contains(link.SpeciesId))
-            .ToList();
-
-        var existingBySpeciesId = existingLinks.ToDictionary(link => link.SpeciesId, link => link);
-        var addedSpeciesCount = 0;
-
-        foreach (var speciesIdValue in allowedSpeciesIds)
-        {
-            if (existingBySpeciesId.TryGetValue(speciesIdValue, out var existingLink))
-            {
-                existingLink.IndividualCount += 1;
-            }
-            else
-            {
-                _context.BiomeSpeciesLinks.Add(new()
-                {
-                    BiomeId = biome.Id,
-                    SpeciesId = speciesIdValue,
-                    IndividualCount = 1
-                });
-            }
-
-            addedSpeciesCount++;
-        }
-
-        if (addedSpeciesCount == 0)
-        {
-            TempData["SuccessMessage"] = "Aucune espèce valide à ajouter.";
-            return RedirectToPage(new { slug = _slugService.ToSlug(biome.Name) });
-        }
-
-        _context.SaveChanges();
-        TempData["SuccessMessage"] = $"{addedSpeciesCount} espèce(s) ajoutée(s) au biome.";
-
-        return RedirectToPage("/Biome/Species", new { slug = _slugService.ToSlug(biome.Name) });
+        return RedirectToPage("/Biome/Species", new { slug });
     }
 
-    private IEnumerable<Domains.Entities.Species> ApplyFilters(IEnumerable<Domains.Entities.Species> species)
+    private IEnumerable<SelectSpeciesCardDto> ApplyFilters(IEnumerable<SelectSpeciesCardDto> species)
     {
         var filteredSpecies = species;
 
@@ -251,20 +149,28 @@ public class SelectSpeciesModel : PageModel
             var search = Search.Trim();
             filteredSpecies = filteredSpecies.Where(currentSpecies =>
                 currentSpecies.Name.Contains(search, StringComparison.OrdinalIgnoreCase)
-                || FormatClassification(currentSpecies.Classification).Contains(search, StringComparison.OrdinalIgnoreCase)
-                || FormatDiet(currentSpecies.Diet).Contains(search, StringComparison.OrdinalIgnoreCase));
+                || currentSpecies.Classification.Contains(search, StringComparison.OrdinalIgnoreCase)
+                || currentSpecies.Diet.Contains(search, StringComparison.OrdinalIgnoreCase));
         }
 
         if (ClassificationFilter.HasValue)
         {
+            var expectedEnumName = ClassificationFilter.Value.ToString();
+            var expectedLabel = FormatClassification(ClassificationFilter.Value);
+
             filteredSpecies = filteredSpecies.Where(currentSpecies =>
-                currentSpecies.Classification == ClassificationFilter.Value);
+                string.Equals(currentSpecies.Classification, expectedEnumName, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(currentSpecies.Classification, expectedLabel, StringComparison.OrdinalIgnoreCase));
         }
 
         if (DietFilter.HasValue)
         {
+            var expectedEnumName = DietFilter.Value.ToString();
+            var expectedLabel = FormatDiet(DietFilter.Value);
+
             filteredSpecies = filteredSpecies.Where(currentSpecies =>
-                currentSpecies.Diet == DietFilter.Value);
+                string.Equals(currentSpecies.Diet, expectedEnumName, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(currentSpecies.Diet, expectedLabel, StringComparison.OrdinalIgnoreCase));
         }
 
         if (!string.IsNullOrWhiteSpace(VisibilityFilter))

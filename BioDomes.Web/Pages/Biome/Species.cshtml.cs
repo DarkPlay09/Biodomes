@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BioDomes.Web.Pages.Biome;
 
+// TODO : page peut etre à supprimer (en fonction de l'UI)
 public class SpeciesModel : PageModel
 {
     private readonly IBiomeRepository _biomeRepository;
