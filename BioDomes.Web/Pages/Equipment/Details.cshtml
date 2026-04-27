@@ -19,16 +19,22 @@
     </nav>
 
     <div class="species-details-layout">
-        <article class="species-details-image-card">
-            <img src="@Model.EquipmentDetails.ImagePath"
-                 alt="Image de @Model.EquipmentDetails.Name" />
+        <div class="species-details-media">
+            <article class="species-details-image-card">
+                <img src="@Model.EquipmentDetails.ImagePath"
+                     alt="Image de @Model.EquipmentDetails.Name" />
 
-            <div class="species-details-badges">
-                <span class="species-details-badge @Model.EquipmentDetails.VisibilityCssClass">
-                    @Model.EquipmentDetails.VisibilityLabel
-                </span>
-            </div>
-        </article>
+                <div class="species-details-badges">
+                    <span class="species-details-badge @Model.EquipmentDetails.VisibilityCssClass">
+                        @Model.EquipmentDetails.VisibilityLabel
+                    </span>
+                </div>
+            </article>
+
+            <a href="@Model.SafeReturnUrl" class="species-details-back">
+                Retour
+            </a>
+        </div>
 
         <article class="species-details-content">
             <header class="species-details-header">
@@ -61,7 +67,7 @@
                 </div>
             </div>
             
-            @if (Model.EquipmentDetails.IsOwner)
+            @if (Model.EquipmentDetails.CanManage)
             {
                 <div class="species-details-actions">
                     <a asp-page="./Edit"
@@ -75,13 +81,28 @@
                           method="post"
                           asp-page-handler="Delete"
                           asp-route-slug="@Model.EquipmentDetails.Slug"
-                          asp-route-returnUrl="@currentUrl"
+                          asp-route-returnUrl="@Model.SafeReturnUrl"
                           class="species-details-delete-form">
-                        <button type="button"
-                                class="species-details-delete-button"
-                                data-open-delete-modal>
-                            Supprimer l'équipement
-                        </button>
+                        @if (Model.EquipmentDetails.ImpactedBiomesCount == 0)
+                        {
+                            <button type="button"
+                                    class="species-details-delete-button"
+                                    data-open-delete-modal>
+                                Supprimer l'équipement
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button"
+                                    class="species-details-delete-button"
+                                    disabled>
+                                Suppression impossible
+                            </button>
+
+                            <p class="species-details-delete-help">
+                                Cet équipement est utilisé dans @Model.EquipmentDetails.ImpactedBiomesCount biome(s).
+                            </p>
+                        }
                     </form>
                 </div>
             }

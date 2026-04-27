@@ -10,4 +10,5 @@ public interface IBiomeRepository
     void Update(string slug, Biome biome);
     void DeleteBySlug(string slug);
     int CountBiomesUsingSpecies(int speciesId);
+    int CountBiomesUsingEquipment(int equipmentId);
 }

@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -24,6 +26,7 @@ public class IndexModel : PageModel
     private readonly IEquipmentRepository _repository;
     private readonly IEquipmentImageStorage _equipmentImageStorage;
     private readonly ISlugService _slugService;
+    private readonly UserManager<UserEntity> _userManager;
 
     /// <summary>
     /// Initialise la page catalogue des équipements.
@@ -31,14 +34,17 @@ public class IndexModel : PageModel
     /// <param name="repository">Repository permettant de lire et supprimer les équipements.</param>
     /// <param name="equipmentImageStorage">Service permettant de supprimer l'image liée à un équipement.</param>
     /// <param name="slugService">Service slug pour les liens des équipements.</param>
+    /// <param name="userManager">...</param>
     public IndexModel(
         IEquipmentRepository repository,
         IEquipmentImageStorage equipmentImageStorage,
-        ISlugService slugService)
+        ISlugService slugService,
+        UserManager<UserEntity> userManager)
     {
         _repository = repository;
         _equipmentImageStorage = equipmentImageStorage;
         _slugService = slugService;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -129,14 +135,15 @@ public class IndexModel : PageModel
     /// calcule la pagination et prépare les cartes du catalogue.
     /// </summary>
     /// <returns>La page catalogue ou une demande de connexion.</returns>
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGetAsync()
     {
         if (!TryGetCurrentUserId(out var currentUserId))
         {
             return Challenge();
         }
 
-        // L'utilisateur voit les équipements publics ainsi que ses propres équipements privés.
+        var isAdmin = await IsCurrentUserAdminAsync();
+
         var visibleEquipment = _repository.GetAll()
             .Where(equipment => equipment.IsPublicAvailable || equipment.Creator.Id == currentUserId)
             .ToList();
@@ -170,7 +177,7 @@ public class IndexModel : PageModel
         EquipmentCards = filteredEquipment
             .Skip((PageNumber - 1) * EquipmentPerPage)
             .Take(EquipmentPerPage)
-            .Select(equipment => MapToCatalogItem(equipment, currentUserId))
+            .Select(equipment => MapToCatalogItem(equipment, currentUserId, isAdmin))
             .ToList();
 
         VisiblePages = BuildVisiblePages(PageNumber, TotalPages);
@@ -278,8 +285,13 @@ public class IndexModel : PageModel
     /// <param name="equipment">Équipement à afficher.</param>
     /// <param name="currentUserId">Identifiant de l'utilisateur connecté.</param>
     /// <returns>Carte prête à être affichée.</returns>
-    private EquipmentCatalogItemViewModel MapToCatalogItem(EquipmentEntity equipment, int currentUserId)
+    private EquipmentCatalogItemViewModel MapToCatalogItem(
+        EquipmentEntity equipment,
+        int currentUserId,
+        bool isAdmin)
     {
+        var isOwner = equipment.Creator.Id == currentUserId;
+
         return new EquipmentCatalogItemViewModel
         {
             Id = equipment.Id,
@@ -291,8 +303,21 @@ public class IndexModel : PageModel
             ProducedElementLabel = FormatNullableResource(equipment.ProducedElement),
             ConsumedElementLabel = FormatNullableResource(equipment.ConsumedElement),
             IsPublicAvailable = equipment.IsPublicAvailable,
-            CanEdit = equipment.Creator.Id == currentUserId
+            CanEdit = CanManageEquipment(isOwner, isAdmin, equipment.IsPublicAvailable)
         };
+    }
+    
+    private async Task<bool> IsCurrentUserAdminAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CanManageEquipment(bool isOwner, bool isAdmin, bool isPublicAvailable)
+    {
+        return (isOwner && !isPublicAvailable)
+               || (isAdmin && isPublicAvailable);
     }
 
     /// <summary>

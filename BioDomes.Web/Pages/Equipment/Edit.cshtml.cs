@@ -2,7 +2,9 @@ using System.Security.Claims;
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,6 +21,8 @@ public class EditModel : PageModel
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IEquipmentImageStorage _equipmentImageStorage;
     private readonly ISlugService _slugService;
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly IBiomeRepository _biomeRepository;
 
     /// <summary>
     /// Initialise la page de modification avec les services d'accès aux équipements
@@ -27,14 +31,20 @@ public class EditModel : PageModel
     /// <param name="equipmentRepository">Repository permettant de lire et modifier les équipements.</param>
     /// <param name="equipmentImageStorage">Service responsable de l'enregistrement et de la suppression des images.</param>
     /// <param name="slugService">Service permettant de générer le slug de l'équipement après sa modification.</param>
+    /// <param name="userManager">...</param>
+    /// <param name="biomeRepository">...</param>
     public EditModel(
         IEquipmentRepository equipmentRepository,
         IEquipmentImageStorage equipmentImageStorage,
-        ISlugService slugService)
+        ISlugService slugService,
+        UserManager<UserEntity> userManager,
+        IBiomeRepository biomeRepository)
     {
         _equipmentRepository = equipmentRepository;
         _equipmentImageStorage = equipmentImageStorage;
         _slugService = slugService;
+        _userManager = userManager;
+        _biomeRepository = biomeRepository;
     }
 
     /// <summary>
@@ -55,7 +65,7 @@ public class EditModel : PageModel
     /// Utilisé pour afficher l'aperçu dans le formulaire.
     /// </summary>
     public string? CurrentImagePath { get; set; }
-    
+
     /// <summary>
     /// URL de retour vers la page précédente.
     /// </summary>
@@ -70,29 +80,44 @@ public class EditModel : PageModel
             ? ReturnUrl
             : Url.Page("/Equipment/Index") ?? "/equipment";
 
+    public int ImpactedBiomesCount { get; private set; }
+
+    public bool ShowImpactWarning => ImpactedBiomesCount > 0;
+
     /// <summary>
     /// Charge l'équipement à modifier et préremplit le formulaire.
     /// </summary>
     /// <param name="slug">Slug de l'équipement ciblé.</param>
     /// <returns>La page préremplie, une erreur 404, une interdiction ou une demande de connexion.</returns>
-    public IActionResult OnGet(string slug, string? returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string slug, string? returnUrl = null)
     {
         ReturnUrl = returnUrl;
-        
+
         if (!TryGetCurrentUserId(out var currentUserId))
-            return Challenge(); // Aller à la page de connexion.
+        {
+            return Challenge();
+        }
 
         var equipment = _equipmentRepository.GetBySlug(slug);
-        if (equipment is null)
-            return NotFound();
 
-        if (equipment.Creator.Id != currentUserId)
-            return Forbid(); // Interdiction de modifier l'équipement d'un autre utilisateur.
+        if (equipment is null)
+        {
+            return NotFound();
+        }
+
+        var isOwner = equipment.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
+
+        if (!CanManageEquipment(isOwner, isAdmin, equipment.IsPublicAvailable))
+        {
+            return Forbid();
+        }
 
         Input.Name = equipment.Name;
         Input.ProducedElement = equipment.ProducedElement?.ToString();
         Input.ConsumedElement = equipment.ConsumedElement?.ToString();
         CurrentImagePath = equipment.ImagePath;
+        ImpactedBiomesCount = _biomeRepository.CountBiomesUsingEquipment(equipment.Id);
 
         return Page();
     }
@@ -104,41 +129,57 @@ public class EditModel : PageModel
     /// </summary>
     /// <param name="slug">Slug de l'équipement à modifier.</param>
     /// <returns>La page avec les erreurs éventuelles ou une redirection vers la liste des équipements.</returns>
-    public async Task<IActionResult> OnPost(string slug)
+    public async Task<IActionResult> OnPostAsync(string slug)
     {
         if (!TryGetCurrentUserId(out var currentUserId))
+        {
             return Challenge();
+        }
 
         var existingEquipment = _equipmentRepository.GetBySlug(slug);
-        if (existingEquipment is null)
-            return NotFound();
 
-        if (existingEquipment.Creator.Id != currentUserId)
+        if (existingEquipment is null)
+        {
+            return NotFound();
+        }
+
+        var isOwner = existingEquipment.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
+
+        if (!CanManageEquipment(isOwner, isAdmin, existingEquipment.IsPublicAvailable))
+        {
             return Forbid();
+        }
 
         CurrentImagePath = existingEquipment.ImagePath;
+        ImpactedBiomesCount = _biomeRepository.CountBiomesUsingEquipment(existingEquipment.Id);
 
         if (!ModelState.IsValid)
+        {
             return Page();
+        }
 
         var produced = ParseResourceType(Input.ProducedElement);
         var consumed = ParseResourceType(Input.ConsumedElement);
 
         if (!ModelState.IsValid)
-            return Page();
-
-        // Un équipement doit rester utile dans l'écosystème : produire et/ou consommer une ressource.
-        if (produced is null && consumed is null)
         {
-            ModelState.AddModelError(string.Empty, "Un equipement doit produire et/ou consommer au moins un element.");
             return Page();
         }
+
+        if (produced is null && consumed is null)
+        {
+            ModelState.AddModelError(string.Empty, "Un équipement doit produire et/ou consommer au moins un élément.");
+            return Page();
+        }
+
+        var producedChanged = existingEquipment.ProducedElement != produced;
+        var consumedChanged = existingEquipment.ConsumedElement != consumed;
 
         var oldImagePath = existingEquipment.ImagePath;
         var imagePath = existingEquipment.ImagePath;
         var hasNewImage = false;
 
-        // Si une nouvelle image est fournie, elle remplace l'ancienne.
         if (Input.ImageFile is not null)
         {
             try
@@ -147,6 +188,7 @@ public class EditModel : PageModel
                     Input.Name!,
                     Input.ImageFile.FileName,
                     Input.ImageFile.OpenReadStream());
+
                 hasNewImage = true;
             }
             catch (InvalidOperationException ex)
@@ -161,25 +203,48 @@ public class EditModel : PageModel
             _equipmentImageStorage.Delete(oldImagePath);
         }
 
-        // Reconstruction de l'objet métier avec les nouvelles valeurs du formulaire.
         var equipment = new Domains.Entities.Equipment(
             Input.Name!,
             produced,
             consumed,
             imagePath,
-            new UserAccount { Id = currentUserId },
+            existingEquipment.Creator,
             existingEquipment.IsPublicAvailable)
         {
             Id = existingEquipment.Id
         };
 
         _equipmentRepository.Update(slug, equipment);
-        
+
+        if (ImpactedBiomesCount > 0 && (producedChanged || consumedChanged))
+        {
+            TempData["WarningMessage"] =
+                $"Attention : cet équipement est utilisé dans {ImpactedBiomesCount} biome(s). " +
+                "Modifier l'élément produit ou consommé peut impacter ces biomes.";
+        }
+
         TempData["SuccessMessage"] = $"L'équipement « {Input.Name} » a bien été modifié.";
-        
+
         var newSlug = _slugService.ToSlug(equipment.Name);
 
-        return RedirectToPage("./Details", new { slug = newSlug });
+        return RedirectToPage("./Details", new
+        {
+            slug = newSlug,
+            returnUrl = SafeReturnUrl
+        });
+    }
+    
+    private async Task<bool> IsCurrentUserAdminAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CanManageEquipment(bool isOwner, bool isAdmin, bool isPublicAvailable)
+    {
+        return (isOwner && !isPublicAvailable)
+               || (isAdmin && isPublicAvailable);
     }
 
     /// <summary>

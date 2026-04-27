@@ -103,4 +103,11 @@ public class EfBiomeRepository : IBiomeRepository
             .AsNoTracking()
             .Count(biome => biome.BiomeSpeciesLinks.Any(link => link.SpeciesId == speciesId));
     }
+    
+    public int CountBiomesUsingEquipment(int equipmentId)
+    {
+        return _context.Biomes
+            .AsNoTracking()
+            .Count(biome => biome.BiomeEquipmentLinks.Any(link => link.EquipmentId == equipmentId));
+    }
 }

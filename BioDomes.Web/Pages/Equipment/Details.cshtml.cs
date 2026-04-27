@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -19,6 +21,8 @@ public class DetailsModel : PageModel
     private readonly IEquipmentRepository _repository;
     private readonly ISlugService _slugService;
     private readonly IEquipmentImageStorage _equipmentImageStorage;
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly IBiomeRepository _biomeRepository;
 
     /// <summary>
     /// Initialise la page de détail avec le repository des équipements.
@@ -26,20 +30,40 @@ public class DetailsModel : PageModel
     /// <param name="repository">Repository permettant de récupérer un équipement.</param>
     /// <param name="slugService">Service slug pour les liens des équipements.</param>
     /// <param name="equipmentImageStorage">Service responsable de la suppression des images d'équipements.</param>
+    /// <param name="userManager">...</param>
+    /// <param name="biomeRepository">...</param>
     public DetailsModel(
         IEquipmentRepository repository,
         ISlugService slugService,
-        IEquipmentImageStorage equipmentImageStorage)
+        IEquipmentImageStorage equipmentImageStorage,
+        UserManager<UserEntity> userManager,
+        IBiomeRepository biomeRepository)
     {
         _repository = repository;
         _slugService = slugService;
         _equipmentImageStorage = equipmentImageStorage;
+        _userManager = userManager;
+        _biomeRepository = biomeRepository;
     }
 
     /// <summary>
     /// Données détaillées de l'équipement à afficher dans la vue.
     /// </summary>
     public EquipmentDetailsViewModel EquipmentDetails { get; private set; } = new();
+    
+    /// <summary>
+    /// URL de retour vers la page précédemment visitée.
+    /// </summary>
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
+
+    /// <summary>
+    /// URL de retour sécurisée.
+    /// </summary>
+    public string SafeReturnUrl =>
+        Url.IsLocalUrl(ReturnUrl)
+            ? ReturnUrl
+            : Url.Page("./Index") ?? "/equipment";
 
     /// <summary>
     /// Charge la fiche détaillée d'un équipement à partir de son slug.
@@ -48,8 +72,10 @@ public class DetailsModel : PageModel
     /// </summary>
     /// <param name="slug">Slug de l'équipement à afficher.</param>
     /// <returns>La page de détail, une erreur 404, une interdiction ou une demande de connexion.</returns>
-    public IActionResult OnGet(string slug)
+    public async Task<IActionResult> OnGetAsync(string slug, string? returnUrl = null)
     {
+        ReturnUrl = returnUrl;
+
         if (!TryGetCurrentUserId(out var currentUserId))
         {
             return Challenge();
@@ -63,13 +89,16 @@ public class DetailsModel : PageModel
         }
 
         var isOwner = equipment.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
 
-        if (!equipment.IsPublicAvailable && !isOwner)
+        if (!equipment.IsPublicAvailable && !isOwner && !isAdmin)
         {
             return Forbid();
         }
 
-        EquipmentDetails = MapToDetails(equipment, isOwner);
+        var impactedBiomesCount = _biomeRepository.CountBiomesUsingEquipment(equipment.Id);
+
+        EquipmentDetails = MapToDetails(equipment, isOwner, isAdmin, impactedBiomesCount);
 
         return Page();
     }
@@ -80,8 +109,10 @@ public class DetailsModel : PageModel
     /// </summary>
     /// <param name="slug">Slug de l'équipement à supprimer.</param>
     /// <returns>Une redirection vers le catalogue ou une erreur si l'action est interdite.</returns>
-    public IActionResult OnPostDelete(string slug)
+    public async Task<IActionResult> OnPostDeleteAsync(string slug, string? returnUrl = null)
     {
+        ReturnUrl = returnUrl;
+
         if (!TryGetCurrentUserId(out var currentUserId))
         {
             return Challenge();
@@ -94,9 +125,22 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        if (equipment.Creator.Id != currentUserId)
+        var isOwner = equipment.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
+
+        if (!CanManageEquipment(isOwner, isAdmin, equipment.IsPublicAvailable))
         {
             return Forbid();
+        }
+
+        var impactedBiomesCount = _biomeRepository.CountBiomesUsingEquipment(equipment.Id);
+
+        if (impactedBiomesCount > 0)
+        {
+            TempData["ErrorMessage"] =
+                $"Suppression impossible : l'équipement « {equipment.Name} » est utilisé dans {impactedBiomesCount} biome(s).";
+
+            return RedirectToPage(new { slug, returnUrl });
         }
 
         _repository.DeleteBySlug(slug);
@@ -104,7 +148,7 @@ public class DetailsModel : PageModel
 
         TempData["SuccessMessage"] = $"L'équipement « {equipment.Name} » a bien été supprimé.";
 
-        return RedirectToPage("./Index");
+        return LocalRedirect(SafeReturnUrl);
     }
 
     /// <summary>
@@ -113,7 +157,11 @@ public class DetailsModel : PageModel
     /// <param name="equipment">Équipement issu du domaine.</param>
     /// <param name="isOwner">Indique si l'utilisateur connecté est le créateur de l'équipement.</param>
     /// <returns>ViewModel prêt à être affiché.</returns>
-    private EquipmentDetailsViewModel MapToDetails(EquipmentEntity equipment, bool isOwner)
+    private EquipmentDetailsViewModel MapToDetails(
+        EquipmentEntity equipment,
+        bool isOwner,
+        bool isAdmin,
+        int impactedBiomesCount)
     {
         return new EquipmentDetailsViewModel
         {
@@ -133,8 +181,23 @@ public class DetailsModel : PageModel
             OwnerName = string.IsNullOrWhiteSpace(equipment.Creator.UserName)
                 ? "Créateur inconnu"
                 : equipment.Creator.UserName,
-            IsOwner = isOwner
+            IsOwner = isOwner,
+            CanManage = CanManageEquipment(isOwner, isAdmin, equipment.IsPublicAvailable),
+            ImpactedBiomesCount = impactedBiomesCount
         };
+    }
+    
+    private async Task<bool> IsCurrentUserAdminAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CanManageEquipment(bool isOwner, bool isAdmin, bool isPublicAvailable)
+    {
+        return (isOwner && !isPublicAvailable)
+               || (isAdmin && isPublicAvailable);
     }
 
     /// <summary>
@@ -237,5 +300,15 @@ public class DetailsModel : PageModel
         /// Indique si l'utilisateur connecté est le créateur de l'équipement.
         /// </summary>
         public bool IsOwner { get; set; }
+        
+        /// <summary>
+        /// Indique si l'utilisateur connecté peut modifier ou supprimer cet équipement.
+        /// </summary>
+        public bool CanManage { get; set; }
+
+        /// <summary>
+        /// Nombre de biomes qui utilisent cet équipement.
+        /// </summary>
+        public int ImpactedBiomesCount { get; set; }
     }
 }

@@ -16,6 +16,15 @@
                 <input type="hidden" asp-for="ReturnUrl" />
                 
                 <div asp-validation-summary="ModelOnly" class="entity-form__summary"></div>
+                
+                @if (Model.ShowImpactWarning)
+                {
+                    <div class="entity-impact-warning">
+                        <strong>Attention :</strong>
+                        cet équipement est utilisé dans @Model.ImpactedBiomesCount biome(s).
+                        Modifier l'élément produit ou consommé peut impacter ces biomes.
+                    </div>
+                }
 
                 <partial name="Equipment/_EquipmentForm" model="new EquipmentFormViewModel { Input = Model.Input, ResourceOptions = Model.ResourceOptions, CurrentImagePath = Model.CurrentImagePath, CurrentImageFileName = string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? null : System.IO.Path.GetFileName(Model.CurrentImagePath) }"/>
 
