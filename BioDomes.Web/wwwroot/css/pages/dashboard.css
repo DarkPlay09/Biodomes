@@ -836,6 +836,23 @@
     color: #ffffff;
 }
 
+.dashboard-sidebar__section {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dashboard-sidebar__section-title {
+    display: block;
+    margin: 0 0 0.45rem;
+    padding: 0 0.95rem;
+    color: #94a3b8;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 @media (max-width: 768px) {
     .dashboard-manage-nav {
         grid-template-columns: 1fr;

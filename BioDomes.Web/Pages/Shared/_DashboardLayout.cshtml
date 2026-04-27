@@ -10,11 +10,15 @@
     var isBiomesPage = currentPage.StartsWith("/Biome", StringComparison.OrdinalIgnoreCase);
     var isSpeciesPage = currentPage.StartsWith("/Species", StringComparison.OrdinalIgnoreCase);
     var isEquipmentPage = currentPage.StartsWith("/Equipment", StringComparison.OrdinalIgnoreCase);
+    var isAdminSpeciesPage = currentPage.StartsWith("/Admin/Species", StringComparison.OrdinalIgnoreCase);
+    var isAdminEquipmentPage = currentPage.StartsWith("/Admin/Equipment", StringComparison.OrdinalIgnoreCase);
     var isProfileManagePage = currentPage.StartsWith("/Account/Manage", StringComparison.OrdinalIgnoreCase);
 
     var dashboardUser = SignInManager.IsSignedIn(User)
         ? await UserManager.GetUserAsync(User)
         : null;
+    
+    var isAdmin = string.Equals(dashboardUser?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
 
     var displayName = dashboardUser?.UserName ?? User.Identity?.Name ?? "Chercheur";
     var avatarPath = dashboardUser?.AvatarPath;
@@ -99,6 +103,25 @@
             <a href="#" class="dashboard-sidebar__link">
                 <span>Rapports</span>
             </a>
+
+            @if (isAdmin)
+            {
+                <div class="dashboard-sidebar__section">
+                    <span class="dashboard-sidebar__section-title">Administration</span>
+
+                    <a asp-area=""
+                       asp-page="/Admin/Species/Index"
+                       class="dashboard-sidebar__link @(isAdminSpeciesPage ? "dashboard-sidebar__link--active" : "")">
+                        <span>Modération des espèces</span>
+                    </a>
+
+                    <a asp-area=""
+                       asp-page="/Admin/Equipment/Index"
+                       class="dashboard-sidebar__link @(isAdminEquipmentPage ? "dashboard-sidebar__link--active" : "")">
+                        <span>Modération des équipements</span>
+                    </a>
+                </div>
+            }
         </nav>
 
         <div class="dashboard-sidebar__bottom">
