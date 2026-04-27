@@ -111,12 +111,39 @@
 
 .entity-table__actions {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
     white-space: nowrap;
 }
 
 .entity-table__actions form {
     margin: 0;
+}
+
+.biome-row-link {
+    width: 36px;
+    height: 36px;
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #0b3d39;
+    text-decoration: none;
+    border: 1px solid rgba(11, 61, 57, 0.14);
+    background: #f2f8f6;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.biome-row-link svg {
+    width: 18px;
+    height: 18px;
+}
+
+.biome-row-link:hover {
+    background: #0b3d39;
+    color: #ffffff;
+    border-color: #0b3d39;
 }
 
 .biome-row-action {
