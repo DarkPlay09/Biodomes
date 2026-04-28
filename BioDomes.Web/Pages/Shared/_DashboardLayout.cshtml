@@ -7,14 +7,18 @@
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
 
     var isDashboardPage = currentPage.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase);
-    var isBiomesPage = currentPage.StartsWith("/Biomes", StringComparison.OrdinalIgnoreCase);
+    var isBiomesPage = currentPage.StartsWith("/Biome", StringComparison.OrdinalIgnoreCase);
     var isSpeciesPage = currentPage.StartsWith("/Species", StringComparison.OrdinalIgnoreCase);
     var isEquipmentPage = currentPage.StartsWith("/Equipment", StringComparison.OrdinalIgnoreCase);
+    var isAdminSpeciesPage = currentPage.StartsWith("/Admin/Species", StringComparison.OrdinalIgnoreCase);
+    var isAdminEquipmentPage = currentPage.StartsWith("/Admin/Equipment", StringComparison.OrdinalIgnoreCase);
     var isProfileManagePage = currentPage.StartsWith("/Account/Manage", StringComparison.OrdinalIgnoreCase);
 
     var dashboardUser = SignInManager.IsSignedIn(User)
         ? await UserManager.GetUserAsync(User)
         : null;
+    
+    var isAdmin = string.Equals(dashboardUser?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
 
     var displayName = dashboardUser?.UserName ?? User.Identity?.Name ?? "Chercheur";
     var avatarPath = dashboardUser?.AvatarPath;
@@ -29,12 +33,31 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - BioDomes</title>
-
+    <link rel="icon" type="image/png" href="~/images/logo_biodomes.png" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/pages/dashboard.css" asp-append-version="true"/>
 </head>
 <body class="dashboard-shell-body">
 <div class="dashboard-mobile-overlay" id="dashboardOverlay"></div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="dashboard-toast dashboard-toast--success" data-dashboard-toast>
+        <div class="dashboard-toast__icon">✓</div>
+
+        <div class="dashboard-toast__content">
+            <strong>Succès</strong>
+            <p>@successMessage</p>
+        </div>
+
+        <button type="button"
+                class="dashboard-toast__close"
+                data-dashboard-toast-close
+                aria-label="Fermer la notification">
+            ×
+        </button>
+    </div>
+}
 
 <div class="dashboard-shell">
     <aside class="dashboard-sidebar" id="dashboardSidebar">
@@ -60,7 +83,7 @@
             </a>
 
             <a asp-area=""
-               asp-page="/Biomes/Index"
+               asp-page="/Biome/Index"
                class="dashboard-sidebar__link @(isBiomesPage ? "dashboard-sidebar__link--active" : "")">
                 <span>Mes biomes</span>
             </a>
@@ -80,6 +103,25 @@
             <a href="#" class="dashboard-sidebar__link">
                 <span>Rapports</span>
             </a>
+
+            @if (isAdmin)
+            {
+                <div class="dashboard-sidebar__section">
+                    <span class="dashboard-sidebar__section-title">Administration</span>
+
+                    <a asp-area=""
+                       asp-page="/Admin/Species/Index"
+                       class="dashboard-sidebar__link @(isAdminSpeciesPage ? "dashboard-sidebar__link--active" : "")">
+                        <span>Modération des espèces</span>
+                    </a>
+
+                    <a asp-area=""
+                       asp-page="/Admin/Equipment/Index"
+                       class="dashboard-sidebar__link @(isAdminEquipmentPage ? "dashboard-sidebar__link--active" : "")">
+                        <span>Modération des équipements</span>
+                    </a>
+                </div>
+            }
         </nav>
 
         <div class="dashboard-sidebar__bottom">
@@ -148,6 +190,7 @@
 </div>
 
 <script src="~/js/dashboard-sidebar.js" asp-append-version="true"></script>
+<script src="~/js/dashboard-toast.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

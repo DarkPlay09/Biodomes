@@ -1,33 +1,33 @@
 @page "/equipment/add"
 @model BioDomes.Web.Pages.Equipment.AddModel
 
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Ajouter un équipement";
+    ViewData["DashboardTitle"] = "Ajouter un équipement";
+    ViewData["DashboardSubtitle"] = "Ajoute un nouvel équipement au catalogue BioDomes.";
+}
+
 <div class="layout-width">
     <section class="entity-form-page">
-        <div class="entity-form-page__intro">
-            <span class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Nouvelle entrée
-            </span>
-            <h1 class="hero-title">Ajouter un équipement</h1>
-            <p class="entity-form-page__text">
-                Ajoute un nouvel équipement avec son image, son élément produit et/ou consommé.
-            </p>
-        </div>
-
         <div class="entity-form-card">
             <form method="post" enctype="multipart/form-data" class="entity-form">
+                <input type="hidden" asp-for="ReturnUrl" />
+                
                 <div asp-validation-summary="ModelOnly" class="entity-form__summary"></div>
 
-                <partial name="Equipment/_EquipmentForm" model="new EquipmentFormViewModel
-                 {
-                    Input = Model.Input,
-                    ResourceOptions = Model.ResourceOptions
-                 }"/>
+                <partial name="Equipment/_EquipmentForm" model="new EquipmentFormViewModel { Input = Model.Input, ResourceOptions = Model.ResourceOptions }"/>
 
                 <div class="entity-form__actions">
-                    <a asp-page="/Equipment/Index" class="entity-form__back">Retour</a>
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
                     <button type="submit" class="action-button">Créer l'équipement</button>
                 </div>
+
+                <p class="entity-form__required-note">
+                    Les champs marqués d’un <span class="entity-form__required" aria-hidden="true">*</span> sont obligatoires.
+                </p>
             </form>
         </div>
     </section>

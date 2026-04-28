@@ -28,8 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pages\Equipment\" />
-      <Folder Include="wwwroot\images\dashboard\" />
-      <Folder Include="wwwroot\images\equipment\" />
+      <Content Remove="wwwroot\js\dashboard-toast.js" />
     </ItemGroup></Project>
 

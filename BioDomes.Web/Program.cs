@@ -47,6 +47,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/Dashboard");
     options.Conventions.AuthorizeFolder("/Species");
     options.Conventions.AuthorizeFolder("/Equipment");
+    options.Conventions.AuthorizeFolder("/Biome");
 });
 
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
@@ -70,6 +71,11 @@ builder.Services
     })
     .AddEntityFrameworkStores<BioDomesDbContext>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Error/403";
+});
+
 var app = builder.Build();
 
 await IdentityDataSeeder.SeedAsync(app.Services);
@@ -85,6 +91,8 @@ else
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions());
 app.UseHttpsRedirection();

@@ -1,0 +1,182 @@
+﻿@page "/biome/{slug}/species"
+@model BioDomes.Web.Pages.Biome.SpeciesModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Gérer les espèces";
+    ViewData["DashboardTitle"] = "Espèces du biome";
+    ViewData["DashboardSubtitle"] = "Ajuste les populations du biome.";
+}
+
+@if (Model.PageData is null)
+{
+    <div class="layout-width entity-list-page">
+        <div class="entity-list-empty">
+            <p>Biome introuvable.</p>
+            <a asp-page="/Biome/Index" class="action-button">Retour</a>
+        </div>
+    </div>
+}
+else
+{
+    <section class="layout-width biome-species-page">
+        <header class="biome-species-page__header">
+            <div>
+                <h1 class="hero-title">@Model.PageData.BiomeName</h1>
+            </div>
+
+            <div class="biome-species-page__header-actions">
+                <a asp-page="/Biome/Details"
+                   asp-route-slug="@Model.PageData.BiomeSlug"
+                   class="dashboard-btn dashboard-btn--ghost">
+                    Retour au biome
+                </a>
+
+                <a asp-page="/Biome/SelectSpecies"
+                   asp-route-slug="@Model.PageData.BiomeSlug"
+                   class="action-button">
+                    + Ajouter des espèces
+                </a>
+            </div>
+        </header>
+
+        <form method="get" class="species-filter-card biome-species-page__filters">
+            <input type="hidden" name="slug" value="@Model.PageData.BiomeSlug" />
+
+            <div class="species-filter-card__search">
+                <label for="Search">Recherche</label>
+                <input id="Search"
+                       name="Search"
+                       value="@Model.Search"
+                       type="search"
+                       placeholder="Rechercher par nom, classification ou régime..." />
+            </div>
+
+            <div class="species-filter-card__select">
+                <label for="ClassificationFilter">Classification</label>
+                <select id="ClassificationFilter" name="ClassificationFilter">
+                    <option value="">Toutes</option>
+                    @foreach (var classification in Model.PageData.ClassificationOptions)
+                    {
+                        var selected = string.Equals(Model.ClassificationFilter, classification, StringComparison.OrdinalIgnoreCase);
+                        <option value="@classification" selected="@(selected ? "selected" : null)">@classification</option>
+                    }
+                </select>
+            </div>
+
+            <div class="species-filter-card__select">
+                <label for="DietFilter">Régime</label>
+                <select id="DietFilter" name="DietFilter">
+                    <option value="">Tous</option>
+                    @foreach (var diet in Model.PageData.DietOptions)
+                    {
+                        var selected = string.Equals(Model.DietFilter, diet, StringComparison.OrdinalIgnoreCase);
+                        <option value="@diet" selected="@(selected ? "selected" : null)">@diet</option>
+                    }
+                </select>
+            </div>
+
+            <div class="species-filter-card__actions">
+                <button type="submit" class="dashboard-btn dashboard-btn--primary">Filtrer</button>
+                <a asp-page="./Species" asp-route-slug="@Model.PageData.BiomeSlug" class="dashboard-btn dashboard-btn--ghost">Réinitialiser</a>
+            </div>
+        </form>
+
+        @if (!Model.PageData.LinkedSpecies.Any())
+        {
+            <div class="species-empty-card">
+                <div class="species-empty-card__icon">+</div>
+                <h3>Aucune espèce dans ce biome</h3>
+                <p>Ajoute des espèces puis ajuste le nombre d'individus directement ici.</p>
+                <a asp-page="/Biome/SelectSpecies" asp-route-slug="@Model.PageData.BiomeSlug" class="dashboard-btn dashboard-btn--primary">
+                    Ajouter des espèces
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="admin-species-list biome-species-page__list">
+                @foreach (var species in Model.PageData.LinkedSpecies)
+                {
+                    var statusClass = species.IsPublicAvailable
+                        ? "admin-species-card__status--visible"
+                        : "admin-species-card__status--hidden";
+
+                    var statusLabel = species.IsPublicAvailable ? "Public" : "Privé";
+
+                    <article class="admin-species-card biome-species-card">
+                        <div class="admin-species-card__image">
+                            <img src="@species.ImagePath" alt="Image de @species.Name" />
+                            <span class="admin-species-card__status @statusClass">@statusLabel</span>
+                        </div>
+
+                        <div class="admin-species-card__content">
+                            <div>
+                                <p class="admin-species-card__eyebrow">Espèce du biome</p>
+                                <h3>@species.Name</h3>
+
+                                <dl class="admin-species-card__meta">
+                                    <div>
+                                        <dt>Classification</dt>
+                                        <dd>@species.Classification</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Régime</dt>
+                                        <dd>@species.Diet</dd>
+                                    </div>
+                                </dl>
+                            </div>
+
+                            <div class="admin-species-card__actions biome-species-card__actions">
+                                <a asp-page="/Species/Details"
+                                   asp-route-slug="@species.Slug"
+                                   class="admin-species-card__button admin-species-card__button--ghost">
+                                    Voir la fiche
+                                </a>
+
+                                <form method="post"
+                                      asp-page-handler="Adjust"
+                                      asp-route-slug="@Model.PageData.BiomeSlug"
+                                      asp-route-speciesId="@species.SpeciesId"
+                                      class="biome-species-card__counter-form">
+                                    <input type="hidden" name="delta" value="-1" />
+                                    <input type="hidden" name="Search" value="@Model.Search" />
+                                    <input type="hidden" name="ClassificationFilter" value="@Model.ClassificationFilter" />
+                                    <input type="hidden" name="DietFilter" value="@Model.DietFilter" />
+                                    <button type="submit" class="biome-species-card__counter-btn" aria-label="Retirer un individu">-</button>
+                                </form>
+
+                                <span class="biome-species-card__count">@species.IndividualCount</span>
+
+                                <form method="post"
+                                      asp-page-handler="Adjust"
+                                      asp-route-slug="@Model.PageData.BiomeSlug"
+                                      asp-route-speciesId="@species.SpeciesId"
+                                      class="biome-species-card__counter-form">
+                                    <input type="hidden" name="delta" value="1" />
+                                    <input type="hidden" name="Search" value="@Model.Search" />
+                                    <input type="hidden" name="ClassificationFilter" value="@Model.ClassificationFilter" />
+                                    <input type="hidden" name="DietFilter" value="@Model.DietFilter" />
+                                    <button type="submit" class="biome-species-card__counter-btn" aria-label="Ajouter un individu">+</button>
+                                </form>
+
+                                <form method="post"
+                                      asp-page-handler="Remove"
+                                      asp-route-slug="@Model.PageData.BiomeSlug"
+                                      asp-route-speciesId="@species.SpeciesId">
+                                    <input type="hidden" name="Search" value="@Model.Search" />
+                                    <input type="hidden" name="ClassificationFilter" value="@Model.ClassificationFilter" />
+                                    <input type="hidden" name="DietFilter" value="@Model.DietFilter" />
+                                    <button type="submit" class="admin-species-card__button admin-species-card__button--hidden">
+                                        Retirer du biome
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </section>
+}

@@ -68,9 +68,16 @@ public class ForgotPasswordModel : PageModel
     /// Initialise la page et récupère l'URL de retour éventuelle.
     /// </summary>
     /// <param name="returnUrl">URL de retour à conserver dans le flux.</param>
-    public void OnGet(string? returnUrl = null)
+    public IActionResult OnGet(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         ReturnUrl = returnUrl;
+
+        return Page();
     }
 
     /// <summary>
@@ -86,6 +93,11 @@ public class ForgotPasswordModel : PageModel
     /// </remarks>
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         ReturnUrl = returnUrl;
 
         if (!ModelState.IsValid)

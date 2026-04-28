@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - BioDomes : Terrarium Zero</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="icon" type="image/png" href="~/images/logo_biodomes.png" />
 </head>
 @{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
@@ -24,9 +25,9 @@
                     <a class="nav-entry @(currentPage == "/Index" ? "nav-entry--active" : "")" asp-area="" asp-page="/Index">Accueil</a>
                     @if(User.Identity?.IsAuthenticated == true)
                     {
+                        <a class="nav-entry @(currentPage?.StartsWith("/Biomes") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Biome/Index">Biomes</a>
                         <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Species/Index">Espèces</a>
-                        <a class="nav-entry" href="#">Biomes</a>
-                        <a class="nav-entry @(currentPage?.StartsWith("/Equipment") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Equipment/Index">Equipments</a>
+                        <a class="nav-entry @(currentPage?.StartsWith("/Equipment") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Equipment/Index">Équipments</a>
                     }
                     else
                     {

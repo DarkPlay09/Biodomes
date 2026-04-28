@@ -30,6 +30,7 @@ public class RegisterModel : PageModel
     private readonly SignInManager<UserEntity> _signInManager;
     private readonly IEmailSender _emailSender;
     private readonly ILogger<RegisterModel> _logger;
+    private readonly IWebHostEnvironment _environment;
 
     /// <summary>
     /// Initialise une nouvelle instance de la classe <see cref="RegisterModel" />.
@@ -38,16 +39,19 @@ public class RegisterModel : PageModel
     /// <param name="signInManager">Service Identity chargé des providers externes éventuels.</param>
     /// <param name="emailSender">Service chargé d’envoyer l’e-mail de confirmation.</param>
     /// <param name="logger">Service de journalisation.</param>
+    /// <param name="environment">Service donnant accès aux chemins de l’application, notamment au dossier wwwroot pour enregistrer l’avatar.</param>
     public RegisterModel(
         UserManager<UserEntity> userManager,
         SignInManager<UserEntity> signInManager,
         IEmailSender emailSender,
-        ILogger<RegisterModel> logger)
+        ILogger<RegisterModel> logger,
+        IWebHostEnvironment environment)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
         _logger = logger;
+        _environment = environment;
     }
 
     /// <summary>
@@ -71,6 +75,12 @@ public class RegisterModel : PageModel
     /// </summary>
     public class InputModel
     {
+        /// <summary>
+        /// Fichier image choisi par l'utilisateur comme photo de profil lors de l'inscription.
+        /// </summary>
+        [Display(Name = "Photo de profil")]
+        public IFormFile? AvatarFile { get; set; }
+        
         /// <summary>
         /// Nom d’utilisateur unique choisi par l’utilisateur.
         /// </summary>
@@ -127,10 +137,17 @@ public class RegisterModel : PageModel
     /// </summary>
     /// <param name="returnUrl">URL de retour éventuelle après l’inscription.</param>
     /// <returns>Une tâche asynchrone représentant l’initialisation de la page.</returns>
-    public async Task OnGetAsync(string? returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         ReturnUrl = returnUrl ?? Url.Content("~/");
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+        return Page();
     }
 
     /// <summary>
@@ -147,6 +164,11 @@ public class RegisterModel : PageModel
     /// </remarks>
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         returnUrl ??= Url.Content("~/");
         ReturnUrl = returnUrl;
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -176,6 +198,18 @@ public class RegisterModel : PageModel
             return Page();
         }
 
+        string? avatarPath = null;
+
+        if (Input.AvatarFile is not null)
+        {
+            avatarPath = await SaveAvatarAsync(Input.AvatarFile);
+
+            if (avatarPath is null)
+            {
+                return Page();
+            }
+        }
+
         var user = new UserEntity
         {
             UserName = userName,
@@ -184,6 +218,7 @@ public class RegisterModel : PageModel
             ResearchOrganization = string.IsNullOrWhiteSpace(Input.ResearchOrganization)
                 ? null
                 : Input.ResearchOrganization.Trim(),
+            AvatarPath = avatarPath,
             Role = "User",
             EmailConfirmed = false
         };
@@ -224,6 +259,54 @@ public class RegisterModel : PageModel
             BuildConfirmationEmail(userName, callbackUrl));
 
         return RedirectToPage("./RegisterConfirmation", new { email, returnUrl });
+    }
+
+    /// <summary>
+    /// Enregistre l'avatar envoyé par l'utilisateur dans le dossier wwwroot/uploads/avatars.
+    /// </summary>
+    /// <param name="file">Fichier image envoyé depuis le formulaire d'inscription.</param>
+    /// <returns>
+    /// Le chemin relatif de l'avatar enregistré, ou <c>null</c> si le fichier est invalide.
+    /// </returns>
+    private async Task<string?> SaveAvatarAsync(IFormFile file)
+    {
+        const long maxFileSize = 2 * 1024 * 1024;
+
+        if (file.Length <= 0)
+        {
+            ModelState.AddModelError("Input.AvatarFile", "Le fichier est vide.");
+            return null;
+        }
+
+        if (file.Length > maxFileSize)
+        {
+            ModelState.AddModelError("Input.AvatarFile", "L'image ne peut pas dépasser 2 Mo.");
+            return null;
+        }
+        
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+        if (!allowedExtensions.Contains(extension))
+        {
+            ModelState.AddModelError("Input.AvatarFile", "Le format de l’image doit être JPG, PNG ou WEBP.");
+            return null;
+        }
+        
+        var webRootPath = _environment.WebRootPath
+            ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        
+        var uploadFolder = Path.Combine(webRootPath, "uploads", "avatars");
+        
+        Directory.CreateDirectory(uploadFolder);
+        
+        var fileName = $"{Guid.NewGuid():N}{extension}";
+        var filePath = Path.Combine(uploadFolder, fileName);
+        
+        await using var stream = System.IO.File.Create(filePath);
+        await file.CopyToAsync(stream);
+
+        return $"/uploads/avatars/{fileName}";
     }
 
     /// <summary>

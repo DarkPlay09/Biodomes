@@ -1,27 +1,247 @@
-﻿@page
-@model SpeciesModel
+﻿@page "/species"
+@model BioDomes.Web.Pages.Species.SpeciesModel
+
 @{
-    ViewData["Title"] = "Species";
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Catalogue des espèces";
+    ViewData["DashboardTitle"] = "Catalogue des espèces";
+    ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les espèces enregistrées dans BioDomes.";
+
+    var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
+    var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
+    var visibilityPrivateSelected = Model.VisibilityFilter == "private" ? "selected" : null;
+
+    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
 }
 
-<div class="layout-width entity-list-page">
+<section class="species-catalog">
+    <header class="species-catalog__header">
+        <a asp-page="./Add"
+           asp-route-returnUrl="@currentUrl"
+           class="action-button">
+            + Ajouter une espèce
+        </a>
+    </header>
+    
     @if (!string.IsNullOrWhiteSpace(Model.LastInsertedSpeciesName))
     {
-        <div class="alert">
+        <div class="species-catalog__success">
             Espèce ajoutée : <strong>@Model.LastInsertedSpeciesName</strong>
         </div>
     }
 
-    <div class="entity-page-header">
-        <h1 class="hero-title">Espèces</h1>
-        <a class="action-button entity-page-header__action" asp-page="/Species/Add">+ Ajouter une nouvelle espèce</a>
-    </div>
+    <form method="get" class="species-filter-card">
+        <div class="species-filter-card__search">
+            <label for="Search">Recherche</label>
+            <input id="Search"
+                   name="Search"
+                   value="@Model.Search"
+                   type="search"
+                   placeholder="Rechercher par nom, classification ou régime..."/>
+        </div>
 
-    <div class="entity-grid">
-        @foreach (var card in Model.Cards)
-        {
-            <partial name="Cards/_CatalogCard" model="card" />
-        }
-    </div>
-</div>
+        <div class="species-filter-card__select">
+            <label for="ClassificationFilter">Classification</label>
+            <select id="ClassificationFilter" name="ClassificationFilter">
+                <option value="">Toutes</option>
 
+                @foreach (var classification in Model.ClassificationOptions)
+                {
+                    var selected = Model.ClassificationFilter == classification ? "selected" : null;
+
+                    <option value="@classification" selected="@selected">
+                        @Model.FormatClassification(classification)
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="species-filter-card__select">
+            <label for="DietFilter">Régime</label>
+            <select id="DietFilter" name="DietFilter">
+                <option value="">Tous</option>
+
+                @foreach (var diet in Model.DietOptions)
+                {
+                    var selected = Model.DietFilter == diet ? "selected" : null;
+
+                    <option value="@diet" selected="@selected">
+                        @Model.FormatDiet(diet)
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="species-filter-card__select">
+            <label for="VisibilityFilter">Visibilité</label>
+            <select id="VisibilityFilter" name="VisibilityFilter">
+                <option value="" selected="@visibilityAllSelected">Toutes</option>
+                <option value="public" selected="@visibilityPublicSelected">Publiques</option>
+                <option value="private" selected="@visibilityPrivateSelected">Privées</option>
+            </select>
+        </div>
+
+        <div class="species-filter-card__actions">
+            <button type="submit" class="dashboard-btn dashboard-btn--primary">
+                Filtrer
+            </button>
+
+            <a asp-page="./Index" class="dashboard-btn dashboard-btn--ghost">
+                Réinitialiser
+            </a>
+        </div>
+    </form>
+
+    @if (Model.SpeciesCards.Count == 0)
+    {
+        <div class="species-empty-card">
+            <div class="species-empty-card__icon">+</div>
+
+            <h3>Aucune espèce trouvée</h3>
+
+            <p>
+                Modifie ta recherche ou ajoute une nouvelle espèce au catalogue.
+            </p>
+
+            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
+                Ajouter une espèce
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="species-grid">
+            @foreach (var species in Model.SpeciesCards)
+            {
+                var statusClass = species.IsPublicAvailable
+                    ? "species-card__status--public"
+                    : "species-card__status--private";
+
+                var statusLabel = species.IsPublicAvailable
+                    ? "Public"
+                    : "Privé";
+
+                <article class="species-card">
+                    <div class="species-card__image">
+                        <img src="@species.ImagePath" alt="Image de @species.Name"/>
+
+                        <span class="species-card__status @statusClass">
+                            @statusLabel
+                        </span>
+
+                        @if (species.CanEdit)
+                        {
+                            <a asp-page="./Edit"
+                               asp-route-slug="@species.Slug"
+                               class="species-card__edit"
+                               aria-label="Modifier @species.Name">
+                                <div class="species-card-edit__icon" aria-hidden="true">
+                                    <img src="~/images/species/icons/pen.png" alt="Icon modifier" />
+                                </div>
+                            </a>
+                        }
+                    </div>
+
+                    <div class="species-card__body">
+                        <div class="species-card__title-block">
+                            <p>@species.ClassificationLabel</p>
+                            <h3>@species.Name</h3>
+                        </div>
+
+                        <dl class="species-card__meta">
+                            <div>
+                                <dt>Régime</dt>
+                                <dd>@species.DietLabel</dd>
+                            </div>
+
+                            <div>
+                                <dt>Taille</dt>
+                                <dd>@species.AdultSizeLabel</dd>
+                            </div>
+
+                            <div>
+                                <dt>Poids</dt>
+                                <dd>@species.WeightLabel</dd>
+                            </div>
+                        </dl>
+
+                        <div class="species-card__footer">
+                            <a asp-page="./Details"
+                               asp-route-slug="@species.Slug"
+                               asp-route-returnUrl="@currentUrl">
+                                Voir la fiche →
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        <footer class="species-pagination">
+            <div>
+                Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
+            </div>
+
+            <nav aria-label="Pagination des espèces">
+                @if (Model.PageNumber <= 1)
+                {
+                    <span class="species-pagination__link species-pagination__link--disabled">
+                        Précédent
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ClassificationFilter="@Model.ClassificationFilter"
+                       asp-route-DietFilter="@Model.DietFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-PageNumber="@(Model.PageNumber - 1)"
+                       class="species-pagination__link">
+                        Précédent
+                    </a>
+                }
+
+                @foreach (var pageNumber in Model.VisiblePages)
+                {
+                    var activeClass = pageNumber == Model.PageNumber
+                        ? "species-pagination__link--active"
+                        : "";
+
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ClassificationFilter="@Model.ClassificationFilter"
+                       asp-route-DietFilter="@Model.DietFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-PageNumber="@pageNumber"
+                       class="species-pagination__link @activeClass">
+                        @pageNumber
+                    </a>
+                }
+
+                @if (Model.PageNumber >= Model.TotalPages)
+                {
+                    <span class="species-pagination__link species-pagination__link--disabled">
+                        Suivant
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ClassificationFilter="@Model.ClassificationFilter"
+                       asp-route-DietFilter="@Model.DietFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-PageNumber="@(Model.PageNumber + 1)"
+                       class="species-pagination__link">
+                        Suivant
+                    </a>
+                }
+            </nav>
+        </footer>
+    }
+</section>
