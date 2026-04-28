@@ -1,0 +1,23 @@
+.state-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.25rem 0.6rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.state-badge--optimal {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.state-badge--instable {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+.state-badge--critique {
+    background: #fee2e2;
+    color: #991b1b;
+}

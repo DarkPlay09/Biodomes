@@ -1,0 +1,95 @@
+/* =========================
+   Catalog filters communs
+   Species / Equipment / Biomes
+   ========================= */
+
+.catalog-filter-card {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 210px 190px 170px auto;
+    gap: 1rem;
+    align-items: end;
+    padding: 1rem;
+    border: 1px solid rgba(11, 61, 57, 0.08);
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.catalog-filter-card--biome,
+.biome-filter-card {
+    grid-template-columns: minmax(260px, 1fr) 210px 210px auto;
+}
+
+.catalog-filter-card label {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: #334155;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.catalog-filter-card input,
+.catalog-filter-card select {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid rgba(11, 61, 57, 0.12);
+    border-radius: 12px;
+    background: #f8fbfa;
+    color: #0f172a;
+    font-weight: 600;
+    outline: none;
+}
+
+.catalog-filter-card input {
+    padding: 0 1rem;
+}
+
+.catalog-filter-card select {
+    padding: 0 0.85rem;
+}
+
+.catalog-filter-card input:focus,
+.catalog-filter-card select:focus {
+    border-color: rgba(11, 61, 57, 0.32);
+    box-shadow: 0 0 0 4px rgba(11, 61, 57, 0.08);
+}
+
+.catalog-filter-card__actions {
+    display: flex;
+    gap: 0.65rem;
+}
+
+@media (max-width: 1300px) {
+    .catalog-filter-card,
+    .catalog-filter-card--biome,
+    .biome-filter-card {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .catalog-filter-card__search,
+    .catalog-filter-card__actions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .catalog-filter-card,
+    .catalog-filter-card--biome,
+    .biome-filter-card {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-filter-card__search,
+    .catalog-filter-card__actions {
+        grid-column: auto;
+    }
+
+    .catalog-filter-card__actions {
+        flex-direction: column;
+    }
+
+    .catalog-filter-card__actions .dashboard-btn {
+        width: 100%;
+        justify-self: unset;
+    }
+}

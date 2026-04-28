@@ -1,19 +1,4 @@
-﻿:root {
-    --error-bg: #f9faf9;
-    --error-text: #101828;
-    --error-muted: #667085;
-    --error-primary: #0b3d39;
-    --error-primary-dark: #082f2c;
-    --error-accent: #b45309;
-    --error-accent-soft: rgba(180, 83, 9, 0.10);
-    --error-border: rgba(180, 83, 9, 0.18);
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body.error-status-page {
+﻿body.error-status-page {
     min-height: 100vh;
     margin: 0;
     background:
