@@ -316,15 +316,15 @@ public class IndexModel : PageModel
     {
         if (temperature < 0)
         {
-            return "/images/biomes/icons/temperature-cold.png";
+            return "~/images/biomes/icons/temperature-cold.png";
         }
 
         if (temperature > 30)
         {
-            return "/images/biomes/icons/temperature-hot.png";
+            return "~/images/biomes/icons/temperature-hot.png";
         }
 
-        return "/images/biomes/icons/temperature-stable.png";
+        return "~/images/biomes/icons/temperature-stable.png";
     }
 
     /// <summary>
