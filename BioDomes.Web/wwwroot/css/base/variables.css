@@ -28,4 +28,13 @@
     --bio-border: #d8dee6;
     --bio-bg: #ffffff;
     --bio-error: #b42318;
+
+    --error-bg: #f9faf9;
+    --error-text: #101828;
+    --error-muted: #667085;
+    --error-primary: #0b3d39;
+    --error-primary-dark: #082f2c;
+    --error-accent: #b45309;
+    --error-accent-soft: rgba(180, 83, 9, 0.10);
+    --error-border: rgba(180, 83, 9, 0.18);
 }
