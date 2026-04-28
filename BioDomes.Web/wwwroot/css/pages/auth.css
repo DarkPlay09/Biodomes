@@ -10,7 +10,7 @@
     overflow: hidden;
     background:
             linear-gradient(rgba(5, 41, 39, 0.48), rgba(5, 41, 39, 0.72)),
-            url('/images/connexion-page.png') center center / cover no-repeat;
+            url('../../images/connexion-page.png') center center / cover no-repeat;
     color: #ffffff;
 }
 
