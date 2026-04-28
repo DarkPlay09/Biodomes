@@ -1,0 +1,143 @@
+﻿.biome-species-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+}
+
+.biome-species-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.biome-species-page__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.biome-species-page__filters {
+    margin-bottom: 0.4rem;
+    padding-right: 1.6rem;
+}
+
+.biome-species-page__list {
+    gap: 0.9rem;
+}
+
+.biome-species-card {
+    grid-template-columns: 160px 1fr;
+}
+
+.biome-species-card .admin-species-card__image {
+    width: 160px;
+    height: 124px;
+}
+
+.biome-species-card .admin-species-card__content {
+    align-items: center;
+}
+
+.biome-species-card .admin-species-card__meta {
+    gap: 1.1rem;
+}
+
+.biome-species-card__actions {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.55rem;
+    min-width: 0;
+}
+
+.biome-species-card__counter-form {
+    margin: 0;
+}
+
+.biome-species-card__counter-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(11, 61, 57, 0.22);
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 1.3rem;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.biome-species-card__counter-btn:hover {
+    background: #f1f5f9;
+}
+
+.biome-species-card__count {
+    min-width: 52px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.7rem;
+    border-radius: 10px;
+    border: 1px solid rgba(11, 61, 57, 0.16);
+    background: #f8fbfa;
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.biome-species-card .admin-species-card__button--hidden {
+    background: #b81c1c;
+    color: #ffffff;
+}
+
+.biome-species-card .admin-species-card__button--hidden:hover {
+    background: #991b1b;
+    color: #ffffff;
+}
+
+@media (max-width: 1100px) {
+    .biome-species-page__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .biome-species-page__header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 900px) {
+    .biome-species-card {
+        grid-template-columns: 1fr;
+    }
+
+    .biome-species-card .admin-species-card__image {
+        width: 100%;
+        height: 220px;
+    }
+
+    .biome-species-card__actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 640px) {
+    .biome-species-page__header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .biome-species-page__header-actions .action-button,
+    .biome-species-page__header-actions .dashboard-btn {
+        width: 100%;
+    }
+
+    .biome-species-card__actions {
+        gap: 0.45rem;
+    }
+}

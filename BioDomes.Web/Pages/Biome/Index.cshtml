@@ -105,9 +105,6 @@
                         <td>@item.LastUpdatedDisplay</td>
                         <td class="entity-table__actions">
                             <a asp-page="/Biome/Edit" asp-route-slug="@item.Slug" class="biome-row-action biome-row-action--edit">Modifier</a>
-                            <form method="post" asp-page-handler="Delete" asp-route-slug="@item.Slug">
-                                <button type="submit" class="biome-row-action biome-row-action--delete">Supprimer</button>
-                            </form>
                             <a asp-page="/Biome/Details"
                                asp-route-slug="@item.Slug"
                                class="biome-row-link"

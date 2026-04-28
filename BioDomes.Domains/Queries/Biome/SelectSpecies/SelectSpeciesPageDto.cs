@@ -1,4 +1,6 @@
-﻿namespace BioDomes.Domains.Queries.Species;
+﻿using BioDomes.Domains.Queries.Species;
+
+namespace BioDomes.Domains.Queries.Biome.SelectSpecies;
 
 public sealed class SelectSpeciesPageDto
 {

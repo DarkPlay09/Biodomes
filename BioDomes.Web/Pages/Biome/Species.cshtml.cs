@@ -1,35 +1,31 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using BioDomes.Domains.Queries.Biome.Species;
 using BioDomes.Domains.Repositories;
-using BioDomes.Infrastructures;
-using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace BioDomes.Web.Pages.Biome;
 
-// TODO : page peut etre à supprimer (en fonction de l'UI)
 public class SpeciesModel : PageModel
 {
     private readonly IBiomeRepository _biomeRepository;
-    private readonly BioDomesDbContext _context;
-    private readonly ISlugService _slugService;
 
-    public SpeciesModel(
-        IBiomeRepository biomeRepository,
-        BioDomesDbContext context,
-        ISlugService slugService)
+    public SpeciesModel(IBiomeRepository biomeRepository)
     {
         _biomeRepository = biomeRepository;
-        _context = context;
-        _slugService = slugService;
     }
 
     public BiomeSpeciesPageViewModel? PageData { get; private set; }
 
-    [BindProperty]
-    public AddSpeciesInputModel Input { get; set; } = new();
+    [BindProperty(SupportsGet = true)]
+    public string? Search { get; set; }
+
+    [BindProperty(SupportsGet = true)]
+    public string? ClassificationFilter { get; set; }
+
+    [BindProperty(SupportsGet = true)]
+    public string? DietFilter { get; set; }
 
     public IActionResult OnGet(string slug)
     {
@@ -43,12 +39,12 @@ public class SpeciesModel : PageModel
         if (biome.Creator.Id != currentUserId)
             return Forbid();
 
-        BuildPageData(biome.Id, biome.Name, currentUserId);
+        BuildPageData(slug, currentUserId);
 
         return Page();
     }
 
-    public IActionResult OnPostAdd(string slug)
+    public IActionResult OnPostAdjust(string slug, int speciesId, int delta)
     {
         if (!TryGetCurrentUserId(out var currentUserId))
             return Challenge();
@@ -60,44 +56,30 @@ public class SpeciesModel : PageModel
         if (biome.Creator.Id != currentUserId)
             return Forbid();
 
-        if (!ModelState.IsValid)
-        {
-            BuildPageData(biome.Id, biome.Name, currentUserId);
-            return Page();
-        }
+        var managementData = _biomeRepository.GetSpeciesManagementPageData(
+            slug,
+            currentUserId,
+            new BiomeSpeciesManagementFiltersDto());
 
-        var speciesEntity = _context.Species
-            .AsNoTracking()
-            .FirstOrDefault(s => s.Id == Input.SpeciesId);
-
-        if (speciesEntity is null)
+        if (managementData is null)
             return NotFound();
 
-        var canUseSpecies = speciesEntity.IsPublicAvailable || speciesEntity.CreatorId == currentUserId;
-        if (!canUseSpecies)
-            return Forbid();
+        var targetSpecies = managementData.SpeciesCards
+            .FirstOrDefault(species => species.SpeciesId == speciesId);
 
-        var existingLink = _context.BiomeSpeciesLinks
-            .FirstOrDefault(link => link.BiomeId == biome.Id && link.SpeciesId == Input.SpeciesId);
+        if (targetSpecies is null)
+            return NotFound();
 
-        if (existingLink is null)
+        var newCount = Math.Max(0, targetSpecies.CurrentIndividualCount + delta);
+        _biomeRepository.SetSpeciesCountInBiome(biome.Id, speciesId, newCount);
+
+        return RedirectToPage(new
         {
-            _context.BiomeSpeciesLinks.Add(new()
-            {
-                BiomeId = biome.Id,
-                SpeciesId = Input.SpeciesId,
-                IndividualCount = Input.IndividualCount
-            });
-        }
-        else
-        {
-            existingLink.IndividualCount += Input.IndividualCount;
-        }
-
-        _context.SaveChanges();
-        TempData["SuccessMessage"] = "Espece ajoutee au biome.";
-
-        return RedirectToPage(new { slug = _slugService.ToSlug(biome.Name) });
+            slug,
+            Search,
+            ClassificationFilter,
+            DietFilter
+        });
     }
 
     public IActionResult OnPostRemove(string slug, int speciesId)
@@ -112,47 +94,72 @@ public class SpeciesModel : PageModel
         if (biome.Creator.Id != currentUserId)
             return Forbid();
 
-        var link = _context.BiomeSpeciesLinks
-            .FirstOrDefault(x => x.BiomeId == biome.Id && x.SpeciesId == speciesId);
+        _biomeRepository.SetSpeciesCountInBiome(biome.Id, speciesId, 0);
 
-        if (link is null)
-            return NotFound();
-
-        _context.BiomeSpeciesLinks.Remove(link);
-        _context.SaveChanges();
-        TempData["SuccessMessage"] = "Espece retiree du biome.";
-
-        return RedirectToPage(new { slug = _slugService.ToSlug(biome.Name) });
+        return RedirectToPage(new
+        {
+            slug,
+            Search,
+            ClassificationFilter,
+            DietFilter
+        });
     }
 
-    private void BuildPageData(int biomeId, string biomeName, int currentUserId)
+    private void BuildPageData(string biomeSlug, int currentUserId)
     {
-        var linkedSpecies = _context.BiomeSpeciesLinks
-            .AsNoTracking()
-            .Where(link => link.BiomeId == biomeId)
-            .Include(link => link.Species)
-            .OrderBy(link => link.Species.Name)
-            .Select(link => new BiomeLinkedSpeciesViewModel(
-                link.SpeciesId,
-                link.Species.Name,
-                link.Species.Classification,
-                link.Species.Diet,
-                link.IndividualCount))
+        var filters = new BiomeSpeciesManagementFiltersDto
+        {
+            Search = Search,
+            Classification = ClassificationFilter,
+            Diet = DietFilter
+        };
+
+        var managementData = _biomeRepository.GetSpeciesManagementPageData(
+            biomeSlug,
+            currentUserId,
+            filters);
+
+        if (managementData is null)
+        {
+            PageData = null;
+            return;
+        }
+
+        var linkedSpecies = managementData.SpeciesCards
+            .Select(species => new BiomeLinkedSpeciesViewModel(
+                species.SpeciesId,
+                species.Name,
+                species.Slug,
+                string.IsNullOrWhiteSpace(species.ImagePath)
+                    ? "/images/species/noImageSpecie.png"
+                    : species.ImagePath,
+                species.Classification,
+                species.Diet,
+                species.CurrentIndividualCount,
+                species.IsPublicAvailable))
             .ToList();
 
-        var availableSpecies = _context.Species
-            .AsNoTracking()
-            .Where(s => s.IsPublicAvailable || s.CreatorId == currentUserId)
-            .OrderBy(s => s.Name)
-            .Select(s => new SpeciesOptionViewModel(s.Id, s.Name))
+        var classifications = linkedSpecies
+            .Select(species => species.Classification)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(value => value)
+            .ToList();
+
+        var diets = linkedSpecies
+            .Select(species => species.Diet)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(value => value)
             .ToList();
 
         PageData = new BiomeSpeciesPageViewModel(
-            BiomeId: biomeId,
-            BiomeName: biomeName,
-            BiomeSlug: _slugService.ToSlug(biomeName),
+            BiomeId: managementData.BiomeId,
+            BiomeName: managementData.BiomeName,
+            BiomeSlug: managementData.BiomeSlug,
             LinkedSpecies: linkedSpecies,
-            AvailableSpecies: availableSpecies);
+            ClassificationOptions: classifications,
+            DietOptions: diets);
     }
 
     private bool TryGetCurrentUserId(out int userId)
@@ -167,26 +174,15 @@ public sealed record BiomeSpeciesPageViewModel(
     string BiomeName,
     string BiomeSlug,
     IReadOnlyList<BiomeLinkedSpeciesViewModel> LinkedSpecies,
-    IReadOnlyList<SpeciesOptionViewModel> AvailableSpecies);
+    IReadOnlyList<string> ClassificationOptions,
+    IReadOnlyList<string> DietOptions);
 
 public sealed record BiomeLinkedSpeciesViewModel(
     int SpeciesId,
     string Name,
+    string Slug,
+    string ImagePath,
     string Classification,
     string Diet,
-    int IndividualCount);
-
-public sealed record SpeciesOptionViewModel(
-    int Id,
-    string Name);
-
-public class AddSpeciesInputModel
-{
-    [Required]
-    [Range(1, int.MaxValue)]
-    public int SpeciesId { get; set; }
-
-    [Required]
-    [Range(1, int.MaxValue)]
-    public int IndividualCount { get; set; } = 1;
-}
+    int IndividualCount,
+    bool IsPublicAvailable);
