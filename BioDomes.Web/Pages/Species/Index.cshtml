@@ -15,6 +15,23 @@
     var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
 }
 
+@functions {
+    private string ResolveImageUrl(string? imagePath, string fallbackPath)
+    {
+        if (string.IsNullOrWhiteSpace(imagePath))
+            return Url.Content(fallbackPath);
+
+        var normalizedPath = imagePath
+            .Replace("\\", "/")
+            .Trim();
+
+        if (normalizedPath.StartsWith("~/"))
+            return Url.Content(normalizedPath);
+
+        return Url.Content("~/" + normalizedPath.TrimStart('/'));
+    }
+}
+
 <section class="species-catalog">
     <header class="species-catalog__header">
         <a asp-page="./Add"
@@ -121,22 +138,14 @@
                 var statusLabel = species.IsPublicAvailable
                     ? "Public"
                     : "Privé";
+                
+                var imageSrc = ResolveImageUrl(
+                    species.ImagePath,
+                    "~/images/species/noImageSpecie.png"
+                );
 
                 <article class="species-card">
                     <div class="species-card__image">
-                        @{
-                            var imagePath = species.ImagePath;
-
-                            if (!string.IsNullOrWhiteSpace(imagePath) && imagePath.StartsWith("/"))
-                            {
-                                imagePath = "~" + imagePath;
-                            }
-
-                            var imageSrc = string.IsNullOrWhiteSpace(imagePath)
-                                ? Url.Content("~/images/species/noImageSpecie.png")
-                                : Url.Content(imagePath);
-                        }
-
                         <img src="@imageSrc" alt="Image de @species.Name" />
 
                         <span class="species-card__status @statusClass">

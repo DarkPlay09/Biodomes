@@ -9,6 +9,17 @@
     ViewData["DashboardSubtitle"] = "Consulte les informations principales de cet équipement.";
     
     var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+
+    var imagePath = Model.EquipmentDetails.ImagePath;
+
+    if (!string.IsNullOrWhiteSpace(imagePath) && imagePath.StartsWith("/"))
+    {
+        imagePath = "~" + imagePath;
+    }
+
+    var imageSrc = string.IsNullOrWhiteSpace(imagePath)
+        ? Url.Content("~/images/logo_biodomes.png")
+        : Url.Content(imagePath);
 }
 
 <section class="species-details">
@@ -21,7 +32,7 @@
     <div class="species-details-layout">
         <div class="species-details-media">
             <article class="species-details-image-card">
-                <img src="@Model.EquipmentDetails.ImagePath"
+                <img src="@imageSrc"
                      alt="Image de @Model.EquipmentDetails.Name" />
 
                 <div class="species-details-badges">

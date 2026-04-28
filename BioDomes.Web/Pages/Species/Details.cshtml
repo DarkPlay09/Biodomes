@@ -9,6 +9,17 @@
     ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
     
     var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+
+    var imagePath = Model.SpeciesDetails.ImagePath;
+
+    if (!string.IsNullOrWhiteSpace(imagePath) && imagePath.StartsWith("/"))
+    {
+        imagePath = "~" + imagePath;
+    }
+
+    var imageSrc = string.IsNullOrWhiteSpace(imagePath)
+        ? Url.Content("~/images/species/noImageSpecie.png")
+        : Url.Content(imagePath);
 }
 
 <section class="species-details">
@@ -23,7 +34,7 @@
     <div class="species-details-layout">
         <div class="species-details-media">
             <article class="species-details-image-card">
-                <img src="@Model.SpeciesDetails.ImagePath"
+                <img src="@imageSrc"
                      alt="Image de @Model.SpeciesDetails.Name" />
 
                 <div class="species-details-badges">
