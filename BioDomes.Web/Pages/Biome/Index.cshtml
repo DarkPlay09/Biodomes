@@ -6,113 +6,250 @@
 
     ViewData["Title"] = "Mes biomes";
     ViewData["DashboardTitle"] = "Mes biomes";
-    ViewData["DashboardSubtitle"] = "Consulte, crée et gère tes environnements BioDomes.";
+    ViewData["DashboardSubtitle"] = "Consulte, filtre et gère tes environnements BioDomes.";
+
+    var temperatureAllSelected = string.IsNullOrWhiteSpace(Model.TemperatureFilter) ? "selected" : null;
+    var temperatureColdSelected = Model.TemperatureFilter == "cold" ? "selected" : null;
+    var temperatureNormalSelected = Model.TemperatureFilter == "normal" ? "selected" : null;
+    var temperatureHotSelected = Model.TemperatureFilter == "hot" ? "selected" : null;
+
+    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
 }
 
-<div class="layout-width entity-list-page">
-        <div class="entity-page-header">
-            <a asp-page="/Biome/Add" class="action-button entity-page-header__action">+ Créer un biome</a>
-        </div>
+<section class="biome-catalog">
+    <header class="biome-catalog__header">
+        <a asp-page="./Add"
+           asp-route-returnUrl="@currentUrl"
+           class="action-button">
+            + Ajouter un biome
+        </a>
+    </header>
 
-    <div class="kpi-grid">
-        <article class="kpi-card kpi-card--total">
-            <div class="kpi-card__top">
-                <h3>Total biomes</h3>
-                <span class="kpi-card__icon kpi-card__icon--total" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z" />
-                        <path d="M7 16v6" />
-                        <path d="M13 19v3" />
-                        <path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5" />
-                    </svg>
-                </span>
-            </div>
+    <div class="biome-kpi-grid">
+        <article class="biome-kpi-card">
+            <span>Total biomes</span>
             <strong>@Model.TotalCount</strong>
         </article>
-        <article class="kpi-card kpi-card--optimal">
-            <div class="kpi-card__top">
-                <h3>Optimal</h3>
-                <span class="kpi-card__icon kpi-card__icon--optimal" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m9 12 2 2 4-4" />
-                    </svg>
-                </span>
-            </div>
+
+        <article class="biome-kpi-card biome-kpi-card--optimal">
+            <span>Optimaux</span>
             <strong>@Model.OptimalCount</strong>
         </article>
-        <article class="kpi-card kpi-card--instable">
-            <div class="kpi-card__top">
-                <h3>Instable</h3>
-                <span class="kpi-card__icon kpi-card__icon--instable" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                        <path d="M12 9v4" />
-                        <path d="M12 17h.01" />
-                    </svg>
-                </span>
-            </div>
+
+        <article class="biome-kpi-card biome-kpi-card--unstable">
+            <span>Instables</span>
             <strong>@Model.InstableCount</strong>
         </article>
-        <article class="kpi-card kpi-card--critique">
-            <div class="kpi-card__top">
-                <h3>Critique</h3>
-                <span class="kpi-card__icon kpi-card__icon--critique" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" x2="12" y1="8" y2="12" />
-                        <line x1="12" x2="12.01" y1="16" y2="16" />
-                    </svg>
-                </span>
-            </div>
+
+        <article class="biome-kpi-card biome-kpi-card--critical">
+            <span>Critiques</span>
             <strong>@Model.CritiqueCount</strong>
         </article>
     </div>
 
-    @if (!Model.Rows.Any())
+    <form method="get" class="species-filter-card biome-filter-card">
+        <div class="species-filter-card__search">
+            <label for="Search">Recherche</label>
+            <input id="Search"
+                   name="Search"
+                   value="@Model.Search"
+                   type="search"
+                   placeholder="Rechercher par nom ou état..." />
+        </div>
+
+        <div class="species-filter-card__select">
+            <label for="StateFilter">État</label>
+            <select id="StateFilter" name="StateFilter">
+                <option value="">Tous</option>
+
+                @foreach (var state in Model.StateOptions)
+                {
+                    var selected = Model.StateFilter == state ? "selected" : null;
+
+                    <option value="@state" selected="@selected">
+                        @Model.FormatState(state)
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="species-filter-card__select">
+            <label for="TemperatureFilter">Température</label>
+            <select id="TemperatureFilter" name="TemperatureFilter">
+                <option value="" selected="@temperatureAllSelected">Toutes</option>
+                <option value="cold" selected="@temperatureColdSelected">Froides</option>
+                <option value="normal" selected="@temperatureNormalSelected">Stables</option>
+                <option value="hot" selected="@temperatureHotSelected">Chaudes</option>
+            </select>
+        </div>
+
+        <div class="species-filter-card__actions">
+            <button type="submit" class="dashboard-btn dashboard-btn--primary">
+                Filtrer
+            </button>
+
+            <a asp-page="./Index" class="dashboard-btn dashboard-btn--ghost">
+                Réinitialiser
+            </a>
+        </div>
+    </form>
+
+    @if (Model.BiomeCards.Count == 0)
     {
-        <div class="entity-list-empty">
-            <p>Aucun biome pour le moment.</p>
-            <a asp-page="/Biome/Add" class="action-button">Créer mon premier biome</a>
+        <div class="biome-empty-card">
+            <div class="biome-empty-card__icon" aria-hidden="true">
+                <img src="~/images/biomes/icons/add.png" alt="" />
+            </div>
+
+            <h3>Aucun biome trouvé</h3>
+
+            <p>
+                Modifie ta recherche ou initialise un nouveau biome.
+            </p>
+
+            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
+                Créer un biome
+            </a>
         </div>
     }
     else
     {
-        <div class="table-wrapper">
-            <table class="entity-table">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Température</th>
-                    <th>Humidité absolue</th>
-                    <th>État</th>
-                    <th>Dernière mise à jour</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model.Rows)
-                {
-                    <tr>
-                        <td>@item.Name</td>
-                        <td>@item.TemperatureDisplay</td>
-                        <td>@item.AbsoluteHumidityDisplay</td>
-                        <td>
-                            <span class="state-badge state-badge--@item.State.ToString().ToLowerInvariant()">
-                                @item.State
-                            </span>
-                        </td>
-                        <td>@item.LastUpdatedDisplay</td>
-                        <td class="entity-table__actions">
-                            <a asp-page="/Biome/Edit" asp-route-slug="@item.Slug" class="biome-row-action biome-row-action--edit">Modifier</a>
-                            <form method="post" asp-page-handler="Delete" asp-route-slug="@item.Slug">
-                                <button type="submit" class="biome-row-action biome-row-action--delete">Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+        <div class="biome-grid">
+            @foreach (var biome in Model.BiomeCards)
+            {
+                var scoreWidth = $"{biome.Score}%";
+
+                <article class="biome-card @biome.StateCssClass">
+                    <div class="biome-card__visual">
+                        <span class="biome-card__status">
+                            @biome.StateLabel
+                        </span>
+                    </div>
+
+                    <div class="biome-card__body">
+                        <div class="biome-card__title-block">
+                            <h3>@biome.Name</h3>
+                        </div>
+
+                        <div class="biome-card__metrics">
+                            <div class="biome-card__metric @biome.TemperatureCssClass">
+                                <img src="@biome.TemperatureIconPath" alt="" aria-hidden="true" />
+                                <div>
+                                    <small>Temp</small>
+                                    <strong>@biome.TemperatureLabel</strong>
+                                </div>
+                            </div>
+
+                            <div class="biome-card__metric biome-card__metric--humidity">
+                                <div class="biome-card__humidity-icon"
+                                     style="--humidity-fill: @($"{biome.HumidityPercent}%")">
+                                    <img src="~/images/biomes/icons/drop-outline.png"
+                                         alt=""
+                                         aria-hidden="true" />
+
+                                    <span class="biome-card__humidity-fill"></span>
+                                </div>
+
+                                <div>
+                                    <small>Humidité</small>
+                                    <strong>@biome.AbsoluteHumidityLabel</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="biome-card__score">
+                            <div>
+                                <span>Score stabilité</span>
+                                <strong>@biome.Score</strong>
+                            </div>
+
+                            <div class="biome-card__score-track">
+                                <span style="width: @scoreWidth"></span>
+                            </div>
+                        </div>
+
+                        <div class="biome-card__footer">
+                            <a asp-page="./Details"
+                               asp-route-slug="@biome.Slug"
+                               asp-route-returnUrl="@currentUrl"
+                               class="biome-card__details">
+                                Voir détails
+                            </a>
+
+                            <a asp-page="./Edit"
+                               asp-route-slug="@biome.Slug"
+                               asp-route-returnUrl="@currentUrl"
+                               class="biome-card__settings"
+                               aria-label="Modifier @biome.Name">
+                                <img src="~/images/biomes/icons/setting.png" alt="" aria-hidden="true" />
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            }
         </div>
     }
-</div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <footer class="species-pagination">
+            <div>
+                Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
+            </div>
+
+            <nav aria-label="Pagination des biomes">
+                @if (Model.PageNumber <= 1)
+                {
+                    <span class="species-pagination__link species-pagination__link--disabled">
+                        Précédent
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-StateFilter="@Model.StateFilter"
+                       asp-route-TemperatureFilter="@Model.TemperatureFilter"
+                       asp-route-PageNumber="@(Model.PageNumber - 1)"
+                       class="species-pagination__link">
+                        Précédent
+                    </a>
+                }
+
+                @foreach (var pageNumber in Model.VisiblePages)
+                {
+                    var activeClass = pageNumber == Model.PageNumber
+                        ? "species-pagination__link--active"
+                        : "";
+
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-StateFilter="@Model.StateFilter"
+                       asp-route-TemperatureFilter="@Model.TemperatureFilter"
+                       asp-route-PageNumber="@pageNumber"
+                       class="species-pagination__link @activeClass">
+                        @pageNumber
+                    </a>
+                }
+
+                @if (Model.PageNumber >= Model.TotalPages)
+                {
+                    <span class="species-pagination__link species-pagination__link--disabled">
+                        Suivant
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-StateFilter="@Model.StateFilter"
+                       asp-route-TemperatureFilter="@Model.TemperatureFilter"
+                       asp-route-PageNumber="@(Model.PageNumber + 1)"
+                       class="species-pagination__link">
+                        Suivant
+                    </a>
+                }
+            </nav>
+        </footer>
+    }
+</section>
