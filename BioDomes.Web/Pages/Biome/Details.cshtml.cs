@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using BioDomes.Domains.Queries.Biome.Details;
 using BioDomes.Domains.Repositories;
-using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
