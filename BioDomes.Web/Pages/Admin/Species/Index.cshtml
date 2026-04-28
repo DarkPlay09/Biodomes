@@ -11,12 +11,31 @@
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
     var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
     var visibilityPrivateSelected = Model.VisibilityFilter == "private" ? "selected" : null;
-    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 }
 
-<section class="species-catalog">
-    <form method="get" class="species-filter-card">
-        <div class="species-filter-card__search">
+@functions {
+    private string ResolveImageUrl(string? imagePath, string fallbackPath)
+    {
+        if (string.IsNullOrWhiteSpace(imagePath))
+            return Url.Content(fallbackPath);
+
+        var normalizedPath = imagePath
+            .Replace("\\", "/")
+            .Trim();
+
+        if (normalizedPath.StartsWith("~/"))
+            return Url.Content(normalizedPath);
+
+        return Url.Content("~/" + normalizedPath.TrimStart('/'));
+    }
+}
+
+<section class="catalog-page">
+    <form method="get" class="catalog-filter-card">
+        <div class="catalog-filter-card__search">
             <label for="Search">Recherche</label>
             <input id="Search"
                    name="Search"
@@ -25,7 +44,7 @@
                    placeholder="Rechercher par nom, créateur, classification ou régime..." />
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="ClassificationFilter">Classification</label>
             <select id="ClassificationFilter" name="ClassificationFilter">
                 <option value="">Toutes</option>
@@ -41,7 +60,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="DietFilter">Régime</label>
             <select id="DietFilter" name="DietFilter">
                 <option value="">Tous</option>
@@ -57,7 +76,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="VisibilityFilter">Visibilité</label>
             <select id="VisibilityFilter" name="VisibilityFilter">
                 <option value="" selected="@visibilityAllSelected">Toutes</option>
@@ -66,7 +85,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__actions">
+        <div class="catalog-filter-card__actions">
             <button type="submit" class="dashboard-btn dashboard-btn--primary">
                 Filtrer
             </button>
@@ -79,8 +98,8 @@
 
     @if (Model.SpeciesList.Count == 0)
     {
-        <div class="species-empty-card">
-            <div class="species-empty-card__icon" aria-hidden="true"></div>
+        <div class="empty-state">
+            <div class="empty-state__icon" aria-hidden="true">+</div>
 
             <h3>Aucune espèce trouvée</h3>
 
@@ -91,31 +110,44 @@
     }
     else
     {
-        <div class="admin-species-list">
+        <div class="admin-entity-list">
             @foreach (var species in Model.SpeciesList)
             {
                 var statusClass = species.IsPublicAvailable
-                    ? "admin-species-card__status--visible"
-                    : "admin-species-card__status--hidden";
+                    ? "admin-entity-card__status--visible"
+                    : "admin-entity-card__status--hidden";
 
                 var statusLabel = species.IsPublicAvailable
                     ? "Disponible"
                     : "Non visible";
 
-                <article class="admin-species-card">
-                    <div class="admin-species-card__image">
-                        <img src="@species.ImagePath" alt="Image de @species.Name" />
+                var actionButtonClass = species.IsPublicAvailable
+                    ? "admin-entity-card__button admin-entity-card__button--hidden"
+                    : "admin-entity-card__button admin-entity-card__button--visible";
+
+                var imageSrc = ResolveImageUrl(
+                    species.ImagePath,
+                    "~/images/species/noImageSpecie.png"
+                );
+
+                <article class="admin-entity-card">
+                    <div class="admin-entity-card__image">
+                        <img src="@imageSrc" alt="Image de @species.Name" />
+
+                        <span class="admin-entity-card__status @statusClass">
+                            @statusLabel
+                        </span>
                     </div>
 
-                    <div class="admin-species-card__content">
+                    <div class="admin-entity-card__content">
                         <div>
-                            <p class="admin-species-card__eyebrow">
+                            <p class="admin-entity-card__eyebrow">
                                 @species.ClassificationLabel
                             </p>
 
                             <h3>@species.Name</h3>
 
-                            <dl class="admin-species-card__meta">
+                            <dl class="admin-entity-card__meta">
                                 <div>
                                     <dt>Régime</dt>
                                     <dd>@species.DietLabel</dd>
@@ -133,24 +165,23 @@
                             </dl>
                         </div>
 
-                        @{
-                            var actionButtonClass = species.IsPublicAvailable
-                                ? "admin-species-card__button admin-species-card__button--hidden"
-                                : "admin-species-card__button admin-species-card__button--visible";
-                        }
-
-                        <div class="admin-species-card__actions">
+                        <div class="admin-entity-card__actions">
                             <a asp-page="/Species/Details"
                                asp-route-slug="@species.Slug"
                                asp-route-returnUrl="@currentUrl"
-                               class="admin-species-card__button admin-species-card__button--ghost">
+                               class="admin-entity-card__button admin-entity-card__button--ghost">
                                 Voir la fiche
                             </a>
 
                             <form method="post"
                                   asp-page-handler="SetVisibility"
                                   asp-route-slug="@species.Slug"
-                                  asp-route-makePublic="@(!species.IsPublicAvailable)">
+                                  asp-route-makePublic="@(!species.IsPublicAvailable)"
+                                  asp-route-Search="@Model.Search"
+                                  asp-route-ClassificationFilter="@Model.ClassificationFilter"
+                                  asp-route-DietFilter="@Model.DietFilter"
+                                  asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                                  asp-route-PageNumber="@Model.PageNumber">
                                 <button type="submit" class="@actionButtonClass">
                                     @(species.IsPublicAvailable ? "Rendre non visible" : "Rendre disponible")
                                 </button>
@@ -164,7 +195,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        <footer class="species-pagination">
+        <footer class="catalog-pagination">
             <div>
                 Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
             </div>
@@ -172,7 +203,7 @@
             <nav aria-label="Pagination des espèces à valider">
                 @if (Model.PageNumber <= 1)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Précédent
                     </span>
                 }
@@ -184,7 +215,7 @@
                        asp-route-DietFilter="@Model.DietFilter"
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-PageNumber="@(Model.PageNumber - 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Précédent
                     </a>
                 }
@@ -192,7 +223,7 @@
                 @foreach (var pageNumber in Model.VisiblePages)
                 {
                     var activeClass = pageNumber == Model.PageNumber
-                        ? "species-pagination__link--active"
+                        ? "catalog-pagination__link--active"
                         : "";
 
                     <a asp-page="./Index"
@@ -201,14 +232,14 @@
                        asp-route-DietFilter="@Model.DietFilter"
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-PageNumber="@pageNumber"
-                       class="species-pagination__link @activeClass">
+                       class="catalog-pagination__link @activeClass">
                         @pageNumber
                     </a>
                 }
 
                 @if (Model.PageNumber >= Model.TotalPages)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Suivant
                     </span>
                 }
@@ -220,7 +251,7 @@
                        asp-route-DietFilter="@Model.DietFilter"
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-PageNumber="@(Model.PageNumber + 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Suivant
                     </a>
                 }
