@@ -8,7 +8,8 @@
     ViewData["DashboardTitle"] = "Détail du biome";
     ViewData["DashboardSubtitle"] = "Visualise et gère un biome.";
     
-    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 }
 
 @if (Model.Details is null)

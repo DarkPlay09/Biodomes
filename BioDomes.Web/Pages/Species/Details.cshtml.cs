@@ -62,10 +62,27 @@ public class DetailsModel : PageModel
     /// <summary>
     /// URL de retour sécurisée.
     /// </summary>
-    public string SafeReturnUrl =>
-        Url.IsLocalUrl(ReturnUrl)
-            ? ReturnUrl
-            : Url.Page("./Index") ?? "/species";
+    public string SafeReturnUrl
+    {
+        get
+        {
+            var fallbackUrl = Url.Page("./Index") ?? Url.Content("~/species");
+
+            if (string.IsNullOrWhiteSpace(ReturnUrl) || !Url.IsLocalUrl(ReturnUrl))
+                return fallbackUrl;
+
+            var pathBase = HttpContext.Request.PathBase.Value;
+
+            if (!string.IsNullOrWhiteSpace(pathBase)
+                && ReturnUrl.StartsWith("/")
+                && !ReturnUrl.StartsWith(pathBase + "/", StringComparison.OrdinalIgnoreCase))
+            {
+                return pathBase + ReturnUrl;
+            }
+
+            return ReturnUrl;
+        }
+    }
 
     /// <summary>
     /// Charge la fiche détaillée d'une espèce à partir de son slug.

@@ -8,7 +8,8 @@
     ViewData["DashboardTitle"] = "Fiche équipement détaillée";
     ViewData["DashboardSubtitle"] = "Consulte les informations principales de cet équipement.";
     
-    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 
     var imagePath = Model.EquipmentDetails.ImagePath;
 

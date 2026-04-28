@@ -8,7 +8,8 @@
     ViewData["DashboardTitle"] = "Fiche espèce détaillée";
     ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
     
-    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 
     var imagePath = Model.SpeciesDetails.ImagePath;
 

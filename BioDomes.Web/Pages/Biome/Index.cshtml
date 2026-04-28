@@ -13,7 +13,8 @@
     var temperatureNormalSelected = Model.TemperatureFilter == "normal" ? "selected" : null;
     var temperatureHotSelected = Model.TemperatureFilter == "hot" ? "selected" : null;
 
-    var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 }
 
 <section class="biome-catalog">
