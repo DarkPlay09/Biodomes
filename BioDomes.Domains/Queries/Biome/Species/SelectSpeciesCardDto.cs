@@ -1,4 +1,4 @@
-﻿namespace BioDomes.Domains.Queries.Species;
+﻿namespace BioDomes.Domains.Queries.Biome.Species;
 
 public sealed class SelectSpeciesCardDto
 {

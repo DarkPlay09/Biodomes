@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using BioDomes.Domains.Enums;
-using BioDomes.Domains.Queries.Species;
+using BioDomes.Domains.Queries.Biome.Species;
 using BioDomes.Domains.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

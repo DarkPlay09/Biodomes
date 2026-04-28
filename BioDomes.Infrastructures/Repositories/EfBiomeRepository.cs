@@ -1,8 +1,7 @@
 ﻿using BioDomes.Domains.Entities;
-using BioDomes.Domains.Queries;
+using BioDomes.Domains.Queries.Biome.Details;
 using BioDomes.Domains.Queries.Biome.SelectSpecies;
 using BioDomes.Domains.Queries.Biome.Species;
-using BioDomes.Domains.Queries.Species;
 using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures.EntityFramework.Links;
 using BioDomes.Infrastructures.Mappers.Biome;

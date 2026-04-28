@@ -1,4 +1,4 @@
-﻿namespace BioDomes.Domains.Queries;
+﻿namespace BioDomes.Domains.Queries.Biome.Details;
 
 public sealed class BiomeSpeciesItemDto
 {

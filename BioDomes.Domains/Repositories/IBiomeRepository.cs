@@ -1,11 +1,11 @@
 ﻿using BioDomes.Domains.Entities;
-using BioDomes.Domains.Queries;
+using BioDomes.Domains.Queries.Biome.Details;
 using BioDomes.Domains.Queries.Biome.SelectSpecies;
 using BioDomes.Domains.Queries.Biome.Species;
-using BioDomes.Domains.Queries.Species;
 
 namespace BioDomes.Domains.Repositories;
 
+// TODO : diviser en plusieurs repository
 public interface IBiomeRepository
 {
     void Add(Biome biome);

@@ -1,4 +1,4 @@
-﻿using BioDomes.Domains.Queries.Species;
+﻿using BioDomes.Domains.Queries.Biome.Species;
 
 namespace BioDomes.Domains.Queries.Biome.SelectSpecies;
 
