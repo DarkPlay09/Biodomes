@@ -1,0 +1,193 @@
+﻿/* =========================
+   Admin entity card
+   Species / Equipment
+   ========================= */
+
+.admin-entity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-entity-card {
+    display: grid;
+    grid-template-columns: 124px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid rgba(11, 61, 57, 0.08);
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.admin-entity-card__image {
+    position: relative;
+    width: 124px;
+    height: 104px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #eef5f3;
+    flex-shrink: 0;
+}
+
+.admin-entity-card__image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.admin-entity-card__status {
+    position: absolute;
+    top: 0.65rem;
+    left: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.18);
+}
+
+.admin-entity-card__status--visible {
+    background: #0b3d39;
+}
+
+.admin-entity-card__status--hidden {
+    background: #b45309;
+}
+
+.admin-entity-card__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.admin-entity-card__eyebrow {
+    margin: 0 0 0.2rem;
+    color: #0b3d39;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.admin-entity-card__content h3 {
+    margin: 0 0 0.75rem;
+    color: #0f172a;
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.admin-entity-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    margin: 0;
+}
+
+.admin-entity-card__meta div {
+    min-width: 0;
+}
+
+.admin-entity-card__meta dt {
+    margin-bottom: 0.15rem;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.admin-entity-card__meta dd {
+    margin: 0;
+    color: #0f172a;
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.admin-entity-card__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 180px;
+}
+
+.admin-entity-card__button {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+            transform 0.18s ease,
+            box-shadow 0.18s ease,
+            background-color 0.18s ease;
+}
+
+.admin-entity-card__button:hover {
+    transform: translateY(-1px);
+}
+
+.admin-entity-card__button--ghost {
+    background: #eef4f2;
+    color: #0b3d39;
+}
+
+.admin-entity-card__button--ghost:hover {
+    background: #e3ece9;
+}
+
+.admin-entity-card__button--visible {
+    background: #0b5d57;
+    color: #ffffff;
+}
+
+.admin-entity-card__button--visible:hover {
+    background: #094944;
+}
+
+.admin-entity-card__button--hidden {
+    background: #b45309;
+    color: #ffffff;
+}
+
+.admin-entity-card__button--hidden:hover {
+    background: #92400e;
+}
+
+@media (max-width: 900px) {
+    .admin-entity-card {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-entity-card__image {
+        width: 100%;
+        height: 220px;
+    }
+
+    .admin-entity-card__content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-entity-card__actions {
+        min-width: 0;
+    }
+
+    .admin-entity-card__button {
+        width: 100%;
+    }
+}
