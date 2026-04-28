@@ -127,7 +127,11 @@ else
                             {
                                 <tr>
                                     <td>
-                                        <img src="@species.ImagePath" alt="Image de @species.Name" class="biome-details-species-thumb" />
+                                        <img src="@(string.IsNullOrWhiteSpace(species.ImagePath) 
+                                                      ? "" 
+                                                      : Url.Content($"~{species.ImagePath}"))" 
+                                             alt="Image de @species.Name" 
+                                             class="biome-details-species-thumb" />
                                     </td>
                                 <td><strong>@species.Name</strong></td>
                                     <td>@species.Classification</td>

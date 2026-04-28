@@ -129,7 +129,7 @@ public class BiomeSpeciesRowVm
     public string Diet { get; init; } = string.Empty;
     public int IndividualCount { get; init; }
     
-    public string ImagePath { get; init; } = "/images/species/noImageSpecie.png";
+    public string ImagePath { get; init; } = "~/images/species/noImageSpecie.png";
 }
 
 public class BiomeEquipmentRowVm
