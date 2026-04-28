@@ -126,7 +126,20 @@
 
                 <article class="species-card">
                     <div class="species-card__image">
-                        <img src="@equipment.ImagePath" alt="Image de @equipment.Name" />
+                        @{
+                            var imagePath = equipment.ImagePath;
+
+                            if (!string.IsNullOrWhiteSpace(imagePath) && imagePath.StartsWith("/"))
+                            {
+                                imagePath = "~" + imagePath;
+                            }
+
+                            var imageSrc = string.IsNullOrWhiteSpace(imagePath)
+                                ? Url.Content("~/images/logo_biodomes.png")
+                                : Url.Content(imagePath);
+                        }
+
+                        <img src="@imageSrc" alt="Image de @equipment.Name" />
 
                         <span class="species-card__status @statusClass">
                             @statusLabel

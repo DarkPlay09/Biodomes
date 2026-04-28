@@ -124,7 +124,20 @@
 
                 <article class="species-card">
                     <div class="species-card__image">
-                        <img src="@species.ImagePath" alt="Image de @species.Name"/>
+                        @{
+                            var imagePath = species.ImagePath;
+
+                            if (!string.IsNullOrWhiteSpace(imagePath) && imagePath.StartsWith("/"))
+                            {
+                                imagePath = "~" + imagePath;
+                            }
+
+                            var imageSrc = string.IsNullOrWhiteSpace(imagePath)
+                                ? Url.Content("~/images/species/noImageSpecie.png")
+                                : Url.Content(imagePath);
+                        }
+
+                        <img src="@imageSrc" alt="Image de @species.Name" />
 
                         <span class="species-card__status @statusClass">
                             @statusLabel
