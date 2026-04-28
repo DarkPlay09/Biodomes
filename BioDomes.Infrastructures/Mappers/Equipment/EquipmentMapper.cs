@@ -12,7 +12,11 @@ public class EquipmentMapper : IEquipmentMapper
             entity.ProducedElement,
             entity.ConsumedElement,
             entity.ImagePath,
-            new UserAccount { Id = entity.CreatorId },
+            new UserAccount
+            {
+                Id = entity.CreatorId,
+                UserName = entity.Creator?.UserName ?? string.Empty
+            },
             entity.IsPublicAvailable)
         {
             Id = entity.Id
