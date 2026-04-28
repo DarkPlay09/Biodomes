@@ -15,6 +15,7 @@ using BioDomes.Web.Services;
 using BioDomes.Web.Transformers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,6 +100,19 @@ app.UseHttpsRedirection();
 app.UseReverseProxyLinks();
 app.UseWebOptimizer();
 app.UseStaticFiles();
+
+var uploadsPath = builder.Configuration["Uploads:RootPath"];
+
+if (!string.IsNullOrWhiteSpace(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(uploadsPath),
+        RequestPath = "/uploads"
+    });
+}
 
 app.UseRouting();
 

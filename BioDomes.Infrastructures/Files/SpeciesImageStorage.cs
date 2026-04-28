@@ -1,18 +1,23 @@
 ﻿using BioDomes.Domains.Extensions;
 using BioDomes.Domains.Repositories;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace BioDomes.Infrastructures.Files;
 
 public class SpeciesImageStorage : ISpeciesImageStorage
 {
     private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _configuration;
 
     private static readonly string[] AvailableExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
-    public SpeciesImageStorage(IWebHostEnvironment environment)
+    public SpeciesImageStorage(
+        IWebHostEnvironment environment,
+        IConfiguration configuration)
     {
         _environment = environment;
+        _configuration = configuration;
     }
 
     public async Task<string?> SaveAsync(string specieName, string originalFileName, Stream content)
@@ -26,9 +31,10 @@ public class SpeciesImageStorage : ISpeciesImageStorage
         var uniquePart = Guid.NewGuid().ToString("N")[..8];
         var fileName = $"{baseFileName}-{uniquePart}{extension}";
 
+        var uploadsRoot = GetUploadsRoot();
+
         var filePath = Path.Combine(
-            _environment.WebRootPath,
-            "images",
+            uploadsRoot,
             "species",
             fileName
         );
@@ -38,7 +44,7 @@ public class SpeciesImageStorage : ISpeciesImageStorage
         await using var fileStream = File.Create(filePath);
         await content.CopyToAsync(fileStream);
 
-        return $"~/images/species/{fileName}";
+        return $"~/uploads/species/{fileName}";
     }
 
     public void Delete(string? imagePath)
@@ -55,16 +61,25 @@ public class SpeciesImageStorage : ISpeciesImageStorage
 
         normalizedPath = normalizedPath.TrimStart('/');
 
-        if (!normalizedPath.StartsWith("images/species/"))
+        if (!normalizedPath.StartsWith("uploads/species/"))
             return;
 
-        if (normalizedPath == "images/species/noImageSpecie.png")
-            return;
+        var relativePath = normalizedPath["uploads/".Length..]
+            .Replace('/', Path.DirectorySeparatorChar);
 
-        var relativePath = normalizedPath.Replace('/', Path.DirectorySeparatorChar);
-        var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
+        var absolutePath = Path.Combine(GetUploadsRoot(), relativePath);
 
         if (File.Exists(absolutePath))
             File.Delete(absolutePath);
+    }
+
+    private string GetUploadsRoot()
+    {
+        var configuredPath = _configuration["Uploads:RootPath"];
+
+        if (!string.IsNullOrWhiteSpace(configuredPath))
+            return Path.GetFullPath(configuredPath);
+
+        return Path.Combine(_environment.ContentRootPath, "uploads");
     }
 }

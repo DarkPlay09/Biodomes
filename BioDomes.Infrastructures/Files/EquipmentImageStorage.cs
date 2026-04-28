@@ -37,7 +37,7 @@ public class EquipmentImageStorage : IEquipmentImageStorage
         await using var fileStream = File.Create(filePath);
         await content.CopyToAsync(fileStream);
 
-        return $"~/images/equipment/{fileName}";
+        return $"~/uploads/equipment/{fileName}";
     }
 
     public void Delete(string? imagePath)
