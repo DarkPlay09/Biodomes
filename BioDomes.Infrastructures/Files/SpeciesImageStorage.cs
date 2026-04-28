@@ -6,11 +6,10 @@ namespace BioDomes.Infrastructures.Files;
 
 public class SpeciesImageStorage : ISpeciesImageStorage
 {
-    
     private readonly IWebHostEnvironment _environment;
 
     private static readonly string[] AvailableExtensions = [".jpg", ".jpeg", ".png", ".webp"];
-    
+
     public SpeciesImageStorage(IWebHostEnvironment environment)
     {
         _environment = environment;
@@ -27,32 +26,45 @@ public class SpeciesImageStorage : ISpeciesImageStorage
         var uniquePart = Guid.NewGuid().ToString("N")[..8];
         var fileName = $"{baseFileName}-{uniquePart}{extension}";
 
-        var filePath = Path.Combine(_environment.WebRootPath, "images", "species", fileName);
+        var filePath = Path.Combine(
+            _environment.WebRootPath,
+            "images",
+            "species",
+            fileName
+        );
 
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
-        await using var fileStream = System.IO.File.Create(filePath);
+        await using var fileStream = File.Create(filePath);
         await content.CopyToAsync(fileStream);
 
-        return $"/images/species/{fileName}";
+        return $"~/images/species/{fileName}";
     }
 
     public void Delete(string? imagePath)
     {
-        if (string.IsNullOrEmpty(imagePath))
-            return;
-        
-
-        if (!imagePath.StartsWith("/images/species/"))
+        if (string.IsNullOrWhiteSpace(imagePath))
             return;
 
-        if (imagePath == "/images/species/noImageSpecie.png")
+        var normalizedPath = imagePath
+            .Replace("\\", "/")
+            .Trim();
+
+        if (normalizedPath.StartsWith("~/"))
+            normalizedPath = normalizedPath[2..];
+
+        normalizedPath = normalizedPath.TrimStart('/');
+
+        if (!normalizedPath.StartsWith("images/species/"))
             return;
-        
-        var relativePath = imagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+
+        if (normalizedPath == "images/species/noImageSpecie.png")
+            return;
+
+        var relativePath = normalizedPath.Replace('/', Path.DirectorySeparatorChar);
         var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
-        
-        if(File.Exists(absolutePath))
+
+        if (File.Exists(absolutePath))
             File.Delete(absolutePath);
     }
 }

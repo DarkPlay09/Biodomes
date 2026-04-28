@@ -25,13 +25,19 @@ public class EquipmentImageStorage : IEquipmentImageStorage
         var uniquePart = Guid.NewGuid().ToString("N")[..8];
         var fileName = $"{baseFileName}-{uniquePart}{extension}";
 
-        var filePath = Path.Combine(_environment.WebRootPath, "images", "equipment", fileName);
+        var filePath = Path.Combine(
+            _environment.WebRootPath,
+            "images",
+            "equipment",
+            fileName
+        );
+
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
         await using var fileStream = File.Create(filePath);
         await content.CopyToAsync(fileStream);
 
-        return $"/images/equipment/{fileName}";
+        return $"~/images/equipment/{fileName}";
     }
 
     public void Delete(string? imagePath)
@@ -39,10 +45,19 @@ public class EquipmentImageStorage : IEquipmentImageStorage
         if (string.IsNullOrWhiteSpace(imagePath))
             return;
 
-        if (!imagePath.StartsWith("/images/equipment/"))
+        var normalizedPath = imagePath
+            .Replace("\\", "/")
+            .Trim();
+
+        if (normalizedPath.StartsWith("~/"))
+            normalizedPath = normalizedPath[2..];
+
+        normalizedPath = normalizedPath.TrimStart('/');
+
+        if (!normalizedPath.StartsWith("images/equipment/"))
             return;
 
-        var relativePath = imagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+        var relativePath = normalizedPath.Replace('/', Path.DirectorySeparatorChar);
         var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
 
         if (File.Exists(absolutePath))
