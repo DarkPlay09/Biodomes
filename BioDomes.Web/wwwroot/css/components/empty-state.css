@@ -1,0 +1,53 @@
+/* =========================
+   Empty state commun
+   ========================= */
+
+.empty-state,
+.biome-empty-card {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 3rem 1.5rem;
+    border: 2px dashed rgba(11, 61, 57, 0.18);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.52);
+    color: #0b3d39;
+    text-align: center;
+}
+
+.empty-state__icon,
+.biome-empty-card__icon {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(11, 61, 57, 0.1);
+    color: #0b3d39;
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.empty-state__icon img,
+.biome-empty-card__icon img {
+    width: 26px;
+    height: 26px;
+    display: block;
+    object-fit: contain;
+}
+
+.empty-state h3,
+.biome-empty-card h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 900;
+}
+
+.empty-state p,
+.biome-empty-card p {
+    max-width: 420px;
+    margin: 0;
+    color: #64748b;
+    line-height: 1.6;
+}

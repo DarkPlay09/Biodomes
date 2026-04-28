@@ -15,8 +15,8 @@
     var currentUrl = $"{ViewContext.HttpContext.Request.Path}{ViewContext.HttpContext.Request.QueryString}";
 }
 
-<section class="species-catalog">
-    <header class="species-catalog__header">
+<section class="catalog-page">
+    <header class="catalog-page__header">
         <a asp-page="./Add"
            asp-route-returnUrl="@currentUrl"
            class="action-button">
@@ -26,13 +26,13 @@
     
     @if (!string.IsNullOrWhiteSpace(Model.LastInsertedEquipmentName))
     {
-        <div class="species-catalog__success">
+        <div class="catalog-page__success">
             Equipement ajouté : <strong>@Model.LastInsertedEquipmentName</strong>
         </div>
     }
 
-    <form method="get" class="species-filter-card">
-        <div class="species-filter-card__search">
+    <form method="get" class="catalog-filter-card">
+        <div class="catalog-filter-card__search">
             <label for="Search">Recherche</label>
             <input id="Search"
                    name="Search"
@@ -41,7 +41,7 @@
                    placeholder="Rechercher par nom ou ressource..." />
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="ProducedElementFilter">Produit</label>
             <select id="ProducedElementFilter" name="ProducedElementFilter">
                 <option value="">Tous</option>
@@ -57,7 +57,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="ConsumedElementFilter">Consomme</label>
             <select id="ConsumedElementFilter" name="ConsumedElementFilter">
                 <option value="">Tous</option>
@@ -73,7 +73,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="VisibilityFilter">Visibilité</label>
             <select id="VisibilityFilter" name="VisibilityFilter">
                 <option value="" selected="@visibilityAllSelected">Toutes</option>
@@ -82,7 +82,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__actions">
+        <div class="catalog-filter-card__actions">
             <button type="submit" class="dashboard-btn dashboard-btn--primary">
                 Filtrer
             </button>
@@ -95,8 +95,8 @@
 
     @if (Model.EquipmentCards.Count == 0)
     {
-        <div class="species-empty-card">
-            <div class="species-empty-card__icon">+</div>
+        <div class="empty-state">
+            <div class="empty-state__icon">+</div>
 
             <h3>Aucun équipement trouvé</h3>
 
@@ -113,22 +113,22 @@
     }
     else
     {
-        <div class="species-grid">
+        <div class="catalog-grid">
             @foreach (var equipment in Model.EquipmentCards)
             {
                 var statusClass = equipment.IsPublicAvailable
-                    ? "species-card__status--public"
-                    : "species-card__status--private";
+                    ? "entity-card__status--public"
+                    : "entity-card__status--private";
 
                 var statusLabel = equipment.IsPublicAvailable
                     ? "Public"
                     : "Privé";
 
-                <article class="species-card">
-                    <div class="species-card__image">
+                <article class="entity-card">
+                    <div class="entity-card__image">
                         <img src="@equipment.ImagePath" alt="Image de @equipment.Name" />
 
-                        <span class="species-card__status @statusClass">
+                        <span class="entity-card__status @statusClass">
                             @statusLabel
                         </span>
 
@@ -137,21 +137,21 @@
                             <a asp-page="./Edit"
                                asp-route-slug="@equipment.Slug"
                                asp-route-returnUrl="@currentUrl"
-                               class="species-card__edit"
+                               class="entity-card__edit"
                                aria-label="Modifier @equipment.Name">
-                                <div class="species-card-edit__icon" aria-hidden="true">
+                                <div class="entity-card-edit__icon" aria-hidden="true">
                                     <img src="~/images/species/icons/pen.png" alt="Icon modifier" />
                                 </div>
                             </a>
                         }
                     </div>
 
-                    <div class="species-card__body">
-                        <div class="species-card__title-block">
+                    <div class="entity-card__body">
+                        <div class="entity-card__title-block">
                             <h3>@equipment.Name</h3>
                         </div>
 
-                        <dl class="species-card__meta">
+                        <dl class="entity-card__meta">
                             <div>
                                 <dt>Produit</dt>
                                 <dd>@equipment.ProducedElementLabel</dd>
@@ -163,7 +163,7 @@
                             </div>
                         </dl>
 
-                        <div class="species-card__footer">
+                        <div class="entity-card__footer">
                             <a asp-page="./Details"
                                asp-route-slug="@equipment.Slug">
                                 Voir la fiche →
@@ -177,7 +177,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        <footer class="species-pagination">
+        <footer class="catalog-pagination">
             <div>
                 Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
             </div>
@@ -185,7 +185,7 @@
             <nav aria-label="Pagination des équipements">
                 @if (Model.PageNumber <= 1)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Précédent
                     </span>
                 }
@@ -197,7 +197,7 @@
                        asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-PageNumber="@(Model.PageNumber - 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Précédent
                     </a>
                 }
@@ -205,7 +205,7 @@
                 @foreach (var pageNumber in Model.VisiblePages)
                 {
                     var activeClass = pageNumber == Model.PageNumber
-                        ? "species-pagination__link--active"
+                        ? "catalog-pagination__link--active"
                         : "";
 
                     <a asp-page="./Index"
@@ -214,14 +214,14 @@
                        asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-PageNumber="@pageNumber"
-                       class="species-pagination__link @activeClass">
+                       class="catalog-pagination__link @activeClass">
                         @pageNumber
                     </a>
                 }
 
                 @if (Model.PageNumber >= Model.TotalPages)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Suivant
                     </span>
                 }
@@ -233,7 +233,7 @@
                        asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-PageNumber="@(Model.PageNumber + 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Suivant
                     </a>
                 }

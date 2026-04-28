@@ -1,228 +1,343 @@
-.kpi-grid {
+/* =========================
+   Biomes catalog
+   ========================= */
+
+.biome-kpi-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
-    margin: 1.25rem 0 1.5rem;
 }
 
-.kpi-card {
-    padding: 1rem 1.1rem;
-    border: 1px solid rgba(11, 61, 57, 0.12);
-    border-radius: 16px;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbfa 100%);
-    box-shadow: var(--shadow-light);
+.biome-kpi-card {
+    padding: 1.1rem;
+    border: 1px solid rgba(11, 61, 57, 0.08);
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
 }
 
-.kpi-card__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
+.biome-kpi-card span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
-.kpi-card h3 {
-    margin: 0 0 0.45rem;
-    font-size: 1rem;
-    color: var(--color-text);
-}
-
-.kpi-card strong {
-    font-size: 2rem;
-    line-height: 1;
-    color: var(--color-primary-dark);
-}
-
-.kpi-card__icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.kpi-card__icon svg {
-    width: 20px;
-    height: 20px;
-}
-
-.kpi-card--total strong {
+.biome-kpi-card strong {
     color: #0f172a;
+    font-size: 1.85rem;
+    font-weight: 900;
 }
 
-.kpi-card--optimal strong {
-    color: #16a34a;
+.biome-kpi-card--optimal strong {
+    color: #0b7a53;
 }
 
-.kpi-card--instable strong {
-    color: #d97706;
+.biome-kpi-card--unstable strong {
+    color: #b45309;
 }
 
-.kpi-card--critique strong {
+.biome-kpi-card--critical strong {
     color: #dc2626;
 }
 
-.kpi-card__icon--total {
-    background: #e6f4ef;
-    color: #115e59;
+.biome-card {
+    min-height: 320px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
 }
 
-.kpi-card__icon--optimal {
-    background: #dcfce7;
-    color: #166534;
+.biome-card {
+    overflow: hidden;
+    border: 1px solid rgba(11, 61, 57, 0.08);
 }
 
-.kpi-card__icon--instable {
-    background: #ffedd5;
-    color: #9a3412;
+.biome-card__visual {
+    position: relative;
+    height: 112px;
+    background: linear-gradient(135deg, #a9cfc5, #8fb5ab);
 }
 
-.kpi-card__icon--critique {
-    background: #fee2e2;
-    color: #991b1b;
+.biome-card--optimal .biome-card__visual {
+    background: linear-gradient(135deg, #b6d8ce, #86b4aa);
 }
 
-.table-wrapper {
-    overflow-x: auto;
-    border: 1px solid rgba(11, 61, 57, 0.12);
-    border-radius: 16px;
-    background: #fff;
+.biome-card--unstable .biome-card__visual {
+    background: linear-gradient(135deg, #eadab6, #e8b98e);
 }
 
-.entity-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 980px;
+.biome-card--critical .biome-card__visual {
+    background: linear-gradient(135deg, #e5a6ad, #bc8792);
 }
 
-.entity-table th,
-.entity-table td {
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid rgba(11, 61, 57, 0.08);
-    text-align: left;
-    vertical-align: middle;
+.biome-card__status {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    padding: 0.3rem 0.55rem;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
-.entity-table th {
-    font-weight: 800;
-    color: var(--color-primary);
-    background: rgba(11, 61, 57, 0.03);
+.biome-card--optimal .biome-card__status {
+    background: #22c55e;
 }
 
-.entity-table__actions {
+.biome-card--unstable .biome-card__status {
+    background: #eab308;
+}
+
+.biome-card--critical .biome-card__status {
+    background: #dc2626;
+}
+
+.biome-card__body {
+    padding: 1rem;
+}
+
+.biome-card__title-block {
+    margin-bottom: 0.95rem;
+}
+
+.biome-card__title-block h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.biome-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-bottom: 0.95rem;
+}
+
+.biome-card__metric {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
+    gap: 0.55rem;
+    min-width: 0;
+    padding: 0.65rem;
+    border-radius: 12px;
+    background: #f5f8f7;
 }
 
-.entity-table__actions form {
-    margin: 0;
+.biome-card__metric img {
+    width: 18px;
+    height: 18px;
+    display: block;
+    object-fit: contain;
 }
 
-.biome-row-link {
-    width: 36px;
-    height: 36px;
-    margin-left: auto;
+.biome-card__metric small {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.62rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.biome-card__metric strong {
+    display: block;
+    color: #0f172a;
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+.biome-card__metric--cold {
+    background: rgba(59, 130, 246, 0.10);
+}
+
+.biome-card__metric--cold small,
+.biome-card__metric--cold strong {
+    color: #2563eb;
+}
+
+.biome-card__metric--stable {
+    background: rgba(34, 197, 94, 0.10);
+}
+
+.biome-card__metric--stable small,
+.biome-card__metric--stable strong {
+    color: #15803d;
+}
+
+.biome-card__metric--hot {
+    background: rgba(239, 68, 68, 0.10);
+}
+
+.biome-card__metric--hot small,
+.biome-card__metric--hot strong {
+    color: #dc2626;
+}
+
+.biome-card__metric--humidity {
+    background: #f5f8f7;
+}
+
+.biome-card__humidity-icon {
+    --humidity-fill: 0%;
+
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+}
+
+.biome-card__humidity-icon img {
+    position: relative;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    display: block;
+    object-fit: contain;
+}
+
+.biome-card__humidity-fill {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    height: var(--humidity-fill);
+    background: linear-gradient(180deg, #7dd3fc 0%, #0ea5e9 100%);
+    border-radius: 0 0 8px 8px;
+    z-index: 1;
+    transition: height 0.25s ease;
+    clip-path: polygon(
+            50% 0%,
+            84% 30%,
+            94% 58%,
+            83% 82%,
+            50% 100%,
+            17% 82%,
+            6% 58%,
+            16% 30%
+    );
+}
+
+.biome-card__score {
+    margin-bottom: 1rem;
+}
+
+.biome-card__score > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+}
+
+.biome-card__score span {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.biome-card__score strong {
+    color: #0f172a;
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+.biome-card__score-track {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.biome-card__score-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #0b3d39;
+}
+
+.biome-card--unstable .biome-card__score-track span {
+    background: #eab308;
+}
+
+.biome-card--critical .biome-card__score-track span {
+    background: #dc2626;
+}
+
+.biome-card__footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    gap: 0.65rem;
+}
+
+.biome-card__details,
+.biome-card__settings {
+    min-height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    color: #0b3d39;
     text-decoration: none;
-    border: 1px solid rgba(11, 61, 57, 0.14);
-    background: #f2f8f6;
-    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    font-weight: 900;
 }
 
-.biome-row-link svg {
-    width: 18px;
-    height: 18px;
-}
-
-.biome-row-link:hover {
+.biome-card__details {
     background: #0b3d39;
     color: #ffffff;
-    border-color: #0b3d39;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
-.biome-row-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 102px;
-    min-height: 44px;
-    padding: 0.6rem 1rem;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    font-size: 1rem;
-    font-weight: 800;
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+.biome-card__settings {
+    background: #eef4f2;
+    transition:
+            background-color 0.18s ease,
+            transform 0.18s ease,
+            box-shadow 0.18s ease;
 }
 
-.biome-row-action:hover {
+.biome-card__settings:hover {
+    background: rgba(11, 61, 57, 0.12);
     transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(11, 61, 57, 0.12);
 }
 
-.biome-row-action--edit {
-    background: #edf2f1;
-    border-color: #d8e3e0;
-    color: #0f4e49;
+.biome-card__settings:hover img {
+    transform: rotate(18deg);
 }
 
-.biome-row-action--edit:hover {
-    background: #e4ecea;
-    color: #0b3d39;
+.biome-card__settings img {
+    width: 17px;
+    height: 17px;
+    display: block;
+    object-fit: contain;
+    transition: transform 0.18s ease;
 }
 
-.biome-row-action--delete {
-    background: var(--color-primary);
-    border-color: #052724;
-    color: #ffffff;
-    box-shadow: var(--shadow-light);
+@media (max-width: 1300px) {
+    .biome-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
-.biome-row-action--delete:hover {
-    background: var(--color-primary-dark);
-    color: #ffffff;
-}
-
-.state-badge {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 999px;
-    padding: 0.25rem 0.6rem;
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-.state-badge--optimal {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.state-badge--instable {
-    background: #ffedd5;
-    color: #9a3412;
-}
-
-.state-badge--critique {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-@media (max-width: 1024px) {
-    .kpi-grid {
+@media (max-width: 900px) {
+    .biome-kpi-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 640px) {
-    .kpi-grid {
+    .biome-kpi-grid {
         grid-template-columns: 1fr;
     }
 }
-

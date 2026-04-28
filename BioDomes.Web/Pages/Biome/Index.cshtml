@@ -47,8 +47,8 @@
         </article>
     </div>
 
-    <form method="get" class="species-filter-card biome-filter-card">
-        <div class="species-filter-card__search">
+    <form method="get" class="catalog-filter-card biome-filter-card">
+        <div class="catalog-filter-card__search">
             <label for="Search">Recherche</label>
             <input id="Search"
                    name="Search"
@@ -57,7 +57,7 @@
                    placeholder="Rechercher par nom ou état..." />
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="StateFilter">État</label>
             <select id="StateFilter" name="StateFilter">
                 <option value="">Tous</option>
@@ -73,7 +73,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="TemperatureFilter">Température</label>
             <select id="TemperatureFilter" name="TemperatureFilter">
                 <option value="" selected="@temperatureAllSelected">Toutes</option>
@@ -83,7 +83,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__actions">
+        <div class="catalog-filter-card__actions">
             <button type="submit" class="dashboard-btn dashboard-btn--primary">
                 Filtrer
             </button>
@@ -192,7 +192,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        <footer class="species-pagination">
+        <footer class="catalog-pagination">
             <div>
                 Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
             </div>
@@ -200,7 +200,7 @@
             <nav aria-label="Pagination des biomes">
                 @if (Model.PageNumber <= 1)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Précédent
                     </span>
                 }
@@ -211,7 +211,7 @@
                        asp-route-StateFilter="@Model.StateFilter"
                        asp-route-TemperatureFilter="@Model.TemperatureFilter"
                        asp-route-PageNumber="@(Model.PageNumber - 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Précédent
                     </a>
                 }
@@ -219,7 +219,7 @@
                 @foreach (var pageNumber in Model.VisiblePages)
                 {
                     var activeClass = pageNumber == Model.PageNumber
-                        ? "species-pagination__link--active"
+                        ? "catalog-pagination__link--active"
                         : "";
 
                     <a asp-page="./Index"
@@ -227,14 +227,14 @@
                        asp-route-StateFilter="@Model.StateFilter"
                        asp-route-TemperatureFilter="@Model.TemperatureFilter"
                        asp-route-PageNumber="@pageNumber"
-                       class="species-pagination__link @activeClass">
+                       class="catalog-pagination__link @activeClass">
                         @pageNumber
                     </a>
                 }
 
                 @if (Model.PageNumber >= Model.TotalPages)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Suivant
                     </span>
                 }
@@ -245,7 +245,7 @@
                        asp-route-StateFilter="@Model.StateFilter"
                        asp-route-TemperatureFilter="@Model.TemperatureFilter"
                        asp-route-PageNumber="@(Model.PageNumber + 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Suivant
                     </a>
                 }

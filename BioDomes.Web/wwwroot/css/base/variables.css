@@ -20,4 +20,12 @@
 
     --content-width: 1200px;
     --container-width: 1200px;
+
+    --bio-primary: #0c4f49;
+    --bio-primary-dark: #083b36;
+    --bio-text: #0f172a;
+    --bio-muted: #667085;
+    --bio-border: #d8dee6;
+    --bio-bg: #ffffff;
+    --bio-error: #b42318;
 }

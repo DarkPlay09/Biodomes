@@ -7,7 +7,7 @@
     color: #0f172a;
 }
 
-.species-filter-card .select-species-page__toggle-input {
+.catalog-filter-card .select-species-page__toggle-input {
     width: 18px;
     height: 18px;
     min-height: 18px;
@@ -21,11 +21,11 @@
     flex-shrink: 0;
 }
 
-.select-species-page .species-filter-card__actions {
+.select-species-page .catalog-filter-card__actions {
     align-items: center;
 }
 
-.select-species-page .species-filter-card__actions .dashboard-btn {
+.select-species-page .catalog-filter-card__actions .dashboard-btn {
     min-height: 40px;
     padding: 0.55rem 0.9rem;
     border-radius: 10px;
@@ -42,11 +42,13 @@
     position: relative;
 }
 
-.select-species-page__card--already .species-card__image img {
+.select-species-page__card--already .species-card__image img,
+.select-species-page__card--already .entity-card__image img {
     filter: grayscale(100%) brightness(0.82);
 }
 
-.select-species-page__card--already .species-card__body {
+.select-species-page__card--already .species-card__body,
+.select-species-page__card--already .entity-card__body {
     opacity: 0.78;
 }
 
@@ -66,7 +68,8 @@
     text-decoration: none;
 }
 
-.select-species-page .species-card__footer {
+.select-species-page .species-card__footer,
+.select-species-page .entity-card__footer {
     margin-top: 0;
     padding: 1rem 1.1rem 1.1rem;
     border-top: 1px solid rgba(11, 61, 57, 0.08);
