@@ -53,11 +53,6 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BioDomesDb")));
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-});
-
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
 builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
 
@@ -76,6 +71,11 @@ builder.Services
     })
     .AddEntityFrameworkStores<BioDomesDbContext>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Error/403";
+});
+
 var app = builder.Build();
 
 await IdentityDataSeeder.SeedAsync(app.Services);
@@ -91,6 +91,8 @@ else
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions());
 app.UseHttpsRedirection();

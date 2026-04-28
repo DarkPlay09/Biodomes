@@ -1,0 +1,71 @@
+﻿@page "/Error/{statusCode:int}"
+@model BioDomes.Web.Pages.Error.StatusCodeModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.ErrorTitle - BioDomes</title>
+
+    <link rel="stylesheet" href="~/css/pages/error-status.css" asp-append-version="true" />
+</head>
+
+<body class="error-status-page @Model.StatusCssClass">
+    <main class="error-status">
+        <div class="error-status__brand">
+            <img src="~/images/logo_biodomes.png" alt="Logo BioDomes" />
+            <div>
+                <strong>BioDomes</strong>
+                <span>Système sécurisé</span>
+            </div>
+        </div>
+
+        <section class="error-status__card" aria-labelledby="errorStatusTitle">
+            <div class="error-status__icon">
+                <img src="@Model.IllustrationPath"
+                     alt="@Model.IllustrationAlt"
+                     class="error-status__icon-image" />
+
+                <span>@Model.ProtocolLabel</span>
+            </div>
+
+            <h1 id="errorStatusTitle">
+                @Model.ErrorTitle
+            </h1>
+
+            <p class="error-status__text">
+                @Model.ErrorMessage
+                Revenez vers une zone sûre pour continuer votre exploration.
+            </p>
+
+            <a href="@Model.SafeReturnUrl"
+               class="error-status__button">
+                <img src="~/images/error/shield.png"
+                     alt=""
+                     aria-hidden="true"
+                     class="error-status__button-icon" />
+
+                @Model.ReturnButtonLabel
+
+                <img src="~/images/error/arrow-right.png"
+                     alt=""
+                     aria-hidden="true"
+                     class="error-status__button-icon" />
+            </a>
+
+            <p class="error-status__footer">
+                BioDomes Systematic Administration
+            </p>
+        </section>
+
+        <div class="error-status__watermark" aria-hidden="true">
+            Resource not found
+        </div>
+    </main>
+</body>
+</html>

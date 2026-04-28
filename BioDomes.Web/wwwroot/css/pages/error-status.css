@@ -1,29 +1,41 @@
 ﻿:root {
-    --access-bg: #f9faf9;
-    --access-text: #101828;
-    --access-muted: #667085;
-    --access-primary: #0b3d39;
-    --access-primary-dark: #082f2c;
-    --access-error: #b42318;
-    --access-error-soft: #fee4e2;
-    --access-border: rgba(180, 35, 24, 0.18);
+    --error-bg: #f9faf9;
+    --error-text: #101828;
+    --error-muted: #667085;
+    --error-primary: #0b3d39;
+    --error-primary-dark: #082f2c;
+    --error-accent: #b45309;
+    --error-accent-soft: rgba(180, 83, 9, 0.10);
+    --error-border: rgba(180, 83, 9, 0.18);
 }
 
 * {
     box-sizing: border-box;
 }
 
-body.access-denied-page {
+body.error-status-page {
     min-height: 100vh;
     margin: 0;
     background:
-            radial-gradient(circle at 50% 18%, rgba(180, 35, 24, 0.06), transparent 32%),
-            linear-gradient(180deg, #ffffff 0%, var(--access-bg) 100%);
-    color: var(--access-text);
+            radial-gradient(circle at 50% 18%, rgba(180, 83, 9, 0.06), transparent 32%),
+            linear-gradient(180deg, #ffffff 0%, var(--error-bg) 100%);
+    color: var(--error-text);
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.access-denied {
+.error-status-page--forbidden {
+    --error-accent: #b42318;
+    --error-accent-soft: rgba(180, 35, 24, 0.10);
+    --error-border: rgba(180, 35, 24, 0.18);
+}
+
+.error-status-page--not-found {
+    --error-accent: #b45309;
+    --error-accent-soft: rgba(180, 83, 9, 0.10);
+    --error-border: rgba(180, 83, 9, 0.18);
+}
+
+.error-status {
     position: relative;
     min-height: 100vh;
     display: grid;
@@ -32,25 +44,25 @@ body.access-denied-page {
     overflow: hidden;
 }
 
-.access-denied::before,
-.access-denied::after {
+.error-status::before,
+.error-status::after {
     content: "";
     position: absolute;
     left: 0;
     width: 100%;
     height: 4px;
-    background: rgba(180, 35, 24, 0.08);
+    background: rgba(180, 83, 9, 0.08);
 }
 
-.access-denied::before {
+.error-status::before {
     top: 0;
 }
 
-.access-denied::after {
+.error-status::after {
     bottom: 0;
 }
 
-.access-denied__brand {
+.error-status__brand {
     position: absolute;
     top: 2rem;
     left: 2rem;
@@ -60,31 +72,31 @@ body.access-denied-page {
     opacity: 0.45;
 }
 
-.access-denied__brand img {
+.error-status__brand img {
     width: 34px;
     height: 34px;
     object-fit: contain;
 }
 
-.access-denied__brand strong {
+.error-status__brand strong {
     display: block;
-    color: var(--access-primary);
+    color: var(--error-primary);
     font-size: 0.85rem;
     font-weight: 900;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
-.access-denied__brand span {
+.error-status__brand span {
     display: block;
-    color: var(--access-muted);
+    color: var(--error-muted);
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
-.access-denied__card {
+.error-status__card {
     width: min(100%, 620px);
     display: flex;
     align-items: center;
@@ -93,41 +105,43 @@ body.access-denied-page {
     z-index: 1;
 }
 
-.access-denied__icon {
+.error-status__icon {
     position: relative;
     width: 174px;
     height: 174px;
     display: grid;
     place-items: center;
     margin-bottom: 2rem;
-    border: 1px solid var(--access-border);
+    border: 1px solid var(--error-border);
     border-radius: 18px;
-    color: var(--access-error);
+    color: var(--error-accent);
     background: rgba(255, 255, 255, 0.78);
-    box-shadow: 0 24px 70px rgba(180, 35, 24, 0.08);
+    box-shadow: 0 24px 70px rgba(180, 83, 9, 0.08);
 }
 
-.access-denied__icon::before {
+.error-status__icon::before {
     content: "";
     position: absolute;
     inset: -45px;
     border-radius: 999px;
-    background: rgba(180, 35, 24, 0.06);
+    background: var(--error-accent-soft);
     filter: blur(34px);
     z-index: -1;
 }
 
-.access-denied__icon svg {
+.error-status__icon-image {
     width: 96px;
     height: 96px;
+    display: block;
+    object-fit: contain;
 }
 
-.access-denied__icon span {
+.error-status__icon span {
     position: absolute;
     bottom: -0.75rem;
     padding: 0.35rem 0.7rem;
     border-radius: 4px;
-    background: var(--access-error);
+    background: var(--error-accent);
     color: #ffffff;
     font-size: 0.72rem;
     font-weight: 900;
@@ -135,48 +149,43 @@ body.access-denied-page {
     text-transform: uppercase;
 }
 
-.access-denied h1 {
+.error-status h1 {
     margin: 0;
-    color: var(--access-text);
+    color: var(--error-text);
     font-size: clamp(2.1rem, 5vw, 3.2rem);
     line-height: 1.05;
     font-weight: 950;
     letter-spacing: -0.06em;
 }
 
-.access-denied__text {
+.error-status__text {
     max-width: 520px;
     margin: 1rem 0 0;
     padding-left: 1.25rem;
-    border-left: 2px solid rgba(180, 35, 24, 0.18);
-    color: var(--access-muted);
+    border-left: 2px solid rgba(180, 83, 9, 0.18);
+    color: var(--error-muted);
     font-size: 1rem;
     line-height: 1.7;
     text-align: left;
 }
 
-.access-denied__text strong {
-    color: var(--access-primary);
-    font-weight: 900;
-}
-
-.access-denied__alert {
+.error-status__alert {
     grid-column: 1 / -1;
     padding-top: 0.85rem;
     border-top: 1px solid rgba(11, 61, 57, 0.08);
 }
 
-.access-denied__alert small {
-    color: var(--access-error);
+.error-status__alert small {
+    color: var(--error-accent);
 }
 
-.access-denied__alert strong {
-    color: var(--access-muted);
+.error-status__alert strong {
+    color: var(--error-muted);
     font-style: italic;
     font-weight: 700;
 }
 
-.access-denied__button {
+.error-status__button {
     min-height: 58px;
     display: inline-flex;
     align-items: center;
@@ -185,7 +194,7 @@ body.access-denied-page {
     margin-top: 2rem;
     padding: 0.95rem 1.7rem;
     border-radius: 10px;
-    background: var(--access-primary);
+    background: var(--error-primary);
     color: #ffffff;
     text-decoration: none;
     font-size: 1rem;
@@ -197,18 +206,20 @@ body.access-denied-page {
             box-shadow 0.18s ease;
 }
 
-.access-denied__button:hover {
-    background: var(--access-primary-dark);
+.error-status__button:hover {
+    background: var(--error-primary-dark);
     transform: translateY(-1px);
     box-shadow: 0 20px 36px rgba(11, 61, 57, 0.24);
 }
 
-.access-denied__button svg {
+.error-status__button-icon {
     width: 1.15rem;
     height: 1.15rem;
+    display: block;
+    object-fit: contain;
 }
 
-.access-denied__footer {
+.error-status__footer {
     margin: 1.6rem 0 0;
     color: rgba(102, 112, 133, 0.42);
     font-size: 0.72rem;
@@ -217,7 +228,7 @@ body.access-denied-page {
     text-transform: uppercase;
 }
 
-.access-denied__watermark {
+.error-status__watermark {
     position: fixed;
     right: 2rem;
     bottom: 2rem;
@@ -233,17 +244,17 @@ body.access-denied-page {
 }
 
 @media (max-width: 700px) {
-    .access-denied {
+    .error-status {
         padding: 1.25rem;
     }
 
-    .access-denied__brand {
+    .error-status__brand {
         position: static;
         margin-bottom: 2rem;
         align-self: flex-start;
     }
 
-    .access-denied__watermark {
+    .error-status__watermark {
         display: none;
     }
 }
