@@ -32,7 +32,7 @@ else
             </div>
             <div class="biome-details-page__actions">
                 <a asp-page="/Biome/Edit" asp-route-slug="@Model.Details.Slug" class="biome-row-action biome-row-action--edit">Modifier le biome</a>
-                <a href="#" class="action-button">Gérer les espèces</a>
+                <a asp-page="/Biome/Species" asp-route-slug="@Model.Details.Slug" class="action-button">Gérer les espèces</a>
                 <form id="deleteEntityForm"
                       method="post"
                       asp-page-handler="Delete"
@@ -103,20 +103,42 @@ else
                 <div class="table-wrapper h-100">
                     <div class="biome-details-page__species-header">
                         <h2 class="biome-details-page__species-title">Espèces et populations</h2>
-                        <a href="#" class="action-button biome-details-page__species-add">+ Ajouter une espèce</a>
+                        <a asp-page="/Biome/SelectSpecies" asp-route-slug="@Model.Details.Slug" class="action-button biome-details-page__species-add">+ Ajouter une espèce</a>
                     </div>
                     <table class="entity-table">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>Espèce</th>
+                            <th>Classification</th>
+                            <th>Régime</th>
                             <th>Population</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td colspan="3">Aucune espèce ajoutée pour l'instant.</td>
-                        </tr>
+                        @if (!Model.Details.Species.Any())
+                        {
+                            <tr>
+                                <td colspan="6">Aucune espèce ajoutée pour l'instant.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var species in Model.Details.Species)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@species.ImagePath" alt="Image de @species.Name" class="biome-details-species-thumb" />
+                                    </td>
+                                    <td>@species.Name</td>
+                                    <td>@species.Classification</td>
+                                    <td>@species.Diet</td>
+                                    <td>@species.IndividualCount</td>
+                                    <td class="entity-table__actions">-</td>
+                                </tr>
+                            }
+                        }
                         </tbody>
                     </table>
                 </div>
@@ -127,13 +149,29 @@ else
                     <table class="entity-table">
                         <thead>
                         <tr>
-                            <th>Équipements</th>
+                            <th>Équipement</th>
+                            <th>Produit</th>
+                            <th>Consomme</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr><td>Aucun équipement lié.</td></tr>
-                        <tr><td class="text-muted">Hydro Pump (exemple)</td></tr>
-                        <tr><td class="text-muted">UV Array (exemple)</td></tr>
+                        @if (!Model.Details.Equipments.Any())
+                        {
+                            <tr>
+                                <td colspan="3">Aucun équipement lié.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var equipment in Model.Details.Equipments)
+                            {
+                                <tr>
+                                    <td>@equipment.Name</td>
+                                    <td>@equipment.ProducedElement</td>
+                                    <td>@equipment.ConsumedElement</td>
+                                </tr>
+                            }
+                        }
                         </tbody>
                     </table>
                     <div class="p-3 border-top biome-details-page__card-footer">
@@ -205,3 +243,4 @@ else
 @section Scripts {
     <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
 }
+
