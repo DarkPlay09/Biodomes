@@ -32,7 +32,6 @@ else
             </div>
             <div class="biome-details-page__actions">
                 <a asp-page="/Biome/Edit" asp-route-slug="@Model.Details.Slug" class="biome-row-action biome-row-action--edit">Modifier le biome</a>
-                <a asp-page="/Biome/Species" asp-route-slug="@Model.Details.Slug" class="action-button">Gérer les espèces</a>
                 <form id="deleteEntityForm"
                       method="post"
                       asp-page-handler="Delete"
@@ -103,7 +102,7 @@ else
                 <div class="table-wrapper h-100">
                     <div class="biome-details-page__species-header">
                         <h2 class="biome-details-page__species-title">Espèces et populations</h2>
-                        <a asp-page="/Biome/SelectSpecies" asp-route-slug="@Model.Details.Slug" class="action-button biome-details-page__species-add">+ Ajouter une espèce</a>
+                        <a asp-page="/Biome/Species" asp-route-slug="@Model.Details.Slug" class="action-button biome-details-page__species-add">Gérer les espèces</a>
                     </div>
                     <table class="entity-table">
                         <thead>
@@ -113,7 +112,6 @@ else
                             <th>Classification</th>
                             <th>Régime</th>
                             <th>Population</th>
-                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -131,11 +129,10 @@ else
                                     <td>
                                         <img src="@species.ImagePath" alt="Image de @species.Name" class="biome-details-species-thumb" />
                                     </td>
-                                    <td>@species.Name</td>
+                                <td><strong>@species.Name</strong></td>
                                     <td>@species.Classification</td>
                                     <td>@species.Diet</td>
                                     <td>@species.IndividualCount</td>
-                                    <td class="entity-table__actions">-</td>
                                 </tr>
                             }
                         }

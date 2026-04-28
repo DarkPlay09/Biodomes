@@ -81,6 +81,33 @@ public class SpeciesModel : PageModel
         });
     }
 
+    public IActionResult OnPostSetCount(string slug, int speciesId, int count)
+    {
+        if (!TryGetCurrentUserId(out var currentUserId))
+            return Challenge();
+
+        var biome = _biomeRepository.GetBySlug(slug);
+        if (biome is null)
+            return NotFound();
+
+        if (biome.Creator.Id != currentUserId)
+            return Forbid();
+
+        var safeCount = Math.Max(0, count);
+        _biomeRepository.SetSpeciesCountInBiome(biome.Id, speciesId, safeCount);
+
+        TempData["SuccessMessage"] = "Population mise à jour.";
+
+        
+        return RedirectToPage(new
+        {
+            slug,
+            Search,
+            ClassificationFilter,
+            DietFilter
+        });
+    }
+
     public IActionResult OnPostRemove(string slug, int speciesId)
     {
         if (!TryGetCurrentUserId(out var currentUserId))

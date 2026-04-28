@@ -29,7 +29,15 @@ else
             <div class="biome-species-page__header-actions">
                 <a asp-page="/Biome/Details"
                    asp-route-slug="@Model.PageData.BiomeSlug"
-                   class="dashboard-btn dashboard-btn--ghost">
+                   class="dashboard-btn dashboard-btn--ghost biome-species-page__back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="biome-species-page__back-icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
                     Retour au biome
                 </a>
 
@@ -129,50 +137,74 @@ else
                             </div>
 
                             <div class="admin-species-card__actions biome-species-card__actions">
-                                <a asp-page="/Species/Details"
-                                   asp-route-slug="@species.Slug"
-                                   class="admin-species-card__button admin-species-card__button--ghost">
-                                    Voir la fiche
-                                </a>
+                                <button type="button"
+                                        class="biome-species-card__counter-btn"
+                                        data-counter-dec
+                                        data-target-input="species-count-@species.SpeciesId"
+                                        aria-label="Retirer un individu">
+                                    -
+                                </button>
 
                                 <form method="post"
-                                      asp-page-handler="Adjust"
+                                      asp-page-handler="SetCount"
                                       asp-route-slug="@Model.PageData.BiomeSlug"
                                       asp-route-speciesId="@species.SpeciesId"
-                                      class="biome-species-card__counter-form">
-                                    <input type="hidden" name="delta" value="-1" />
+                                      id="@($"setCountForm-{species.SpeciesId}")"
+                                      data-preserve-scroll
+                                      class="biome-species-card__setcount-form">
                                     <input type="hidden" name="Search" value="@Model.Search" />
                                     <input type="hidden" name="ClassificationFilter" value="@Model.ClassificationFilter" />
                                     <input type="hidden" name="DietFilter" value="@Model.DietFilter" />
-                                    <button type="submit" class="biome-species-card__counter-btn" aria-label="Retirer un individu">-</button>
+                                    <input type="number"
+                                           id="species-count-@species.SpeciesId"
+                                           class="biome-species-card__count-input"
+                                           name="count"
+                                           value="@species.IndividualCount"
+                                           min="0"
+                                           inputmode="numeric"
+                                           aria-label="Nombre d'individus pour @species.Name" />
                                 </form>
 
-                                <span class="biome-species-card__count">@species.IndividualCount</span>
+                                <button type="button"
+                                        class="biome-species-card__counter-btn"
+                                        data-counter-inc
+                                        data-target-input="species-count-@species.SpeciesId"
+                                        aria-label="Ajouter un individu">
+                                    +
+                                </button>
 
-                                <form method="post"
-                                      asp-page-handler="Adjust"
-                                      asp-route-slug="@Model.PageData.BiomeSlug"
-                                      asp-route-speciesId="@species.SpeciesId"
-                                      class="biome-species-card__counter-form">
-                                    <input type="hidden" name="delta" value="1" />
-                                    <input type="hidden" name="Search" value="@Model.Search" />
-                                    <input type="hidden" name="ClassificationFilter" value="@Model.ClassificationFilter" />
-                                    <input type="hidden" name="DietFilter" value="@Model.DietFilter" />
-                                    <button type="submit" class="biome-species-card__counter-btn" aria-label="Ajouter un individu">+</button>
-                                </form>
+                                <button type="submit"
+                                        form="@($"setCountForm-{species.SpeciesId}")"
+                                        data-preserve-scroll-trigger
+                                        class="biome-species-card__save-btn"
+                                        aria-label="Valider la nouvelle population">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                </button>
 
                                 <form method="post"
                                       asp-page-handler="Remove"
                                       asp-route-slug="@Model.PageData.BiomeSlug"
-                                      asp-route-speciesId="@species.SpeciesId">
+                                      asp-route-speciesId="@species.SpeciesId"
+                                      data-preserve-scroll
+                                      data-remove-confirm-form>
                                     <input type="hidden" name="Search" value="@Model.Search" />
                                     <input type="hidden" name="ClassificationFilter" value="@Model.ClassificationFilter" />
                                     <input type="hidden" name="DietFilter" value="@Model.DietFilter" />
-                                    <button type="submit" class="admin-species-card__button admin-species-card__button--hidden">
-                                        Retirer du biome
+                                    <button type="submit"
+                                            class="admin-species-card__button admin-species-card__button--hidden"
+                                            data-remove-confirm-button>
+                                        Retirer
                                     </button>
                                 </form>
                             </div>
+
+                            <a asp-page="/Species/Details"
+                               asp-route-slug="@species.Slug"
+                               class="biome-species-card__side-link">
+                                Voir la fiche
+                            </a>
                         </div>
                     </article>
                 }
@@ -180,3 +212,8 @@ else
         }
     </section>
 }
+
+@section Scripts {
+    <script src="~/js/biome-species-counter.js" asp-append-version="true"></script>
+}
+
