@@ -27,7 +27,7 @@
 
         <section class="error-status__card" aria-labelledby="errorStatusTitle">
             <div class="error-status__icon">
-                <img src="@Model.IllustrationPath"
+                <img src="@Url.Content(Model.IllustrationPath)"
                      alt="@Model.IllustrationAlt"
                      class="error-status__icon-image" />
 
@@ -45,14 +45,14 @@
 
             <a href="@Model.SafeReturnUrl"
                class="error-status__button">
-                <img src="~/images/error/shield.png"
+                <img src="@Url.Content("~/images/error/shield.png")"
                      alt=""
                      aria-hidden="true"
                      class="error-status__button-icon" />
 
                 @Model.ReturnButtonLabel
-
-                <img src="~/images/error/arrow-right.png"
+                
+                <img src="@Url.Content("~/images/error/arrow-right.png")"
                      alt=""
                      aria-hidden="true"
                      class="error-status__button-icon" />
