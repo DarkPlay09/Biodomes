@@ -33,7 +33,7 @@ public class StatusCodeModel : PageModel
     /// <summary>
     /// Image principale affichée sur la page d'erreur.
     /// </summary>
-    public string IllustrationPath { get; private set; } = "/images/error/error-default.png";
+    public string IllustrationPath { get; private set; } = "~/images/error/error-default.png";
 
     /// <summary>
     /// Texte alternatif de l'image principale.
@@ -75,7 +75,7 @@ public class StatusCodeModel : PageModel
                 ErrorTitle = "Accès refusé";
                 ErrorMessage = "Vous n'avez pas les autorisations nécessaires pour accéder à ce secteur restreint.";
                 ProtocolLabel = "Protocole 403";
-                IllustrationPath = "/images/error/error-403.png";
+                IllustrationPath = "~/images/error/error-403.png";
                 IllustrationAlt = "Illustration accès refusé";
                 StatusCssClass = "error-status-page--forbidden";
                 break;
@@ -84,7 +84,7 @@ public class StatusCodeModel : PageModel
                 ErrorTitle = "Page introuvable";
                 ErrorMessage = "Le secteur demandé n'existe pas ou a été déplacé dans la plateforme BioDomes.";
                 ProtocolLabel = "Protocole 404";
-                IllustrationPath = "/images/error/error-404.png";
+                IllustrationPath = "~/images/error/error-404.png";
                 IllustrationAlt = "Illustration page introuvable";
                 StatusCssClass = "error-status-page--not-found";
                 break;
@@ -93,7 +93,7 @@ public class StatusCodeModel : PageModel
                 ErrorTitle = $"Erreur {statusCode}";
                 ErrorMessage = "Une anomalie a été détectée pendant le traitement de votre demande.";
                 ProtocolLabel = $"Protocole {statusCode}";
-                IllustrationPath = "/images/error/error-default.png";
+                IllustrationPath = "~/images/error/error-default.png";
                 IllustrationAlt = "Illustration erreur système";
                 StatusCssClass = "error-status-page--default";
                 break;
