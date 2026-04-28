@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using BioDomes.Domains.Queries.Biome.Species;
 using BioDomes.Domains.Repositories;
 using Microsoft.AspNetCore.Mvc;

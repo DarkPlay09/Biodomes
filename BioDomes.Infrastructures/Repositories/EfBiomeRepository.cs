@@ -140,7 +140,8 @@ public class EfBiomeRepository : IBiomeRepository
                 Name = link.Species.Name,
                 Classification = link.Species.Classification,
                 Diet = link.Species.Diet,
-                IndividualCount = link.IndividualCount
+                IndividualCount = link.IndividualCount,
+                ImagePath = link.Species.ImagePath
             })
             .ToList();
 

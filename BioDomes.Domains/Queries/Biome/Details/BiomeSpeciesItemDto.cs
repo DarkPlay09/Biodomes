@@ -7,4 +7,5 @@ public sealed class BiomeSpeciesItemDto
     public string Classification { get; init; } = string.Empty;
     public string Diet { get; init; } = string.Empty;
     public int IndividualCount { get; init; }
+    public string? ImagePath { get; init; }
 }
