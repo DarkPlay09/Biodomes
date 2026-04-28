@@ -133,7 +133,9 @@
 
                         <div class="biome-card__metrics">
                             <div class="biome-card__metric @biome.TemperatureCssClass">
-                                <img src="@biome.TemperatureIconPath" alt="" aria-hidden="true" />
+                                <img src="@(string.IsNullOrWhiteSpace(biome.TemperatureIconPath) ? "" : Url.Content(biome.TemperatureIconPath))"
+                                     alt=""
+                                     aria-hidden="true" />
                                 <div>
                                     <small>Temp</small>
                                     <strong>@biome.TemperatureLabel</strong>

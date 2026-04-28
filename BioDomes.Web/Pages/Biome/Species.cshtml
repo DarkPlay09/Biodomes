@@ -115,7 +115,8 @@ else
 
                     <article class="admin-species-card biome-species-card">
                         <div class="admin-species-card__image">
-                            <img src="@species.ImagePath" alt="Image de @species.Name" />
+                            <img src="@(string.IsNullOrWhiteSpace(species.ImagePath) ? "" : Url.Content($"~{species.ImagePath}"))"
+                                 alt="Image de @species.Name" />
                             <span class="admin-species-card__status @statusClass">@statusLabel</span>
                         </div>
 
