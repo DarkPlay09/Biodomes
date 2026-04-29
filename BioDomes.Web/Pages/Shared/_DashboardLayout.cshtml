@@ -129,7 +129,7 @@
                 <div class="dashboard-sidebar__avatar">
                     @if (!string.IsNullOrWhiteSpace(avatarPath))
                     {
-                        <img src="@avatarPath" alt="Photo de profil de @displayName" />
+                        <img src="@Url.Content($"~{avatarPath}")" alt="Photo de profil de @displayName" />
                     }
                     else
                     {

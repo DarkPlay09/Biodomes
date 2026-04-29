@@ -20,8 +20,16 @@
 
             @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
             {
-                <div class="auth-status-message auth-status-message--success">
-                    @Model.StatusMessage
+                <div class="dashboard-toast dashboard-toast--success" data-dashboard-toast>
+                    <div class="dashboard-toast__icon">✓</div>
+                    <div class="dashboard-toast__content">
+                        <strong>Succès</strong>
+                        <p>@Model.StatusMessage</p>
+                    </div>
+                    <button type="button"
+                            class="dashboard-toast__close"
+                            data-dashboard-toast-close
+                            aria-label="Fermer la notification">×</button>
                 </div>
             }
 
@@ -109,4 +117,5 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/entity-file-upload.js" asp-append-version="true"></script>
+    <script src="~/js/dashboard-toast.js" asp-append-version="true"></script>
 }

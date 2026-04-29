@@ -77,11 +77,9 @@ public class IndexModel : PageModel
             return Forbid();
         }
 
-        var speciesCreatedByUsers = _speciesRepository.GetAll()
-            .Where(species => !IsCreatedByAdmin(species))
-            .ToList();
+        var allSpecies = _speciesRepository.GetAll().ToList();
 
-        var filteredSpecies = ApplyFilters(speciesCreatedByUsers)
+        var filteredSpecies = ApplyFilters(allSpecies)
             .OrderBy(species => species.IsPublicAvailable)
             .ThenBy(species => species.Name)
             .ToList();
@@ -126,11 +124,6 @@ public class IndexModel : PageModel
         if (species is null)
         {
             return NotFound();
-        }
-
-        if (IsCreatedByAdmin(species))
-        {
-            return Forbid();
         }
 
         species.IsPublicAvailable = makePublic;
@@ -250,11 +243,6 @@ public class IndexModel : PageModel
             IsPublicAvailable = species.IsPublicAvailable,
             VisibilityLabel = species.IsPublicAvailable ? "Disponible" : "Non visible"
         };
-    }
-
-    private static bool IsCreatedByAdmin(SpeciesEntity species)
-    {
-        return species.Creator.IsAdmin;
     }
 
     private async Task<bool> IsCurrentUserAdminAsync()
