@@ -45,7 +45,7 @@
                         <span class="register-avatar-frame">
                             <img data-file-preview
                                  class="register-avatar-preview"
-                                 src="@Model.CurrentAvatarPath"
+                                 src="@(string.IsNullOrWhiteSpace(Model.CurrentAvatarPath) ? "" : Url.Content($"~{Model.CurrentAvatarPath}"))"
                                  alt="Aperçu de l’avatar"
                                  style="display:@(string.IsNullOrWhiteSpace(Model.CurrentAvatarPath) ? "none" : "block");" />
 
