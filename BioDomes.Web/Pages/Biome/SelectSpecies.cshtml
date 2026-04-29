@@ -43,10 +43,10 @@
         Biome ciblé : <strong>@Model.BiomeName</strong>
     </div>
 
-    <form method="get" class="species-filter-card">
+    <form method="get" class="catalog-filter-card">
         <input type="hidden" name="slug" value="@Model.BiomeSlug" />
 
-        <div class="species-filter-card__search">
+        <div class="catalog-filter-card__search">
             <label for="Search">Recherche</label>
             <input id="Search"
                    name="Search"
@@ -55,7 +55,7 @@
                    placeholder="Rechercher par nom, classification ou régime..." />
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="ClassificationFilter">Classification</label>
             <select id="ClassificationFilter" name="ClassificationFilter">
                 <option value="">Toutes</option>
@@ -71,7 +71,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="DietFilter">Régime</label>
             <select id="DietFilter" name="DietFilter">
                 <option value="">Tous</option>
@@ -87,7 +87,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__select">
+        <div class="catalog-filter-card__select">
             <label for="VisibilityFilter">Visibilité</label>
             <select id="VisibilityFilter" name="VisibilityFilter">
                 <option value="" selected="@visibilityAllSelected">Toutes</option>
@@ -96,7 +96,7 @@
             </select>
         </div>
 
-        <div class="species-filter-card__actions">
+        <div class="catalog-filter-card__actions">
             <label class="select-species-page__toggle">
                 <input type="checkbox"
                        class="select-species-page__toggle-input"
@@ -143,8 +143,8 @@
                 @foreach (var species in Model.SpeciesCards)
                 {
                     var statusClass = species.IsPublicAvailable
-                        ? "species-card__status--public"
-                        : "species-card__status--private";
+                        ? "entity-card__status--public"
+                        : "entity-card__status--private";
 
                     var statusLabel = species.IsPublicAvailable
                         ? "Public"
@@ -152,25 +152,25 @@
 
                     var selectorId = $"select-species-{species.Id}";
 
-                    <article class="species-card @(species.IsAlreadyInBiome ? "select-species-page__card--already" : "")">
+                    <article class="entity-card @(species.IsAlreadyInBiome ? "select-species-page__card--already" : "")">
 
                         <a asp-page="/Species/Details"
                            asp-route-slug="@species.Slug"
                            class="select-species-page__card-link">
 
-                            <div class="species-card__image">
+                            <div class="entity-card__image">
                                 <img src="@(string.IsNullOrWhiteSpace(species.ImagePath) ? "" : Url.Content($"~{species.ImagePath}"))"
                                      alt="Image de @species.Name" />
-                                <span class="species-card__status @statusClass">@statusLabel</span>
+                                <span class="entity-card__status @statusClass">@statusLabel</span>
                             </div>
 
-                            <div class="species-card__body">
-                                <div class="species-card__title-block">
+                            <div class="entity-card__body">
+                                <div class="entity-card__title-block">
                                     <p>@species.ClassificationLabel</p>
                                     <h3>@species.Name</h3>
                                 </div>
 
-                                <dl class="species-card__meta">
+                                <dl class="entity-card__meta">
                                     <div><dt>Régime</dt><dd>@species.DietLabel</dd></div>
                                     <div><dt>Taille</dt><dd>@species.AdultSizeLabel</dd></div>
                                     <div><dt>Poids</dt><dd>@species.WeightLabel</dd></div>
@@ -178,7 +178,7 @@
                             </div>
                         </a>
 
-                        <div class="species-card__footer">
+                        <div class="entity-card__footer">
                             @if (species.IsAlreadyInBiome)
                             {
                                 <button type="button" class="dashboard-btn dashboard-btn--ghost" disabled>

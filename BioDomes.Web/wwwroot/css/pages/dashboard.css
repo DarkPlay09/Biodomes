@@ -840,10 +840,18 @@
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
+    margin-top: auto;
 }
 
 .dashboard-sidebar__section-title {
-    margin: 0 0 0.25rem;
+    display: block;
+    margin: 0 0 0.45rem;
+    padding: 0 0.95rem;
+    color: #94a3b8;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 @media (max-width: 768px) {

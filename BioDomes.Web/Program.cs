@@ -103,16 +103,23 @@ app.UseStaticFiles();
 
 var uploadsPath = builder.Configuration["Uploads:RootPath"];
 
-if (!string.IsNullOrWhiteSpace(uploadsPath))
+if (string.IsNullOrWhiteSpace(uploadsPath))
 {
-    Directory.CreateDirectory(uploadsPath);
-
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider(uploadsPath),
-        RequestPath = "/uploads"
-    });
+    uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
 }
+else if (!Path.IsPathRooted(uploadsPath))
+{
+    uploadsPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, uploadsPath));
+}
+
+Directory.CreateDirectory(uploadsPath);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
+
 
 app.UseRouting();
 

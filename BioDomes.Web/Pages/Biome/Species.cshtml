@@ -49,10 +49,10 @@ else
             </div>
         </header>
 
-        <form method="get" class="species-filter-card biome-species-page__filters">
+        <form method="get" class="catalog-filter-card biome-species-page__filters">
             <input type="hidden" name="slug" value="@Model.PageData.BiomeSlug" />
 
-            <div class="species-filter-card__search">
+            <div class="catalog-filter-card__search">
                 <label for="Search">Recherche</label>
                 <input id="Search"
                        name="Search"
@@ -61,7 +61,7 @@ else
                        placeholder="Rechercher par nom, classification ou régime..." />
             </div>
 
-            <div class="species-filter-card__select">
+            <div class="catalog-filter-card__select">
                 <label for="ClassificationFilter">Classification</label>
                 <select id="ClassificationFilter" name="ClassificationFilter">
                     <option value="">Toutes</option>
@@ -73,7 +73,7 @@ else
                 </select>
             </div>
 
-            <div class="species-filter-card__select">
+            <div class="catalog-filter-card__select">
                 <label for="DietFilter">Régime</label>
                 <select id="DietFilter" name="DietFilter">
                     <option value="">Tous</option>
@@ -85,7 +85,7 @@ else
                 </select>
             </div>
 
-            <div class="species-filter-card__actions">
+            <div class="catalog-filter-card__actions">
                 <button type="submit" class="dashboard-btn dashboard-btn--primary">Filtrer</button>
                 <a asp-page="./Species" asp-route-slug="@Model.PageData.BiomeSlug" class="dashboard-btn dashboard-btn--ghost">Réinitialiser</a>
             </div>
