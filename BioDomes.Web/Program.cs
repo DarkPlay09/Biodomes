@@ -12,6 +12,7 @@ using BioDomes.Infrastructures.Services.Slug;
 using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
 using BioDomes.Web.Services;
+using BioDomes.Web.Services.Stats;
 using BioDomes.Web.Transformers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -31,6 +32,7 @@ builder.Services.AddScoped<IUserResolver, UserResolver>();
 builder.Services.AddScoped<ISlugService, SlugService>();
 builder.Services.AddScoped<ISpeciesImageStorage, SpeciesImageStorage>();
 builder.Services.AddScoped<IEquipmentImageStorage, EquipmentImageStorage>();
+builder.Services.AddScoped<IStatsDashboardService, StatsDashboardService>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
     pipeline.AddCssBundle("/css/bundle.css",

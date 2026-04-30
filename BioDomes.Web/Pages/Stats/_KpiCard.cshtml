@@ -1,0 +1,20 @@
+﻿@model BioDomes.Web.ViewModels.Stats.KpiCardVm
+
+<article class="analytics-kpi-card">
+    <div class="analytics-kpi-card__top">
+        <span class="analytics-kpi-card__icon @Model.IconTone">
+            <img src="@Url.Content(Model.IconPath)"
+                 alt=""
+                 class="analytics-kpi-card__icon-img"
+                 aria-hidden="true" />
+        </span>
+
+        <span class="analytics-kpi-card__delta @Model.DeltaTone">
+            @Model.Delta
+        </span>
+    </div>
+
+    <p class="analytics-kpi-card__label">@Model.Title</p>
+    <h3 class="analytics-kpi-card__value">@Model.Value</h3>
+    <p class="analytics-kpi-card__meta">@Model.Subtitle</p>
+</article>

@@ -21,6 +21,17 @@
     var imageSrc = string.IsNullOrWhiteSpace(imagePath)
         ? Url.Content("~/images/species/noImageSpecie.png")
         : Url.Content(imagePath);
+    
+    var usageCount = Model.SpeciesDetails.ImpactedBiomesCount;
+    var biomeWord = usageCount > 1 ? "biomes" : "biome";
+}
+
+@if (usageCount > 0)
+{
+    <div class="species-usage-alert" role="alert" aria-live="polite">
+        <strong>Attention :</strong>
+        cette espèce est utilisée dans <strong>@usageCount @biomeWord</strong>.
+    </div>
 }
 
 <section class="species-details">
@@ -124,10 +135,6 @@
                                     disabled>
                                 Suppression impossible
                             </button>
-
-                            <p class="species-details-delete-help">
-                                Cette espèce est utilisée dans @Model.SpeciesDetails.ImpactedBiomesCount biome(s).
-                            </p>
                         }
                     </form>
                 </div>
