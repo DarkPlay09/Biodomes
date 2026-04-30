@@ -54,6 +54,22 @@ public class DetailsModel : PageModel
         return RedirectToPage("./Index");
     }
 
+    public IActionResult OnPostRemoveEquipment(string slug, int equipmentId)
+    {
+        if (!TryGetCurrentUserId(out var currentUserId))
+            return Challenge();
+
+        var biomeDetails = _repository.GetDetailsBySlugForCreator(slug, currentUserId);
+        if (biomeDetails is null)
+            return NotFound();
+
+        _repository.RemoveEquipmentFromBiome(biomeDetails.Id, equipmentId);
+
+        TempData["SuccessMessage"] = "Équipement retiré du biome.";
+
+        return RedirectToPage(new { slug });
+    }
+
     private void InitializeViewModel(BiomeDetailsDto detailsDto)
     {
         var fr = CultureInfo.GetCultureInfo("fr-BE");

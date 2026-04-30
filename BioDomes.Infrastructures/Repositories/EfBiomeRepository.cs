@@ -382,6 +382,18 @@ public class EfBiomeRepository : IBiomeRepository
             _context.SaveChanges();
     }
 
+    public void RemoveEquipmentFromBiome(int biomeId, int equipmentId)
+    {
+        var existingLink = _context.BiomeEquipmentLinks
+            .FirstOrDefault(link => link.BiomeId == biomeId && link.EquipmentId == equipmentId);
+
+        if (existingLink is null)
+            return;
+
+        _context.BiomeEquipmentLinks.Remove(existingLink);
+        _context.SaveChanges();
+    }
+
     public BiomeSpeciesManagementPageDto? GetSpeciesManagementPageData(string biomeSlug, int creatorId,
         BiomeSpeciesManagementFiltersDto filters)
     {

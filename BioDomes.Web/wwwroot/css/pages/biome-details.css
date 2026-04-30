@@ -36,7 +36,7 @@
 
 .biome-details-page__content {
     display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 1fr);
     gap: 1.25rem;
     align-items: start;
 }
@@ -159,6 +159,36 @@
     object-fit: cover;
     border-radius: 10px;
     border: 1px solid rgba(11, 61, 57, 0.12);
+}
+
+.biome-details-page__equipment-remove-form {
+    margin: 0;
+    display: inline-flex;
+}
+
+.biome-details-page__equipment-remove-button {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(11, 61, 57, 0.2);
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0b3d39;
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+}
+
+.biome-details-page__equipment-remove-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.biome-details-page__equipment-remove-button:hover {
+    border-color: #b42318;
+    color: #b42318;
+    background: #fff5f5;
 }
 
 

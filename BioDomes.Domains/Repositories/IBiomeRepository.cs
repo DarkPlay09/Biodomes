@@ -21,6 +21,7 @@ public interface IBiomeRepository
     void AddSpeciesToBiome(int biomeId, IEnumerable<int> speciesIds, int countPerSpecies);
     SelectEquipmentPageDto? GetSelectEquipmentPageData(string biomeSlug, int creatorId);
     void AddEquipmentToBiome(int biomeId, IEnumerable<int> equipmentIds);
+    void RemoveEquipmentFromBiome(int biomeId, int equipmentId);
     BiomeSpeciesManagementPageDto? GetSpeciesManagementPageData(string biomeSlug, int creatorId, BiomeSpeciesManagementFiltersDto filters);
     void SetSpeciesCountInBiome(int biomeId, int speciesId, int individualCount);
 }
