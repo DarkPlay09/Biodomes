@@ -32,7 +32,14 @@ else
                 </p>
             </div>
             <div class="biome-details-page__actions">
+                <a asp-page="/Biome/Stats"
+                   asp-route-slug="@Model.Details.Slug"
+                   class="dashboard-btn dashboard-btn--primary">
+                    Statistiques
+                </a>
+                
                 <a asp-page="/Biome/Edit" asp-route-slug="@Model.Details.Slug" class="biome-row-action biome-row-action--edit">Modifier le biome</a>
+                
                 <form id="deleteEntityForm"
                       method="post"
                       asp-page-handler="Delete"

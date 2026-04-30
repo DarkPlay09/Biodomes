@@ -1,0 +1,236 @@
+﻿@page "/biome/{slug}/stats"
+@using BioDomes.Web.ViewModels.Stats
+@model BioDomes.Web.Pages.Biome.StatsModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Statistiques du biome";
+    ViewData["DashboardTitle"] = "Statistiques & Analyses";
+    ViewData["DashboardSubtitle"] = "Visualise les indicateurs clés de ton biome et analyse son équilibre écologique.";
+}
+
+<section class="analytics-page">
+    <header class="analytics-hero analytics-hero--biome">
+        <div class="analytics-hero__content">
+            <div class="analytics-hero__text">
+                <h1>@Model.Dashboard.BiomeName</h1>
+            </div>
+
+            <div class="analytics-biome-meta">
+                <article class="analytics-biome-pill analytics-biome-pill--state">
+                    <span class="analytics-biome-pill__icon">
+                        <img src="~/images/dashboard/icons/line.png"
+                             alt=""
+                             class="analytics-icon-img"
+                             aria-hidden="true"/>
+                    </span>
+
+                    <div>
+                        <span class="analytics-biome-pill__label">État</span>
+                        <strong>@Model.Dashboard.BiomeState</strong>
+                    </div>
+                </article>
+
+                <article class="analytics-biome-pill analytics-biome-pill--temp">
+                    <span class="analytics-biome-pill__icon">
+                        <img src="~/images/biomes/icons/temperature-hot.png"
+                             alt=""
+                             class="analytics-icon-img"
+                             aria-hidden="true"/>
+                    </span>
+
+                    <div>
+                        <span class="analytics-biome-pill__label">Température</span>
+                        <strong>@Model.Dashboard.Temperature.ToString("0.0") °C</strong>
+                    </div>
+                </article>
+
+                <article class="analytics-biome-pill analytics-biome-pill--humidity">
+                    <span class="analytics-biome-pill__icon">
+                        <img src="~/images/biomes/icons/drop-outline.png"
+                             alt=""
+                             class="analytics-icon-img"
+                             aria-hidden="true"/>
+                    </span>
+
+                    <div>
+                        <span class="analytics-biome-pill__label">Humidité</span>
+                        <strong>@Model.Dashboard.Humidity.ToString("0.0") g/m³</strong>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <div class="analytics-hero__actions">
+            <a asp-page="/Biome/Details"
+               asp-route-slug="@Model.Dashboard.BiomeSlug"
+               class="analytics-btn analytics-btn--ghost">
+                Retour au biome
+            </a>
+
+            <button type="button" class="analytics-btn analytics-btn--ghost" id="exportPdfBtn">
+                <img src="~/images/biomes/icons/pdf.png"
+                     alt=""
+                     class="analytics-icon-img"
+                     aria-hidden="true"/>
+                PDF
+            </button>
+
+            <button type="button" class="analytics-btn analytics-btn--ghost" id="exportCsvBtn">
+                <img src="~/images/biomes/icons/csv.png"
+                     alt=""
+                     class="analytics-icon-img"
+                     aria-hidden="true"/>
+                CSV
+            </button>
+
+            <button type="button" class="analytics-btn analytics-btn--primary" id="exportJsonBtn">
+                <img src="~/images/biomes/icons/export.png"
+                     alt=""
+                     class="analytics-icon-img"
+                     aria-hidden="true"/>
+                Exporter les données
+            </button>
+        </div>
+    </header>
+
+    <div class="analytics-range-card">
+        <span class="analytics-range-card__label">Période :</span>
+
+        <div class="analytics-range-list">
+            <a asp-page="/Biome/Stats"
+               asp-route-slug="@Model.Dashboard.BiomeSlug"
+               asp-route-Period="1"
+               class="analytics-range-chip @(Model.Period == "1" ? "analytics-range-chip--active" : "")">
+                Dernières 24h
+            </a>
+
+            <a asp-page="/Biome/Stats"
+               asp-route-slug="@Model.Dashboard.BiomeSlug"
+               asp-route-Period="7"
+               class="analytics-range-chip @(Model.Period == "7" ? "analytics-range-chip--active" : "")">
+                7 jours
+            </a>
+
+            <a asp-page="/Biome/Stats"
+               asp-route-slug="@Model.Dashboard.BiomeSlug"
+               asp-route-Period="30"
+               class="analytics-range-chip @(Model.Period == "30" ? "analytics-range-chip--active" : "")">
+                30 jours
+            </a>
+
+            <a asp-page="/Biome/Stats"
+               asp-route-slug="@Model.Dashboard.BiomeSlug"
+               asp-route-Period="365"
+               class="analytics-range-chip @(Model.Period == "365" ? "analytics-range-chip--active" : "")">
+                1 an
+            </a>
+
+            <a asp-page="/Biome/Stats"
+               asp-route-slug="@Model.Dashboard.BiomeSlug"
+               asp-route-Period="all"
+               class="analytics-range-chip @(Model.Period == "all" ? "analytics-range-chip--active" : "")">
+                Toutes les données
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.Dashboard.HasData)
+    {
+        <section class="analytics-empty">
+            <h2>Aucune donnée disponible</h2>
+            <p>Ajoute des espèces dans ce biome pour afficher ses statistiques.</p>
+
+            <a asp-page="/Biome/Species"
+               asp-route-slug="@Model.Dashboard.BiomeSlug"
+               class="analytics-btn analytics-btn--primary">
+                Gérer les espèces du biome
+            </a>
+        </section>
+    }
+    else
+    {
+        <section class="analytics-kpis">
+            @foreach (var kpi in Model.Dashboard.Kpis)
+            {
+                <partial name="/Pages/Stats/_KpiCard.cshtml" model="kpi"/>
+            }
+        </section>
+
+        <section class="analytics-detail-panel" id="chartDetailPanel">
+            <div>
+                <span class="analytics-detail-panel__eyebrow">Détails interactifs</span>
+                <h3>Sélectionne une barre, un segment ou un nœud</h3>
+            </div>
+            <p>Les informations du graphique cliqué apparaîtront ici.</p>
+        </section>
+
+        <section class="analytics-grid analytics-grid--two">
+            <partial name="/Pages/Stats/_ChartPanel.cshtml"
+                     model='new ChartPanelVm(
+                         "Biodiversité du biome",
+                         "Visualisation de l’évolution disponible à partir des données historiques du biome.",
+                         "biodiversityChart",
+                         "analytics-chart--large")'/>
+
+            <partial name="/Pages/Stats/_ChartPanel.cshtml"
+                     model='new ChartPanelVm(
+                         "Espèces par classification",
+                         "Répartition des individus du biome par type d’espèce.",
+                         "classificationChart",
+                         "analytics-chart--donut",
+                         Model.Dashboard.TotalDistinctSpecies.ToString("N0"),
+                         "Espèces")'/>
+        </section>
+
+        <section class="analytics-grid analytics-grid--two">
+            <partial name="/Pages/Stats/_ChartPanel.cshtml"
+                     model='new ChartPanelVm(
+                         "Nombre d’éléments par espèce",
+                         "Population totale de chaque espèce dans ce biome.",
+                         "speciesChart",
+                         "analytics-chart--large")'/>
+
+            <partial name="/Pages/Stats/_ChartPanel.cshtml"
+                     model='new ChartPanelVm(
+                         "Répartition par régime alimentaire",
+                         "Nombre d’individus regroupés par régime alimentaire dans ce biome.",
+                         "dietChart",
+                         "analytics-chart--large")'/>
+        </section>
+
+        <section class="analytics-grid analytics-grid--secondary">
+            <article class="analytics-panel">
+                <div class="analytics-panel__header">
+                    <h3>Indicateurs du réseau trophique</h3>
+                    <span class="analytics-link-label">Biome analysé</span>
+                </div>
+
+                <div class="analytics-metric-grid">
+                    @foreach (var metric in Model.Dashboard.NetworkMetrics)
+                    {
+                        <partial name="/Pages/Stats/_NetworkMetricCard.cshtml" model="metric"/>
+                    }
+                </div>
+            </article>
+
+            <partial name="/Pages/Stats/_ChartPanel.cshtml"
+                     model='new ChartPanelVm(
+                         "Réseau trophique simplifié",
+                         "Déplace les nœuds, zoome et clique pour analyser les relations de ce biome.",
+                         "trophicGraphChart",
+                         "analytics-chart--network")'/>
+        </section>
+
+        <partial name="/Pages/Stats/_CriticalSpeciesTable.cshtml"
+                 model="Model.Dashboard.CriticalSpecies"/>
+    }
+</section>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700"/>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+    <script id="stats-data" type="application/json">@Html.Raw(Model.Dashboard.StatsJson)</script>
+    <script src="~/js/pages/stats.js" asp-append-version="true"></script>
+}

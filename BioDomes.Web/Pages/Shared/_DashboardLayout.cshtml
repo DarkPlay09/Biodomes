@@ -10,6 +10,7 @@
     var isBiomesPage = currentPage.StartsWith("/Biome", StringComparison.OrdinalIgnoreCase);
     var isSpeciesPage = currentPage.StartsWith("/Species", StringComparison.OrdinalIgnoreCase);
     var isEquipmentPage = currentPage.StartsWith("/Equipment", StringComparison.OrdinalIgnoreCase);
+    var isStatsPage = currentPage.StartsWith("/Stats", StringComparison.OrdinalIgnoreCase);
     var isAdminSpeciesPage = currentPage.StartsWith("/Admin/Species", StringComparison.OrdinalIgnoreCase);
     var isAdminEquipmentPage = currentPage.StartsWith("/Admin/Equipment", StringComparison.OrdinalIgnoreCase);
     var isProfileManagePage = currentPage.StartsWith("/Account/Manage", StringComparison.OrdinalIgnoreCase);
@@ -100,8 +101,9 @@
                 <span>Équipements</span>
             </a>
 
-            <a href="#" class="dashboard-sidebar__link">
-                <span>Rapports</span>
+            <a asp-page="/Stats/Index"
+               class="dashboard-sidebar__link @(isStatsPage ? "dashboard-nav__link--active" : "")">
+                Rapports
             </a>
 
             @if (isAdmin)

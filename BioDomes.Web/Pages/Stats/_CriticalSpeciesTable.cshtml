@@ -1,0 +1,88 @@
+﻿@model IReadOnlyList<BioDomes.Web.ViewModels.Stats.CriticalSpeciesVm>
+
+@{
+    var currentUrl = $"{Context.Request.PathBase}{Context.Request.Path}{Context.Request.QueryString}";
+}
+
+<section class="analytics-panel analytics-panel--table">
+    <div class="analytics-panel__header analytics-panel__header--table">
+        <h3>Variations critiques d'espèces</h3>
+
+        <div class="analytics-search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="speciesSearch" placeholder="Rechercher une espèce..." />
+        </div>
+    </div>
+
+    <div class="analytics-table-wrap">
+        <table class="analytics-table">
+            <thead>
+                <tr>
+                    <th>Espèce</th>
+                    <th>Classification</th>
+                    <th>Population</th>
+                    <th>Tendance</th>
+                    <th class="analytics-table__action">Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="criticalSpeciesTableBody">
+                @foreach (var species in Model)
+                {
+                    var imagePath = species.ImagePath;
+
+                    if (!string.IsNullOrWhiteSpace(imagePath) && imagePath.StartsWith("/"))
+                    {
+                        imagePath = "~" + imagePath;
+                    }
+
+                    var imageSrc = string.IsNullOrWhiteSpace(imagePath)
+                        ? Url.Content("~/images/species/noImageSpecie.png")
+                        : Url.Content(imagePath);
+
+                    <tr data-filter="@($"{species.Name} {species.Classification} {species.SubLabel}".ToLowerInvariant())">
+                        <td>
+                            <div class="analytics-species">
+                                <div class="analytics-species__image">
+                                    <img src="@imageSrc"
+                                         alt="Image de @species.Name"
+                                         loading="lazy" />
+                                </div>
+
+                                <div class="analytics-species__text">
+                                    <strong>@species.Name</strong>
+                                    <span>@species.SubLabel</span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="analytics-tag @species.ClassificationTone">
+                                @species.Classification
+                            </span>
+                        </td>
+
+                        <td>@species.Population</td>
+
+                        <td>
+                            <span class="analytics-trend @species.TrendTone">
+                                <span class="material-symbols-outlined">@species.TrendIcon</span>
+                                @species.TrendLabel
+                            </span>
+                        </td>
+
+                        <td class="analytics-table__action">
+                            <a asp-page="/Species/Details"
+                               asp-route-slug="@species.Slug"
+                               asp-route-returnUrl="@currentUrl"
+                               class="analytics-icon-btn"
+                               title="Voir la fiche de @species.Name">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
