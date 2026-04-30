@@ -109,7 +109,7 @@ else
                         <thead>
                         <tr>
                             <th></th>
-                            <th>Espèce</th>
+                            <th>Nom</th>
                             <th>Classification</th>
                             <th>Régime</th>
                             <th>Population</th>
@@ -148,10 +148,17 @@ else
 
             <div class="biome-details-page__side-column">
                 <div class="table-wrapper h-100">
+                    <div class="biome-details-page__species-header">
+                        <h2 class="biome-details-page__species-title">Équipements</h2>
+                        <a asp-page="/Biome/SelectEquipment"
+                           asp-route-slug="@Model.Details.Slug"
+                           class="action-button biome-details-page__species-add">+ Ajouter</a>
+                    </div>
                     <table class="entity-table">
                         <thead>
                         <tr>
-                            <th>Équipement</th>
+                            <th></th>
+                            <th>Nom</th>
                             <th>Produit</th>
                             <th>Consomme</th>
                         </tr>
@@ -160,7 +167,7 @@ else
                         @if (!Model.Details.Equipments.Any())
                         {
                             <tr>
-                                <td colspan="3">Aucun équipement lié.</td>
+                                <td colspan="4">Aucun équipement lié.</td>
                             </tr>
                         }
                         else
@@ -168,7 +175,14 @@ else
                             @foreach (var equipment in Model.Details.Equipments)
                             {
                                 <tr>
-                                    <td>@equipment.Name</td>
+                                    <td>
+                                        <img src="@(string.IsNullOrWhiteSpace(equipment.ImagePath)
+                                                      ? ""
+                                                      : Url.Content($"~{equipment.ImagePath}"))"
+                                             alt="Image de @equipment.Name"
+                                             class="biome-details-species-thumb" />
+                                    </td>
+                                    <td><strong>@equipment.Name</strong></td>
                                     <td>@equipment.ProducedElement</td>
                                     <td>@equipment.ConsumedElement</td>
                                 </tr>
@@ -176,9 +190,6 @@ else
                         }
                         </tbody>
                     </table>
-                    <div class="p-3 border-top biome-details-page__card-footer">
-                        <a href="#" class="action-button biome-details-page__species-add">+ Ajouter</a>
-                    </div>
                 </div>
             </div>
 

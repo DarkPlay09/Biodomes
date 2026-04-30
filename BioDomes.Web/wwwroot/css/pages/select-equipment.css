@@ -1,0 +1,18 @@
+.select-equipment-page .catalog-filter-card__actions {
+    align-items: center;
+}
+
+.select-equipment-page .catalog-filter-card__actions .dashboard-btn {
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+}
+
+.select-equipment-page .entity-card__meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.select-equipment-page .entity-card__meta dt {
+    text-transform: uppercase;
+}

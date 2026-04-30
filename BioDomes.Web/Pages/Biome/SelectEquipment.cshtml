@@ -1,0 +1,275 @@
+@page "/biome/{slug}/select-equipment"
+@model BioDomes.Web.Pages.Biome.SelectEquipmentModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Sélection des équipements";
+    ViewData["DashboardTitle"] = "Sélection des équipements";
+    ViewData["DashboardSubtitle"] = "Choisis des équipements à ajouter dans ton biome.";
+
+    var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
+    var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
+    var visibilityPrivateSelected = Model.VisibilityFilter == "private" ? "selected" : null;
+
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
+}
+
+<section class="species-catalog select-species-page select-equipment-page" data-biome-slug="equipment-@Model.BiomeSlug">
+    <header class="species-catalog__header">
+        <a asp-page="/Biome/Details"
+           asp-route-slug="@Model.BiomeSlug"
+           class="dashboard-btn dashboard-btn--ghost">
+            ← Retour au détail du biome
+        </a>
+
+        <div class="select-species-page__header-actions">
+            <button type="submit"
+                    form="confirmSelectionForm"
+                    class="action-button">
+                Valider la sélection
+            </button>
+
+            <a asp-page="/Equipment/Add"
+               asp-route-returnUrl="@currentUrl"
+               class="action-button">
+                + Créer un équipement
+            </a>
+        </div>
+    </header>
+
+    <div class="species-catalog__success">
+        Biome ciblé : <strong>@Model.BiomeName</strong>
+    </div>
+
+    <form method="get" class="catalog-filter-card">
+        <input type="hidden" name="slug" value="@Model.BiomeSlug" />
+
+        <div class="catalog-filter-card__search">
+            <label for="Search">Recherche</label>
+            <input id="Search"
+                   name="Search"
+                   value="@Model.Search"
+                   type="search"
+                   placeholder="Rechercher par nom, produit ou consommation..." />
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="ProducedElementFilter">Produit</label>
+            <select id="ProducedElementFilter" name="ProducedElementFilter">
+                <option value="">Tous</option>
+
+                @foreach (var resource in Model.ResourceOptions)
+                {
+                    var selected = Model.ProducedElementFilter == resource ? "selected" : null;
+                    <option value="@resource" selected="@selected">@resource</option>
+                }
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="ConsumedElementFilter">Consomme</label>
+            <select id="ConsumedElementFilter" name="ConsumedElementFilter">
+                <option value="">Tous</option>
+
+                @foreach (var resource in Model.ResourceOptions)
+                {
+                    var selected = Model.ConsumedElementFilter == resource ? "selected" : null;
+                    <option value="@resource" selected="@selected">@resource</option>
+                }
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="VisibilityFilter">Visibilité</label>
+            <select id="VisibilityFilter" name="VisibilityFilter">
+                <option value="" selected="@visibilityAllSelected">Toutes</option>
+                <option value="public" selected="@visibilityPublicSelected">Publics</option>
+                <option value="private" selected="@visibilityPrivateSelected">Privés</option>
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__actions">
+            <label class="select-species-page__toggle">
+                <input type="checkbox"
+                       class="select-species-page__toggle-input"
+                       name="IncludeAlreadyInBiome"
+                       value="true"
+                       onchange="this.form.submit()"
+                       @(Model.IncludeAlreadyInBiome ? "checked" : null) />
+                Afficher les équipements déjà présents dans le biome
+            </label>
+
+            <button type="submit" class="dashboard-btn dashboard-btn--primary">
+                Filtrer
+            </button>
+
+            <a asp-page="./SelectEquipment" asp-route-slug="@Model.BiomeSlug" class="dashboard-btn dashboard-btn--ghost">
+                Réinitialiser
+            </a>
+        </div>
+    </form>
+
+    @if (Model.EquipmentCards.Count == 0)
+    {
+        <div class="species-empty-card">
+            <div class="species-empty-card__icon">+</div>
+
+            <h3>Aucun équipement trouvé</h3>
+
+            <p>
+                Modifie ta recherche ou crée un nouvel équipement.
+            </p>
+
+            <a asp-page="/Equipment/Add" class="dashboard-btn dashboard-btn--primary">
+                Créer un équipement
+            </a>
+        </div>
+    }
+    else
+    {
+        <form method="post"
+              asp-page-handler="ConfirmSelection"
+              asp-route-slug="@Model.BiomeSlug"
+              id="confirmSelectionForm">
+            <div class="species-grid">
+                @foreach (var equipment in Model.EquipmentCards)
+                {
+                    var statusClass = equipment.IsPublicAvailable
+                        ? "entity-card__status--public"
+                        : "entity-card__status--private";
+
+                    var statusLabel = equipment.IsPublicAvailable
+                        ? "Public"
+                        : "Privé";
+
+                    var selectorId = $"select-equipment-{equipment.Id}";
+
+                    <article class="entity-card @(equipment.IsAlreadyInBiome ? "select-species-page__card--already" : "")">
+
+                        <a asp-page="/Equipment/Details"
+                           asp-route-slug="@equipment.Slug"
+                           class="select-species-page__card-link">
+
+                            <div class="entity-card__image">
+                                <img src="@Url.Content($"~{equipment.ImagePath}")"
+                                     alt="Image de @equipment.Name" />
+                                <span class="entity-card__status @statusClass">@statusLabel</span>
+                            </div>
+
+                            <div class="entity-card__body">
+                                <div class="entity-card__title-block">
+                                    <p>Équipement</p>
+                                    <h3>@equipment.Name</h3>
+                                </div>
+
+                                <dl class="entity-card__meta">
+                                    <div><dt>Produit</dt><dd>@equipment.ProducedElementLabel</dd></div>
+                                    <div><dt>Consomme</dt><dd>@equipment.ConsumedElementLabel</dd></div>
+                                </dl>
+                            </div>
+                        </a>
+
+                        <div class="entity-card__footer">
+                            @if (equipment.IsAlreadyInBiome)
+                            {
+                                <button type="button" class="dashboard-btn dashboard-btn--ghost" disabled>
+                                    Déjà dans le biome
+                                </button>
+                            }
+                            else
+                            {
+                                <input id="@selectorId"
+                                       type="checkbox"
+                                       class="select-species-page__select-checkbox"
+                                       data-species-id="@equipment.Id"
+                                       value="@equipment.Id" />
+
+                                <label for="@selectorId" class="select-species-page__select-button">
+                                    Ajouter dans le biome
+                                </label>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+        </form>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        <footer class="species-pagination">
+            <div>
+                Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
+            </div>
+
+            <nav aria-label="Pagination des équipements">
+                @if (Model.PageNumber <= 1)
+                {
+                    <span class="species-pagination__link species-pagination__link--disabled">
+                        Précédent
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./SelectEquipment"
+                       asp-route-slug="@Model.BiomeSlug"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                       asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
+                       asp-route-PageNumber="@(Model.PageNumber - 1)"
+                       class="species-pagination__link">
+                        Précédent
+                    </a>
+                }
+
+                @foreach (var pageNumber in Model.VisiblePages)
+                {
+                    var activeClass = pageNumber == Model.PageNumber
+                        ? "species-pagination__link--active"
+                        : "";
+
+                    <a asp-page="./SelectEquipment"
+                       asp-route-slug="@Model.BiomeSlug"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                       asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
+                       asp-route-PageNumber="@pageNumber"
+                       class="species-pagination__link @activeClass">
+                        @pageNumber
+                    </a>
+                }
+
+                @if (Model.PageNumber >= Model.TotalPages)
+                {
+                    <span class="species-pagination__link species-pagination__link--disabled">
+                        Suivant
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./SelectEquipment"
+                       asp-route-slug="@Model.BiomeSlug"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                       asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
+                       asp-route-PageNumber="@(Model.PageNumber + 1)"
+                       class="species-pagination__link">
+                        Suivant
+                    </a>
+                }
+            </nav>
+        </footer>
+    }
+</section>
+
+@section Scripts {
+    <script src="~/js/select-species-selection.js" asp-append-version="true"></script>
+}

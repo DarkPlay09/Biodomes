@@ -1,5 +1,6 @@
 ﻿using BioDomes.Domains.Entities;
 using BioDomes.Domains.Queries.Biome.Details;
+using BioDomes.Domains.Queries.Biome.SelectEquipment;
 using BioDomes.Domains.Queries.Biome.SelectSpecies;
 using BioDomes.Domains.Queries.Biome.Species;
 using BioDomes.Domains.Repositories;
@@ -278,6 +279,107 @@ public class EfBiomeRepository : IBiomeRepository
                 });
 
         _context.SaveChanges();
+    }
+
+
+    public SelectEquipmentPageDto? GetSelectEquipmentPageData(string biomeSlug, int creatorId)
+    {
+        var normalizedSlug = _slugService.ToSlug(biomeSlug);
+
+        var biome = _context.Biomes
+            .AsNoTracking()
+            .Where(b => b.CreatorId == creatorId)
+            .ToList()
+            .FirstOrDefault(b => _slugService.ToSlug(b.Name) == normalizedSlug);
+
+        if (biome is null)
+            return null;
+
+        var linkedEquipmentIds = _context.BiomeEquipmentLinks
+            .AsNoTracking()
+            .Where(link => link.BiomeId == biome.Id)
+            .Select(link => link.EquipmentId)
+            .ToHashSet();
+
+        var visibleEquipments = _context.Equipments
+            .AsNoTracking()
+            .Where(e => e.IsPublicAvailable || e.CreatorId == creatorId)
+            .OrderBy(e => e.Name)
+            .ToList();
+
+        var cards = visibleEquipments
+            .Select(e => new SelectEquipmentCardDto
+            {
+                EquipmentId = e.Id,
+                Name = e.Name,
+                Slug = _slugService.ToSlug(e.Name),
+                ImagePath = string.IsNullOrWhiteSpace(e.ImagePath)
+                    ? "/images/equipment/noImageEquipment.png"
+                    : e.ImagePath,
+                ProducedElement = e.ProducedElement?.ToString(),
+                ConsumedElement = e.ConsumedElement?.ToString(),
+                IsPublicAvailable = e.IsPublicAvailable,
+                IsAlreadyInBiome = linkedEquipmentIds.Contains(e.Id)
+            })
+            .ToList();
+
+        return new SelectEquipmentPageDto
+        {
+            BiomeId = biome.Id,
+            BiomeName = biome.Name,
+            BiomeSlug = _slugService.ToSlug(biome.Name),
+            Equipments = cards
+        };
+    }
+
+    public void AddEquipmentToBiome(int biomeId, IEnumerable<int> equipmentIds)
+    {
+        var biomeExists = _context.Biomes
+            .AsNoTracking()
+            .Any(b => b.Id == biomeId);
+
+        if (!biomeExists)
+            return;
+
+        var ids = equipmentIds?
+            .Distinct()
+            .ToList() ?? new List<int>();
+
+        if (ids.Count == 0)
+            return;
+
+        var validEquipmentIds = _context.Equipments
+            .AsNoTracking()
+            .Where(e => ids.Contains(e.Id))
+            .Select(e => e.Id)
+            .ToHashSet();
+
+        if (validEquipmentIds.Count == 0)
+            return;
+
+        var existingLinks = _context.BiomeEquipmentLinks
+            .Where(link => link.BiomeId == biomeId && validEquipmentIds.Contains(link.EquipmentId))
+            .ToList();
+
+        var existingIds = existingLinks
+            .Select(link => link.EquipmentId)
+            .ToHashSet();
+
+        var toAddIds = validEquipmentIds
+            .Where(id => !existingIds.Contains(id))
+            .ToList();
+
+        foreach (var equipmentId in toAddIds)
+        {
+            _context.BiomeEquipmentLinks.Add(new BiomeEquipmentLink
+            {
+                BiomeId = biomeId,
+                EquipmentId = equipmentId
+            });
+        }
+
+        if (toAddIds.Count > 0)
+            _context.SaveChanges();
     }
 
     public BiomeSpeciesManagementPageDto? GetSpeciesManagementPageData(string biomeSlug, int creatorId,
