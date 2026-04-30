@@ -93,9 +93,7 @@ public class SelectSpeciesModel : PageModel
                 Id = species.SpeciesId,
                 Name = species.Name,
                 Slug = species.Slug,
-                ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
-                    ? "/images/species/noImageSpecie.png"
-                    : species.ImagePath,
+                ImagePath = NormalizeWebPath(species.ImagePath),
                 ClassificationLabel = species.Classification,
                 DietLabel = species.Diet,
                 AdultSizeLabel = $"{species.AdultSize:0.##} m",
@@ -203,6 +201,22 @@ public class SelectSpeciesModel : PageModel
     {
         var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return int.TryParse(claim, out userId) && userId > 0;
+    }
+
+    private static string NormalizeWebPath(string? imagePath)
+    {
+        if (string.IsNullOrWhiteSpace(imagePath))
+            return "/images/species/noImageSpecie.png";
+
+        var normalized = imagePath.Trim().Replace("\\", "/");
+
+        if (normalized.StartsWith("~/", StringComparison.Ordinal))
+            normalized = normalized[1..];
+
+        if (!normalized.StartsWith("/", StringComparison.Ordinal))
+            normalized = "/" + normalized;
+
+        return normalized;
     }
 
     public string FormatClassification(SpeciesClassification classification)

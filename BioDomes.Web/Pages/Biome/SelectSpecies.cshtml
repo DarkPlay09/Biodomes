@@ -159,7 +159,7 @@
                            class="select-species-page__card-link">
 
                             <div class="entity-card__image">
-                                <img src="@(string.IsNullOrWhiteSpace(species.ImagePath) ? "" : Url.Content($"~{species.ImagePath}"))"
+                                <img src="@Url.Content($"~{species.ImagePath}")"
                                      alt="Image de @species.Name" />
                                 <span class="entity-card__status @statusClass">@statusLabel</span>
                             </div>

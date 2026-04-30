@@ -1,4 +1,13 @@
 ﻿body.error-status-page {
+    --error-bg: #f8fafc;
+    --error-text: #0f172a;
+    --error-muted: #475467;
+    --error-primary: #0b3d39;
+    --error-primary-dark: #082f2c;
+    --error-accent: #b45309;
+    --error-accent-soft: rgba(180, 83, 9, 0.10);
+    --error-border: rgba(180, 83, 9, 0.18);
+
     min-height: 100vh;
     margin: 0;
     background:
@@ -9,12 +18,16 @@
 }
 
 .error-status-page--forbidden {
+    --error-primary: #7a271a;
+    --error-primary-dark: #631f15;
     --error-accent: #b42318;
     --error-accent-soft: rgba(180, 35, 24, 0.10);
     --error-border: rgba(180, 35, 24, 0.18);
 }
 
 .error-status-page--not-found {
+    --error-primary: #0b3d39;
+    --error-primary-dark: #082f2c;
     --error-accent: #b45309;
     --error-accent-soft: rgba(180, 83, 9, 0.10);
     --error-border: rgba(180, 83, 9, 0.18);
@@ -171,7 +184,7 @@
 }
 
 .error-status__button {
-    min-height: 58px;
+    min-height: 30px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -243,3 +256,4 @@
         display: none;
     }
 }
+
