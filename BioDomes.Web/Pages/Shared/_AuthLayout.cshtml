@@ -14,12 +14,14 @@
         <div class="auth-visual__overlay"></div>
 
         <div class="auth-visual__content">
-            <div class="auth-brand">
+            <a asp-page="/Index"
+               class="auth-brand"
+               aria-label="Retour à la page d'accueil BioDomes">
                 <img src="~/images/logo_biodomes.png"
                      alt="Logo BioDomes"
                      class="auth-brand__logo" />
                 <span class="auth-brand__name">BioDomes</span>
-            </div>
+            </a>
 
             <div class="auth-hero">
                 <h1>@Html.Raw(ViewData["AuthHeroTitle"])</h1>

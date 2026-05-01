@@ -95,6 +95,7 @@
 
 .action-link {
     text-decoration: none;
+    text-align: center;
     color: var(--color-text);
     font-weight : 600;
     padding : .7rem 1rem;
