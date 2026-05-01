@@ -223,8 +223,8 @@ public class SpeciesModel : PageModel
 
         // Suppression de l'image physique uniquement si elle correspond à une image uploadée.
         if (!string.IsNullOrWhiteSpace(species.ImagePath)
-            && species.ImagePath.StartsWith("/images/species/")
-            && species.ImagePath != "/images/species/noImageSpecie.png")
+            && species.ImagePath.StartsWith("/uploads/species/")
+            && species.ImagePath != "/uploads/species/noImageSpecie.png")
         {
             var relativePath = species.ImagePath
                 .TrimStart('/')
@@ -355,7 +355,7 @@ public class SpeciesModel : PageModel
             Name = species.Name,
             Slug = _slugService.ToSlug(species.Name),
             ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
-                ? "/images/species/noImageSpecie.png"
+                ? "/uploads/species/noImageSpecie.png"
                 : species.ImagePath,
             ClassificationLabel = FormatClassification(species.Classification),
             DietLabel = FormatDiet(species.Diet),

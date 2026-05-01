@@ -44,7 +44,7 @@ public class SpeciesImageStorage : ISpeciesImageStorage
         await using var fileStream = File.Create(filePath);
         await content.CopyToAsync(fileStream);
 
-        return $"~/uploads/species/{fileName}";
+        return $"/uploads/species/{fileName}";
     }
 
     public void Delete(string? imagePath)
@@ -75,11 +75,6 @@ public class SpeciesImageStorage : ISpeciesImageStorage
 
     private string GetUploadsRoot()
     {
-        var configuredPath = _configuration["Uploads:RootPath"];
-
-        if (!string.IsNullOrWhiteSpace(configuredPath))
-            return Path.GetFullPath(configuredPath);
-
-        return Path.Combine(_environment.ContentRootPath, "uploads");
+        return Path.Combine(_environment.WebRootPath, "uploads");
     }
 }

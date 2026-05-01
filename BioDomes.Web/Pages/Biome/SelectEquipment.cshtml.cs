@@ -193,7 +193,7 @@ public class SelectEquipmentModel : PageModel
     private static string NormalizeWebPath(string? imagePath)
     {
         if (string.IsNullOrWhiteSpace(imagePath))
-            return "/images/equipment/noImageEquipment.png";
+            return "/uploads/equipment/noImageEquipment.png";
 
         var normalized = imagePath.Trim().Replace("\\", "/");
 

@@ -19,7 +19,7 @@
     }
 
     var imageSrc = string.IsNullOrWhiteSpace(imagePath)
-        ? Url.Content("~/images/species/noImageSpecie.png")
+        ? Url.Content("~/uploads/species/noImageSpecie.png")
         : Url.Content(imagePath);
     
     var usageCount = Model.SpeciesDetails.ImpactedBiomesCount;

@@ -195,7 +195,7 @@ public class DetailsModel : PageModel
             Name = species.Name,
             Slug = _slugService.ToSlug(species.Name),
             ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
-                ? "/images/species/noImageSpecie.png"
+                ? "/uploads/species/noImageSpecie.png"
                 : species.ImagePath,
             ClassificationLabel = FormatClassification(species.Classification),
             DietLabel = FormatDiet(species.Diet),
@@ -345,7 +345,7 @@ public class DetailsModel : PageModel
             Name = species.Name,
             Slug = _slugService.ToSlug(species.Name),
             ImagePath = string.IsNullOrWhiteSpace(species.ImagePath)
-                ? "/images/species/noImageSpecie.png"
+                ? "/uploads/species/noImageSpecie.png"
                 : species.ImagePath,
             ClassificationLabel = FormatClassification(species.Classification),
             DietLabel = FormatDiet(species.Diet),

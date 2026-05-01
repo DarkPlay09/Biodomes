@@ -66,7 +66,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
 
                             t.HasCheckConstraint("CK_Biomes_State_Enum", "[State] IN ('Optimal','Instable','Critique')");
 
-                            t.HasCheckConstraint("CK_Biomes_Temperature_Range", "[Temperature] >= -100 AND [Temperature] <= 100");
+                            t.HasCheckConstraint("CK_Biomes_Temperature_Range", "[Temperature] >= -100");
                         });
                 });
 
@@ -120,7 +120,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Id = 1,
                             ConsumedElement = "Hydrogene",
                             CreatorId = 1,
-                            ImagePath = "/images/equipment/helio-lamp-a7f3k2q1.jpg",
+                            ImagePath = "/uploads/equipment/helio-lamp-a7f3k2q1.jpg",
                             IsPublicAvailable = true,
                             Name = "Helio Lamp A7F3K2Q1",
                             ProducedElement = "Lumiere"
@@ -130,7 +130,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Id = 2,
                             ConsumedElement = "Azote",
                             CreatorId = 1,
-                            ImagePath = "/images/equipment/uv-array-b9m4d8r2.jpg",
+                            ImagePath = "/uploads/equipment/uv-array-b9m4d8r2.jpg",
                             IsPublicAvailable = true,
                             Name = "UV Array B9M4D8R2",
                             ProducedElement = "Lumiere"
@@ -140,7 +140,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Id = 3,
                             ConsumedElement = "Hydrogene",
                             CreatorId = 1,
-                            ImagePath = "/images/equipment/micro-pump-c6p1t7l5.jpg",
+                            ImagePath = "/uploads/equipment/micro-pump-c6p1t7l5.jpg",
                             IsPublicAvailable = true,
                             Name = "Micro Pump C6P1T7L5",
                             ProducedElement = "Eau"
@@ -150,7 +150,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Id = 4,
                             ConsumedElement = "Eau",
                             CreatorId = 1,
-                            ImagePath = "/images/equipment/nitro-filter-d3x8n4v6.jpg",
+                            ImagePath = "/uploads/equipment/nitro-filter-d3x8n4v6.jpg",
                             IsPublicAvailable = true,
                             Name = "Nitro Filter D3X8N4V6",
                             ProducedElement = "Azote"
@@ -160,7 +160,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Id = 5,
                             ConsumedElement = "Eau",
                             CreatorId = 1,
-                            ImagePath = "/images/equipment/hydro-cell-e2r9j5s8.jpg",
+                            ImagePath = "/uploads/equipment/hydro-cell-e2r9j5s8.jpg",
                             IsPublicAvailable = true,
                             Name = "Hydro Cell E2R9J5S8",
                             ProducedElement = "Hydrogene"
@@ -228,7 +228,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatorId = 1,
                             Diet = "Carnivore",
-                            ImagePath = "/images/species/lion-dafrique-a1b2c3d4.jpg",
+                            ImagePath = "/uploads/species/lion-dafrique-a1b2c3d4.jpg",
                             IsPublicAvailable = true,
                             Name = "Lion d'Afrique",
                             Weight = 190.0
@@ -240,7 +240,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatorId = 1,
                             Diet = "Photosynthèse",
-                            ImagePath = "/images/species/monstera-b2c3d4e5.jpg",
+                            ImagePath = "/uploads/species/monstera-b2c3d4e5.jpg",
                             IsPublicAvailable = true,
                             Name = "Monstera",
                             Weight = 12.0
@@ -252,7 +252,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Oiseau",
                             CreatorId = 1,
                             Diet = "Herbivore",
-                            ImagePath = "/images/species/ara-rouge-c3d4e5f6.jpg",
+                            ImagePath = "/uploads/species/ara-rouge-c3d4e5f6.jpg",
                             IsPublicAvailable = true,
                             Name = "Ara Rouge",
                             Weight = 1.2
@@ -264,7 +264,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Reptile",
                             CreatorId = 1,
                             Diet = "Herbivore",
-                            ImagePath = "/images/species/tortue-geante-d4e5f6a7.jpg",
+                            ImagePath = "/uploads/species/tortue-geante-d4e5f6a7.jpg",
                             IsPublicAvailable = true,
                             Name = "Tortue Géante",
                             Weight = 250.0
@@ -276,7 +276,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatorId = 1,
                             Diet = "Omnivore",
-                            ImagePath = "/images/species/lemur-catta-e5f6a7b8.jpg",
+                            ImagePath = "/uploads/species/lemur-catta-e5f6a7b8.jpg",
                             IsPublicAvailable = true,
                             Name = "Lémur Catta",
                             Weight = 2.2000000000000002
@@ -288,7 +288,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatorId = 1,
                             Diet = "Photosynthèse",
-                            ImagePath = "/images/species/sequoia-geant-f6a7b8c9.jpg",
+                            ImagePath = "/uploads/species/sequoia-geant-f6a7b8c9.jpg",
                             IsPublicAvailable = true,
                             Name = "Séquoia Géant",
                             Weight = 1200000.0
@@ -300,7 +300,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Plante",
                             CreatorId = 1,
                             Diet = "Photosynthèse",
-                            ImagePath = "/images/species/aloe-vera-a7b8c9d0.jpg",
+                            ImagePath = "/uploads/species/aloe-vera-a7b8c9d0.jpg",
                             IsPublicAvailable = true,
                             Name = "Aloe vera",
                             Weight = 15.0
@@ -312,7 +312,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatorId = 1,
                             Diet = "Carnivore",
-                            ImagePath = "/images/species/loup-gris-b8c9d0e1.jpg",
+                            ImagePath = "/uploads/species/loup-gris-b8c9d0e1.jpg",
                             IsPublicAvailable = true,
                             Name = "Loup gris",
                             Weight = 45.0
@@ -324,7 +324,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Mammifère",
                             CreatorId = 1,
                             Diet = "Omnivore",
-                            ImagePath = "/images/species/raton-laveur-c9d0e1f2.jpg",
+                            ImagePath = "/uploads/species/raton-laveur-c9d0e1f2.jpg",
                             IsPublicAvailable = true,
                             Name = "Raton laveur",
                             Weight = 9.0
@@ -336,7 +336,7 @@ namespace BioDomes.Infrastructures.EntityFramework.Migrations
                             Classification = "Reptile",
                             CreatorId = 1,
                             Diet = "Carnivore",
-                            ImagePath = "/images/species/boa-constrictor-d0e1f2a3.jpg",
+                            ImagePath = "/uploads/species/boa-constrictor-d0e1f2a3.jpg",
                             IsPublicAvailable = true,
                             Name = "Boa constrictor",
                             Weight = 13.0

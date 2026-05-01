@@ -27,7 +27,7 @@ public class EquipmentImageStorage : IEquipmentImageStorage
 
         var filePath = Path.Combine(
             _environment.WebRootPath,
-            "images",
+            "uploads",
             "equipment",
             fileName
         );
@@ -37,7 +37,7 @@ public class EquipmentImageStorage : IEquipmentImageStorage
         await using var fileStream = File.Create(filePath);
         await content.CopyToAsync(fileStream);
 
-        return $"~/uploads/equipment/{fileName}";
+        return $"/uploads/equipment/{fileName}";
     }
 
     public void Delete(string? imagePath)
@@ -54,7 +54,7 @@ public class EquipmentImageStorage : IEquipmentImageStorage
 
         normalizedPath = normalizedPath.TrimStart('/');
 
-        if (!normalizedPath.StartsWith("images/equipment/"))
+        if (!normalizedPath.StartsWith("uploads/equipment/"))
             return;
 
         var relativePath = normalizedPath.Replace('/', Path.DirectorySeparatorChar);

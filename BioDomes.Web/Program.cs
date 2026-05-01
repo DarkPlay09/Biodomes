@@ -103,16 +103,7 @@ app.UseReverseProxyLinks();
 app.UseWebOptimizer();
 app.UseStaticFiles();
 
-var uploadsPath = builder.Configuration["Uploads:RootPath"];
-
-if (string.IsNullOrWhiteSpace(uploadsPath))
-{
-    uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
-}
-else if (!Path.IsPathRooted(uploadsPath))
-{
-    uploadsPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, uploadsPath));
-}
+var uploadsPath = Path.Combine(builder.Environment.WebRootPath, "uploads");
 
 Directory.CreateDirectory(uploadsPath);
 

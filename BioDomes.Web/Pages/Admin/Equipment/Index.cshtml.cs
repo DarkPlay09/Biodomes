@@ -210,7 +210,7 @@ public class IndexModel : PageModel
             Name = equipment.Name,
             Slug = _slugService.ToSlug(equipment.Name),
             ImagePath = string.IsNullOrWhiteSpace(equipment.ImagePath)
-                ? "/images/equipment/noImageEquipment.png"
+                ? "/uploads/equipment/noImageEquipment.png"
                 : equipment.ImagePath,
             ProducedElementLabel = FormatNullableResource(equipment.ProducedElement),
             ConsumedElementLabel = FormatNullableResource(equipment.ConsumedElement),

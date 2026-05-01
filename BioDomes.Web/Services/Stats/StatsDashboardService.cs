@@ -147,7 +147,7 @@ public sealed class StatsDashboardService : IStatsDashboardService
                 Weight: link.Species.Weight,
                 IndividualCount: link.IndividualCount,
                 ImagePath: string.IsNullOrWhiteSpace(link.Species.ImagePath)
-                    ? "/images/species/noImageSpecie.png"
+                    ? "/uploads/species/noImageSpecie.png"
                     : link.Species.ImagePath))
             .ToList();
 

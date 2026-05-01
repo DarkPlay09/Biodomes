@@ -157,7 +157,7 @@ public class SpeciesModel : PageModel
                 species.Name,
                 species.Slug,
                 string.IsNullOrWhiteSpace(species.ImagePath)
-                    ? "~/images/species/noImageSpecie.png"
+                    ? "/uploads/species/noImageSpecie.png"
                     : species.ImagePath,
                 species.Classification,
                 species.Diet,

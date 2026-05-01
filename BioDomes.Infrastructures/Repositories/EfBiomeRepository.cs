@@ -212,7 +212,7 @@ public class EfBiomeRepository : IBiomeRepository
                 Name = s.Name,
                 Slug = _slugService.ToSlug(s.Name),
                 ImagePath = string.IsNullOrWhiteSpace(s.ImagePath)
-                    ? "/images/species/noImageSpecie.png"
+                    ? "/uploads/species/noImageSpecie.png"
                     : s.ImagePath,
                 Classification = s.Classification,
                 Diet = s.Diet,
@@ -314,7 +314,7 @@ public class EfBiomeRepository : IBiomeRepository
                 Name = e.Name,
                 Slug = _slugService.ToSlug(e.Name),
                 ImagePath = string.IsNullOrWhiteSpace(e.ImagePath)
-                    ? "/images/equipment/noImageEquipment.png"
+                    ? "/uploads/equipment/noImageEquipment.png"
                     : e.ImagePath,
                 ProducedElement = e.ProducedElement?.ToString(),
                 ConsumedElement = e.ConsumedElement?.ToString(),
@@ -418,7 +418,7 @@ public class EfBiomeRepository : IBiomeRepository
                 Name = link.Species.Name,
                 Slug = _slugService.ToSlug(link.Species.Name),
                 ImagePath = string.IsNullOrWhiteSpace(link.Species.ImagePath)
-                    ? "/images/species/noImageSpecie.png"
+                    ? "/uploads/species/noImageSpecie.png"
                     : link.Species.ImagePath,
                 Classification = link.Species.Classification,
                 Diet = link.Species.Diet,

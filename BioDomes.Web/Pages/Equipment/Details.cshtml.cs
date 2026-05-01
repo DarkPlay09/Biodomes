@@ -186,7 +186,7 @@ public class DetailsModel : PageModel
             Name = equipment.Name,
             Slug = _slugService.ToSlug(equipment.Name),
             ImagePath = string.IsNullOrWhiteSpace(equipment.ImagePath)
-                ? "/images/equipment/noImageEquipment.png"
+                ? "/uploads/equipment/noImageEquipment.png"
                 : equipment.ImagePath,
             ReferenceLabel = $"EQ-{equipment.Id:0000}",
             ProducedElementLabel = FormatNullableResource(equipment.ProducedElement),

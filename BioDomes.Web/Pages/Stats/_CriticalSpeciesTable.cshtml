@@ -37,7 +37,7 @@
                     }
 
                     var imageSrc = string.IsNullOrWhiteSpace(imagePath)
-                        ? Url.Content("~/images/species/noImageSpecie.png")
+                        ? Url.Content("~/uploads/species/noImageSpecie.png")
                         : Url.Content(imagePath);
 
                     <tr data-filter="@($"{species.Name} {species.Classification} {species.SubLabel}".ToLowerInvariant())">
