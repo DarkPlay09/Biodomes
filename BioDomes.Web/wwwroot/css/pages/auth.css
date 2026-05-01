@@ -55,6 +55,33 @@
     text-decoration: none;
 }
 
+.auth-card__mobile-brand {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .auth-card__mobile-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-bottom: 2rem;
+        text-decoration: none;
+        color: var(--color-text);
+        font-weight: 800;
+        font-size: 1.15rem;
+    }
+
+    .auth-card__mobile-brand:hover {
+        color: var(--color-primary);
+    }
+
+    .auth-card__mobile-logo {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+    }
+}
+
 .auth-brand__logo {
     width: 40px;
     height: 40px;

@@ -32,6 +32,16 @@
 
     <section class="auth-panel">
         <div class="auth-card">
+
+            <a asp-page="/Index"
+               class="auth-card__mobile-brand"
+               aria-label="Retour à la page d'accueil BioDomes">
+                <img src="~/images/logo_biodomes.png"
+                     alt="Logo BioDomes"
+                     class="auth-card__mobile-logo" />
+                <span>BioDomes</span>
+            </a>
+
             <header class="auth-card__header">
                 <h2>@ViewData["AuthPageTitle"]</h2>
                 <p>@ViewData["AuthPageSubtitle"]</p>
