@@ -51,3 +51,27 @@
     color: #64748b;
     line-height: 1.6;
 }
+
+.empty-state--public-catalog {
+    min-height: 260px;
+    padding: 3rem 2rem;
+    border: 1px dashed rgba(11, 61, 57, 0.22);
+    border-radius: 24px;
+    background:
+            radial-gradient(circle at top, rgba(210, 180, 140, 0.12), transparent 42%),
+            rgba(255, 255, 255, 0.78);
+}
+
+.empty-state--public-catalog .empty-state__icon {
+    background: rgba(11, 61, 57, 0.08);
+    color: #0b3d39;
+}
+
+.empty-state--public-catalog h3 {
+    color: #0b3d39;
+}
+
+.empty-state--public-catalog p {
+    max-width: 460px;
+    margin-inline: auto;
+}

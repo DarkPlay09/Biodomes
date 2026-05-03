@@ -2,11 +2,19 @@
 @model BioDomes.Web.Pages.Species.SpeciesModel
 
 @{
-    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+    Layout = isAuthenticated
+        ? "/Pages/Shared/_DashboardLayout.cshtml"
+        : "/Pages/Shared/_Layout.cshtml";
 
     ViewData["Title"] = "Catalogue des espèces";
-    ViewData["DashboardTitle"] = "Catalogue des espèces";
-    ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les espèces enregistrées dans BioDomes.";
+
+    if (isAuthenticated)
+    {
+        ViewData["DashboardTitle"] = "Catalogue des espèces";
+        ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les espèces enregistrées dans BioDomes.";
+    }
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
     var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
@@ -33,13 +41,22 @@
     }
 }
 
-<section class="catalog-page">
+<section class="catalog-page @(isAuthenticated ? "" : "catalog-page--public")">
     <header class="catalog-page__header">
-        <a asp-page="./Add"
-           asp-route-returnUrl="@currentUrl"
-           class="action-button">
-            + Ajouter une espèce
-        </a>
+        <div>
+            @if (!isAuthenticated)
+            {
+                <h1>Catalogue des espèces</h1>
+                <p>Découvre les espèces publiques disponibles dans BioDomes.</p>
+            }
+        </div>
+
+        @if (isAuthenticated)
+        {
+            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
+                Ajouter une espèce
+            </a>
+        }
     </header>
 
     <form method="get" class="catalog-filter-card">
@@ -84,14 +101,17 @@
             </select>
         </div>
 
-        <div class="catalog-filter-card__select">
-            <label for="VisibilityFilter">Visibilité</label>
-            <select id="VisibilityFilter" name="VisibilityFilter">
-                <option value="" selected="@visibilityAllSelected">Toutes</option>
-                <option value="public" selected="@visibilityPublicSelected">Publiques</option>
-                <option value="private" selected="@visibilityPrivateSelected">Privées</option>
-            </select>
-        </div>
+        @if (isAuthenticated)
+        {
+            <div class="catalog-filter-card__select">
+                <label for="VisibilityFilter">Visibilité</label>
+                <select id="VisibilityFilter" name="VisibilityFilter">
+                    <option value="" selected="@visibilityAllSelected">Toutes</option>
+                    <option value="public" selected="@visibilityPublicSelected">Publiques</option>
+                    <option value="private" selected="@visibilityPrivateSelected">Privées</option>
+                </select>
+            </div>
+        }
 
         <div class="catalog-filter-card__actions">
             <button type="submit" class="dashboard-btn dashboard-btn--primary">
@@ -106,18 +126,34 @@
 
     @if (Model.SpeciesCards.Count == 0)
     {
-        <div class="empty-state">
-            <div class="empty-state__icon">+</div>
+        <div class="empty-state empty-state--public-catalog">
+            <div class="empty-state__icon" aria-hidden="true">
+                ?
+            </div>
 
             <h3>Aucune espèce trouvée</h3>
 
-            <p>
-                Modifie ta recherche ou ajoute une nouvelle espèce au catalogue.
-            </p>
+            @if (isAuthenticated)
+            {
+                <p>
+                    Modifie ta recherche ou ajoute une nouvelle espèce au catalogue.
+                </p>
 
-            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
-                Ajouter une espèce
-            </a>
+                <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
+                    Ajouter une espèce
+                </a>
+            }
+            else
+            {
+                <p>
+                    Aucune espèce publique ne correspond à ta recherche.
+                    Essaie de modifier les filtres ou réinitialise le catalogue.
+                </p>
+
+                <a asp-page="./Index" class="dashboard-btn dashboard-btn--ghost">
+                    Réinitialiser les filtres
+                </a>
+            }
         </div>
     }
     else
@@ -146,7 +182,7 @@
                             @statusLabel
                         </span>
 
-                        @if (species.CanEdit)
+                        @if (isAuthenticated && species.CanEdit)
                         {
                             <a asp-page="./Edit"
                                asp-route-slug="@species.Slug"

@@ -22,17 +22,32 @@
                 </a>
                 
                 <nav class="main-navigation">
-                    <a class="nav-entry @(currentPage == "/Index" ? "nav-entry--active" : "")" asp-area="" asp-page="/Index">Accueil</a>
-                    @if(User.Identity?.IsAuthenticated == true)
+                    <a class="nav-entry @(currentPage == "/Index" ? "nav-entry--active" : "")"
+                       asp-area=""
+                       asp-page="/Index">
+                        Accueil
+                    </a>
+
+                    @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <a class="nav-entry @(currentPage?.StartsWith("/Biomes") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Biome/Index">Biomes</a>
-                        <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Species/Index">Espèces</a>
-                        <a class="nav-entry @(currentPage?.StartsWith("/Equipment") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Equipment/Index">Équipments</a>
+                        <a class="nav-entry @(currentPage?.StartsWith("/Biome") == true ? "nav-entry--active" : "")"
+                           asp-area=""
+                           asp-page="/Biome/Index">
+                            Biomes
+                        </a>
                     }
-                    else
-                    {
-                        <a class="nav-entry" href="#">Il faudrait ajouter des trucs mais on verra plus tard hahaha</a>
-                    }
+
+                    <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")"
+                       asp-area=""
+                       asp-page="/Species/Index">
+                        Espèces
+                    </a>
+
+                    <a class="nav-entry @(currentPage?.StartsWith("/Equipment") == true ? "nav-entry--active" : "")"
+                       asp-area=""
+                       asp-page="/Equipment/Index">
+                        Équipements
+                    </a>
                 </nav>
                 
                 <div class="header-actions">
@@ -53,10 +68,28 @@
         <button class="mobile-menu-close" type="button" id="menuClose" aria-label="Fermer le menu">×</button>
 
         <nav class="mobile-menu-nav">
-            <a class="@(currentPage == "/Index" ? "mobile-menu-link--active" : "")" asp-page="/Index">Accueil</a>
-            <a class="@(currentPage?.StartsWith("/Species") == true ? "mobile-menu-link--active" : "")" asp-page="/Species/Index">Espèces</a>
-            <a href="#">Biomes</a>
-            <a href="#">Équipements</a>
+            <a class="@(currentPage == "/Index" ? "mobile-menu-link--active" : "")"
+               asp-page="/Index">
+                Accueil
+            </a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a class="@(currentPage?.StartsWith("/Biome") == true ? "mobile-menu-link--active" : "")"
+                   asp-page="/Biome/Index">
+                    Biomes
+                </a>
+            }
+
+            <a class="@(currentPage?.StartsWith("/Species") == true ? "mobile-menu-link--active" : "")"
+               asp-page="/Species/Index">
+                Espèces
+            </a>
+
+            <a class="@(currentPage?.StartsWith("/Equipment") == true ? "mobile-menu-link--active" : "")"
+               asp-page="/Equipment/Index">
+                Équipements
+            </a>
         </nav>
 
         <div class="mobile-menu-actions">
@@ -89,9 +122,8 @@
                 <h4 class="footer-title">Navigation</h4>
                 <ul class="footer-list">
                     <li><a asp-area="" asp-page="/Index">Accueil</a></li>
-                    <li><a asp-area="" asp-page="/Species">Espèces</a></li>
-                    <li><a href="#">Biomes</a></li>
-                    <li><a href="#">Équipements</a></li>
+                    <li><a asp-area="" asp-page="/Species/Index">Espèces</a></li>
+                    <li><a asp-area="" asp-page="/Equipment/Index">Équipements</a></li>
                 </ul>
             </div>
 

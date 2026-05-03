@@ -2,12 +2,20 @@
 @model BioDomes.Web.Pages.Species.DetailsModel
 
 @{
-    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+    Layout = isAuthenticated
+        ? "/Pages/Shared/_DashboardLayout.cshtml"
+        : "/Pages/Shared/_Layout.cshtml";
 
     ViewData["Title"] = Model.SpeciesDetails.Name;
-    ViewData["DashboardTitle"] = "Fiche espèce détaillée";
-    ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
-    
+
+    if (isAuthenticated)
+    {
+        ViewData["DashboardTitle"] = "Fiche espèce détaillée";
+        ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
+    }
+
     var request = ViewContext.HttpContext.Request;
     var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 
@@ -19,14 +27,14 @@
     }
 
     var imageSrc = string.IsNullOrWhiteSpace(imagePath)
-        ? Url.Content("~/uploads/species/noImageSpecie.png")
+        ? Url.Content("~/images/species/noImageSpecie.png")
         : Url.Content(imagePath);
-    
+
     var usageCount = Model.SpeciesDetails.ImpactedBiomesCount;
     var biomeWord = usageCount > 1 ? "biomes" : "biome";
 }
 
-@if (usageCount > 0)
+@if (Model.SpeciesDetails.CanManage && usageCount > 0)
 {
     <div class="species-usage-alert" role="alert" aria-live="polite">
         <strong>Attention :</strong>
@@ -68,42 +76,60 @@
 
             <div class="species-details-stats">
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/category.png" alt="Icon classification" />
+                    <img class="species-details-stat__icon"
+                         src="~/images/species/icons/category.png"
+                         alt=""
+                         aria-hidden="true" />
                     <small>Classification</small>
                     <strong>@Model.SpeciesDetails.ClassificationLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/cutlery.png" alt="Icon alimentation" />
+                    <img class="species-details-stat__icon"
+                         src="~/images/species/icons/cutlery.png"
+                         alt=""
+                         aria-hidden="true" />
                     <small>Régime</small>
                     <strong>@Model.SpeciesDetails.DietLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/height.png" alt="Icon taille" />
+                    <img class="species-details-stat__icon"
+                         src="~/images/species/icons/height.png"
+                         alt=""
+                         aria-hidden="true" />
                     <small>Taille adulte</small>
                     <strong>@Model.SpeciesDetails.AdultSizeLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/weight.png" alt="Icon poids" />
+                    <img class="species-details-stat__icon"
+                         src="~/images/species/icons/weight.png"
+                         alt=""
+                         aria-hidden="true" />
                     <small>Poids</small>
                     <strong>@Model.SpeciesDetails.WeightLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/visibility.png" alt="Icon visibilité" />
+                    <img class="species-details-stat__icon"
+                         src="~/images/species/icons/visibility.png"
+                         alt=""
+                         aria-hidden="true" />
                     <small>Visibilité</small>
                     <strong>@Model.SpeciesDetails.VisibilityLabel</strong>
                 </div>
 
                 <div class="species-details-stat">
-                    <img class="species-details-stat__icon" src="~/images/species/icons/user.png" alt="Icon créateur" />
+                    <img class="species-details-stat__icon"
+                         src="~/images/species/icons/user.png"
+                         alt=""
+                         aria-hidden="true" />
                     <small>Créateur</small>
                     <strong>@Model.SpeciesDetails.OwnerName</strong>
                 </div>
             </div>
-            
+
             @if (Model.SpeciesDetails.CanManage)
             {
                 <div class="species-details-actions">
@@ -141,48 +167,54 @@
             }
         </article>
     </div>
-    
-    <div class="custom-modal" id="deleteConfirmModal" aria-hidden="true">
-        <div class="custom-modal__overlay" data-close-delete-modal></div>
 
-        <div class="custom-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
-            <button type="button"
-                    class="custom-modal__close"
-                    aria-label="Fermer"
-                    data-close-delete-modal>
-                ×
-            </button>
+    @if (Model.SpeciesDetails.CanManage && Model.SpeciesDetails.ImpactedBiomesCount == 0)
+    {
+        <div class="custom-modal" id="deleteConfirmModal" aria-hidden="true">
+            <div class="custom-modal__overlay" data-close-delete-modal></div>
 
-            <div class="custom-modal__icon">
-                !
-            </div>
-
-            <h3 class="custom-modal__title" id="deleteModalTitle">
-                Confirmer la suppression
-            </h3>
-
-            <p class="custom-modal__text">
-                Voulez-vous vraiment supprimer cette espèce ?
-                Cette action est <strong>définitive</strong>.
-            </p>
-
-            <div class="custom-modal__actions">
+            <div class="custom-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
                 <button type="button"
-                        class="custom-modal__button custom-modal__button--secondary"
+                        class="custom-modal__close"
+                        aria-label="Fermer"
                         data-close-delete-modal>
-                    Annuler
+                    ×
                 </button>
 
-                <button type="button"
-                        class="custom-modal__button custom-modal__button--danger"
-                        id="confirmDeleteButton">
-                    Oui, supprimer
-                </button>
+                <div class="custom-modal__icon">
+                    !
+                </div>
+
+                <h3 class="custom-modal__title" id="deleteModalTitle">
+                    Confirmer la suppression
+                </h3>
+
+                <p class="custom-modal__text">
+                    Voulez-vous vraiment supprimer cette espèce ?
+                    Cette action est <strong>définitive</strong>.
+                </p>
+
+                <div class="custom-modal__actions">
+                    <button type="button"
+                            class="custom-modal__button custom-modal__button--secondary"
+                            data-close-delete-modal>
+                        Annuler
+                    </button>
+
+                    <button type="button"
+                            class="custom-modal__button custom-modal__button--danger"
+                            id="confirmDeleteButton">
+                        Oui, supprimer
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </section>
 
 @section Scripts {
-    <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
+    @if (Model.SpeciesDetails.CanManage && Model.SpeciesDetails.ImpactedBiomesCount == 0)
+    {
+        <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
+    }
 }

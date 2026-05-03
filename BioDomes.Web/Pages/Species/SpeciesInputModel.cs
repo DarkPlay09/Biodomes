@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BioDomes.Web.Pages.Species;
 

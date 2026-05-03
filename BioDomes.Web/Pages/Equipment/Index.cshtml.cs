@@ -3,6 +3,7 @@ using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,6 +17,7 @@ namespace BioDomes.Web.Pages.Equipment;
 /// Elle gère l'affichage des équipements visibles par l'utilisateur connecté,
 /// les filtres, la recherche, la pagination et la suppression.
 /// </summary>
+[AllowAnonymous]
 public class IndexModel : PageModel
 {
     /// <summary>
@@ -125,28 +127,41 @@ public class IndexModel : PageModel
         Enum.GetValues<ResourceType>();
 
     /// <summary>
-    /// Message temporaire affiché lorsqu'un equipement vient d'être ajouté.
-    /// </summary>
-    [TempData]
-    public string? LastInsertedEquipmentName { get; set; }
-
-    /// <summary>
     /// Charge les équipements visibles, applique les filtres,
     /// calcule la pagination et prépare les cartes du catalogue.
     /// </summary>
     /// <returns>La page catalogue ou une demande de connexion.</returns>
     public async Task<IActionResult> OnGetAsync()
     {
-        if (!TryGetCurrentUserId(out var currentUserId))
+        var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+        int? currentUserId = null;
+
+        if (isAuthenticated && TryGetCurrentUserId(out var parsedUserId))
         {
-            return Challenge();
+            currentUserId = parsedUserId;
         }
 
-        var isAdmin = await IsCurrentUserAdminAsync();
+        var isAdmin = isAuthenticated && await IsCurrentUserAdminAsync();
 
-        var visibleEquipment = _repository.GetAll()
-            .Where(equipment => equipment.IsPublicAvailable || equipment.Creator.Id == currentUserId)
-            .ToList();
+        var visibleEquipment = _repository.GetAll();
+
+        if (isAuthenticated && currentUserId.HasValue)
+        {
+            visibleEquipment = visibleEquipment
+                .Where(equipment =>
+                    equipment.IsPublicAvailable ||
+                    equipment.Creator.Id == currentUserId.Value)
+                .ToList();
+        }
+        else
+        {
+            visibleEquipment = visibleEquipment
+                .Where(equipment => equipment.IsPublicAvailable)
+                .ToList();
+
+            VisibilityFilter = null;
+        }
 
         TotalEquipmentCount = visibleEquipment.Count;
 
@@ -191,7 +206,7 @@ public class IndexModel : PageModel
     /// </summary>
     /// <param name="slug">Slug de l'équipement à supprimer.</param>
     /// <returns>Une redirection vers la page courante ou une erreur si l'action est impossible.</returns>
-    public IActionResult OnPostDelete(string slug)
+    public async Task<IActionResult> OnPostDeleteAsync(string slug)
     {
         if (!TryGetCurrentUserId(out var currentUserId))
         {
@@ -205,7 +220,10 @@ public class IndexModel : PageModel
             return NotFound();
         }
 
-        if (equipment.Creator.Id != currentUserId)
+        var isOwner = equipment.Creator.Id == currentUserId;
+        var isAdmin = await IsCurrentUserAdminAsync();
+
+        if (!CanManageEquipment(isOwner, isAdmin, equipment.IsPublicAvailable))
         {
             return Forbid();
         }
@@ -213,9 +231,11 @@ public class IndexModel : PageModel
         _repository.DeleteBySlug(slug);
         _equipmentImageStorage.Delete(equipment.ImagePath);
 
+        TempData["SuccessMessage"] = $"L'équipement « {equipment.Name} » a bien été supprimé.";
+
         return RedirectToPage();
     }
-
+    
     /// <summary>
     /// Formate une ressource du domaine en libellé français lisible.
     /// </summary>
@@ -287,10 +307,10 @@ public class IndexModel : PageModel
     /// <returns>Carte prête à être affichée.</returns>
     private EquipmentCatalogItemViewModel MapToCatalogItem(
         EquipmentEntity equipment,
-        int currentUserId,
+        int? currentUserId,
         bool isAdmin)
     {
-        var isOwner = equipment.Creator.Id == currentUserId;
+        var isOwner = currentUserId.HasValue && equipment.Creator.Id == currentUserId.Value;
 
         return new EquipmentCatalogItemViewModel
         {
@@ -309,6 +329,11 @@ public class IndexModel : PageModel
     
     private async Task<bool> IsCurrentUserAdminAsync()
     {
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return false;
+        }
+
         var user = await _userManager.GetUserAsync(User);
 
         return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);

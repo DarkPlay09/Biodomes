@@ -5,6 +5,7 @@ using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,6 +19,7 @@ namespace BioDomes.Web.Pages.Species;
 /// Elle gère l'affichage des espèces visibles par l'utilisateur connecté,
 /// les filtres, la recherche, la pagination et la suppression.
 /// </summary>
+[AllowAnonymous]
 public class SpeciesModel : PageModel
 {
     /// <summary>
@@ -49,12 +51,6 @@ public class SpeciesModel : PageModel
         _slugService = slugService;
         _userManager = userManager;
     }
-
-    /// <summary>
-    /// Message temporaire affiché lorsqu'une espèce vient d'être ajoutée.
-    /// </summary>
-    [TempData]
-    public string? LastInsertedSpeciesName { get; set; }
 
     /// <summary>
     /// Texte recherché dans le nom, la classification ou le régime alimentaire.
@@ -146,16 +142,36 @@ public class SpeciesModel : PageModel
     /// <returns>La page catalogue ou une demande de connexion.</returns>
     public async Task<IActionResult> OnGetAsync()
     {
-        if (!TryGetCurrentUserId(out var currentUserId))
+        var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+        int? currentUserId = null;
+
+        if (isAuthenticated && TryGetCurrentUserId(out var parsedUserId))
         {
-            return Challenge();
+            currentUserId = parsedUserId;
         }
 
-        var isAdmin = await IsCurrentUserAdminAsync();
+        var isAdmin = isAuthenticated && await IsCurrentUserAdminAsync();
 
-        var visibleSpecies = _repository.GetAll()
-            .Where(species => species.IsPublicAvailable || species.Creator.Id == currentUserId)
-            .ToList();
+        var visibleSpecies = _repository.GetAll();
+
+        if (isAuthenticated && currentUserId.HasValue)
+        {
+            visibleSpecies = visibleSpecies
+                .Where(species =>
+                    species.IsPublicAvailable ||
+                    species.Creator.Id == currentUserId.Value)
+                .ToList();
+        }
+        else
+        {
+            visibleSpecies = visibleSpecies
+                .Where(species => species.IsPublicAvailable)
+                .ToList();
+
+            // Un visiteur anonyme ne peut pas demander les espèces privées.
+            VisibilityFilter = "public";
+        }
 
         TotalSpeciesCount = visibleSpecies.Count;
 
@@ -344,10 +360,10 @@ public class SpeciesModel : PageModel
     /// <returns>Carte prête à être affichée.</returns>
     private SpeciesCatalogItemViewModel MapToCatalogItem(
         SpeciesEntity species,
-        int currentUserId,
+        int? currentUserId,
         bool isAdmin)
     {
-        var isOwner = species.Creator.Id == currentUserId;
+        var isOwner = currentUserId.HasValue && species.Creator.Id == currentUserId.Value;
 
         return new SpeciesCatalogItemViewModel
         {
@@ -368,6 +384,11 @@ public class SpeciesModel : PageModel
     
     private async Task<bool> IsCurrentUserAdminAsync()
     {
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return false;
+        }
+
         var user = await _userManager.GetUserAsync(User);
 
         return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);

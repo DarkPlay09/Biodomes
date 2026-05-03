@@ -2,12 +2,20 @@
 @model BioDomes.Web.Pages.Equipment.DetailsModel
 
 @{
-    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+    Layout = isAuthenticated
+        ? "/Pages/Shared/_DashboardLayout.cshtml"
+        : "/Pages/Shared/_Layout.cshtml";
 
     ViewData["Title"] = Model.EquipmentDetails.Name;
-    ViewData["DashboardTitle"] = "Fiche équipement détaillée";
-    ViewData["DashboardSubtitle"] = "Consulte les informations principales de cet équipement.";
-    
+
+    if (isAuthenticated)
+    {
+        ViewData["DashboardTitle"] = "Fiche équipement détaillée";
+        ViewData["DashboardSubtitle"] = "Consulte les informations principales de cet équipement.";
+    }
+
     var request = ViewContext.HttpContext.Request;
     var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 
@@ -21,6 +29,9 @@
     var imageSrc = string.IsNullOrWhiteSpace(imagePath)
         ? Url.Content("~/images/logo_biodomes.png")
         : Url.Content(imagePath);
+
+    var usageCount = Model.EquipmentDetails.ImpactedBiomesCount;
+    var biomeWord = usageCount > 1 ? "biomes" : "biome";
 }
 
 <section class="species-details">
@@ -95,25 +106,47 @@
                           asp-route-slug="@Model.EquipmentDetails.Slug"
                           asp-route-returnUrl="@Model.SafeReturnUrl"
                           class="species-details-delete-form">
-                        @if (Model.EquipmentDetails.ImpactedBiomesCount == 0)
+                        @if (Model.EquipmentDetails.CanManage && Model.EquipmentDetails.ImpactedBiomesCount == 0)
                         {
-                            <button type="button"
-                                    class="species-details-delete-button"
-                                    data-open-delete-modal>
-                                Supprimer l'équipement
-                            </button>
-                        }
-                        else
-                        {
-                            <button type="button"
-                                    class="species-details-delete-button"
-                                    disabled>
-                                Suppression impossible
-                            </button>
+                            <div class="custom-modal" id="deleteConfirmModal" aria-hidden="true">
+                                <div class="custom-modal__overlay" data-close-delete-modal></div>
 
-                            <p class="species-details-delete-help">
-                                Cet équipement est utilisé dans @Model.EquipmentDetails.ImpactedBiomesCount biome(s).
-                            </p>
+                                <div class="custom-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+                                    <button type="button"
+                                            class="custom-modal__close"
+                                            aria-label="Fermer"
+                                            data-close-delete-modal>
+                                        ×
+                                    </button>
+
+                                    <div class="custom-modal__icon">
+                                        !
+                                    </div>
+
+                                    <h3 class="custom-modal__title" id="deleteModalTitle">
+                                        Confirmer la suppression
+                                    </h3>
+
+                                    <p class="custom-modal__text">
+                                        Voulez-vous vraiment supprimer cet équipement ?
+                                        Cette action est <strong>définitive</strong>.
+                                    </p>
+
+                                    <div class="custom-modal__actions">
+                                        <button type="button"
+                                                class="custom-modal__button custom-modal__button--secondary"
+                                                data-close-delete-modal>
+                                            Annuler
+                                        </button>
+
+                                        <button type="button"
+                                                class="custom-modal__button custom-modal__button--danger"
+                                                id="confirmDeleteButton">
+                                            Oui, supprimer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </form>
                 </div>
@@ -163,5 +196,8 @@
 </section>
 
 @section Scripts {
-    <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
+    @if (Model.EquipmentDetails.CanManage && Model.EquipmentDetails.ImpactedBiomesCount == 0)
+    {
+        <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
+    }
 }

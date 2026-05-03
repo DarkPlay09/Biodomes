@@ -3,6 +3,7 @@ using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,6 +17,7 @@ namespace BioDomes.Web.Pages.Equipment;
 /// Elle récupère l'équipement via son slug, vérifie les droits d'accès,
 /// puis prépare les données affichables dans la vue.
 /// </summary>
+[AllowAnonymous]
 public class DetailsModel : PageModel
 {
     private readonly IEquipmentRepository _repository;
@@ -91,11 +93,9 @@ public class DetailsModel : PageModel
     /// <returns>La page de détail, une erreur 404, une interdiction ou une demande de connexion.</returns>
     public async Task<IActionResult> OnGetAsync(string slug, string? returnUrl = null)
     {
-        ReturnUrl = returnUrl;
-
-        if (!TryGetCurrentUserId(out var currentUserId))
+        if (!string.IsNullOrWhiteSpace(returnUrl))
         {
-            return Challenge();
+            ReturnUrl = returnUrl;
         }
 
         var equipment = _repository.GetBySlug(slug);
@@ -105,17 +105,33 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        var isOwner = equipment.Creator.Id == currentUserId;
-        var isAdmin = await IsCurrentUserAdminAsync();
+        var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+        var currentUserId = TryGetCurrentUserId(out var parsedUserId)
+            ? parsedUserId
+            : (int?)null;
+
+        var isOwner = currentUserId.HasValue && equipment.Creator.Id == currentUserId.Value;
+        var isAdmin = isAuthenticated && await IsCurrentUserAdminAsync();
 
         if (!equipment.IsPublicAvailable && !isOwner && !isAdmin)
         {
-            return Forbid();
+            return isAuthenticated
+                ? Forbid()
+                : NotFound();
         }
 
-        var impactedBiomesCount = _biomeRepository.CountBiomesUsingEquipment(equipment.Id);
+        var canManage = CanManageEquipment(isOwner, isAdmin, equipment.IsPublicAvailable);
 
-        EquipmentDetails = MapToDetails(equipment, isOwner, isAdmin, impactedBiomesCount);
+        var impactedBiomesCount = canManage
+            ? _biomeRepository.CountBiomesUsingEquipment(equipment.Id)
+            : 0;
+
+        EquipmentDetails = MapToDetails(
+            equipment,
+            isOwner,
+            canManage,
+            impactedBiomesCount);
 
         return Page();
     }
@@ -128,7 +144,10 @@ public class DetailsModel : PageModel
     /// <returns>Une redirection vers le catalogue ou une erreur si l'action est interdite.</returns>
     public async Task<IActionResult> OnPostDeleteAsync(string slug, string? returnUrl = null)
     {
-        ReturnUrl = returnUrl;
+        if (!string.IsNullOrWhiteSpace(returnUrl))
+        {
+            ReturnUrl = returnUrl;
+        }
 
         if (!TryGetCurrentUserId(out var currentUserId))
         {
@@ -157,7 +176,11 @@ public class DetailsModel : PageModel
             TempData["ErrorMessage"] =
                 $"Suppression impossible : l'équipement « {equipment.Name} » est utilisé dans {impactedBiomesCount} biome(s).";
 
-            return RedirectToPage(new { slug, returnUrl });
+            return RedirectToPage(new
+            {
+                slug,
+                returnUrl = ReturnUrl
+            });
         }
 
         _repository.DeleteBySlug(slug);
@@ -177,7 +200,7 @@ public class DetailsModel : PageModel
     private EquipmentDetailsViewModel MapToDetails(
         EquipmentEntity equipment,
         bool isOwner,
-        bool isAdmin,
+        bool canManage,
         int impactedBiomesCount)
     {
         return new EquipmentDetailsViewModel
@@ -199,13 +222,18 @@ public class DetailsModel : PageModel
                 ? "Créateur inconnu"
                 : equipment.Creator.UserName,
             IsOwner = isOwner,
-            CanManage = CanManageEquipment(isOwner, isAdmin, equipment.IsPublicAvailable),
+            CanManage = canManage,
             ImpactedBiomesCount = impactedBiomesCount
         };
     }
     
     private async Task<bool> IsCurrentUserAdminAsync()
     {
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return false;
+        }
+
         var user = await _userManager.GetUserAsync(User);
 
         return string.Equals(user?.Role, "Admin", StringComparison.OrdinalIgnoreCase);

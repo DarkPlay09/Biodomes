@@ -2,11 +2,19 @@
 @model BioDomes.Web.Pages.Equipment.IndexModel
 
 @{
-    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+    Layout = isAuthenticated
+        ? "/Pages/Shared/_DashboardLayout.cshtml"
+        : "/Pages/Shared/_Layout.cshtml";
 
     ViewData["Title"] = "Catalogue des équipements";
-    ViewData["DashboardTitle"] = "Catalogue des équipements";
-    ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les équipements enregistrés dans BioDomes.";
+
+    if (isAuthenticated)
+    {
+        ViewData["DashboardTitle"] = "Catalogue des équipements";
+        ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les équipements enregistrés dans BioDomes.";
+    }
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
     var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
@@ -29,17 +37,31 @@
         if (normalizedPath.StartsWith("~/"))
             return Url.Content(normalizedPath);
 
+        if (normalizedPath.StartsWith("/"))
+            return Url.Content("~" + normalizedPath);
+
         return Url.Content("~/" + normalizedPath.TrimStart('/'));
     }
 }
 
-<section class="catalog-page">
+<section class="catalog-page @(isAuthenticated ? "" : "catalog-page--public")">
     <header class="catalog-page__header">
-        <a asp-page="./Add"
-           asp-route-returnUrl="@currentUrl"
-           class="action-button">
-            + Ajouter un équipement
-        </a>
+        <div>
+            @if (!isAuthenticated)
+            {
+                <h1>Catalogue des équipements</h1>
+                <p>Découvre les équipements publics disponibles dans BioDomes.</p>
+            }
+        </div>
+
+        @if (isAuthenticated)
+        {
+            <a asp-page="./Add"
+               asp-route-returnUrl="@currentUrl"
+               class="action-button">
+                + Ajouter un équipement
+            </a>
+        }
     </header>
 
     <form method="get" class="catalog-filter-card">
@@ -84,14 +106,17 @@
             </select>
         </div>
 
-        <div class="catalog-filter-card__select">
-            <label for="VisibilityFilter">Visibilité</label>
-            <select id="VisibilityFilter" name="VisibilityFilter">
-                <option value="" selected="@visibilityAllSelected">Toutes</option>
-                <option value="public" selected="@visibilityPublicSelected">Publiques</option>
-                <option value="private" selected="@visibilityPrivateSelected">Privées</option>
-            </select>
-        </div>
+        @if (isAuthenticated)
+        {
+            <div class="catalog-filter-card__select">
+                <label for="VisibilityFilter">Visibilité</label>
+                <select id="VisibilityFilter" name="VisibilityFilter">
+                    <option value="" selected="@visibilityAllSelected">Toutes</option>
+                    <option value="public" selected="@visibilityPublicSelected">Publiques</option>
+                    <option value="private" selected="@visibilityPrivateSelected">Privées</option>
+                </select>
+            </div>
+        }
 
         <div class="catalog-filter-card__actions">
             <button type="submit" class="dashboard-btn dashboard-btn--primary">
@@ -106,20 +131,34 @@
 
     @if (Model.EquipmentCards.Count == 0)
     {
-        <div class="empty-state">
-            <div class="empty-state__icon">+</div>
+        <div class="empty-state empty-state--public-catalog">
+            <div class="empty-state__icon" aria-hidden="true">?</div>
 
             <h3>Aucun équipement trouvé</h3>
 
-            <p>
-                Modifie ta recherche ou ajoute un nouvel équipement au catalogue.
-            </p>
+            @if (isAuthenticated)
+            {
+                <p>
+                    Modifie ta recherche ou ajoute un nouvel équipement au catalogue.
+                </p>
 
-            <a asp-page="./Add"
-               asp-route-returnUrl="@currentUrl"
-               class="action-button">
-                + Ajouter un équipement
-            </a>
+                <a asp-page="./Add"
+                   asp-route-returnUrl="@currentUrl"
+                   class="action-button">
+                    + Ajouter un équipement
+                </a>
+            }
+            else
+            {
+                <p>
+                    Aucun équipement public ne correspond à ta recherche.
+                    Essaie de modifier les filtres ou réinitialise le catalogue.
+                </p>
+
+                <a asp-page="./Index" class="dashboard-btn dashboard-btn--ghost">
+                    Réinitialiser les filtres
+                </a>
+            }
         </div>
     }
     else
@@ -134,7 +173,7 @@
                 var statusLabel = equipment.IsPublicAvailable
                     ? "Public"
                     : "Privé";
-                
+
                 var imageSrc = ResolveImageUrl(
                     equipment.ImagePath,
                     "~/images/logo_biodomes.png"
@@ -148,7 +187,7 @@
                             @statusLabel
                         </span>
 
-                        @if (equipment.CanEdit)
+                        @if (isAuthenticated && equipment.CanEdit)
                         {
                             <a asp-page="./Edit"
                                asp-route-slug="@equipment.Slug"
@@ -156,7 +195,7 @@
                                class="entity-card__edit"
                                aria-label="Modifier @equipment.Name">
                                 <div class="entity-card-edit__icon" aria-hidden="true">
-                                    <img src="~/images/species/icons/pen.png" alt="Icon modifier" />
+                                    <img src="~/images/species/icons/pen.png" alt="" aria-hidden="true" />
                                 </div>
                             </a>
                         }
@@ -181,7 +220,8 @@
 
                         <div class="entity-card__footer">
                             <a asp-page="./Details"
-                               asp-route-slug="@equipment.Slug">
+                               asp-route-slug="@equipment.Slug"
+                               asp-route-returnUrl="@currentUrl">
                                 Voir la fiche →
                             </a>
                         </div>
