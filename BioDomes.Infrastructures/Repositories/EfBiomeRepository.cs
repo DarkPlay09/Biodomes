@@ -1,9 +1,11 @@
 ﻿using BioDomes.Domains.Entities;
 using BioDomes.Domains.Queries.Biome.Details;
+using BioDomes.Domains.Queries.Biome.Home;
 using BioDomes.Domains.Queries.Biome.SelectEquipment;
 using BioDomes.Domains.Queries.Biome.SelectSpecies;
 using BioDomes.Domains.Queries.Biome.Species;
 using BioDomes.Domains.Repositories;
+using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.EntityFramework.Links;
 using BioDomes.Infrastructures.Mappers.Biome;
 using BioDomes.Infrastructures.Services.Identity;
@@ -511,5 +513,128 @@ public class EfBiomeRepository : IBiomeRepository
         }
 
         _context.SaveChanges();
+    }
+
+    public IReadOnlyList<HomeBiomeCardDto> GetBestBiomesForHome(int count)
+    {
+        if (count <= 0)
+        {
+            return Array.Empty<HomeBiomeCardDto>();
+        }
+
+        return _context.Biomes
+            .AsNoTracking()
+            .Include(b => b.BiomeSpeciesLinks)
+            .ThenInclude(link => link.Species)
+            .Include(b => b.BiomeEquipmentLinks)
+            .ToList()
+            .Select(biome => new
+            {
+                Biome = biome,
+                Score = CalculateHomeStabilityScore(biome)
+            })
+            .OrderByDescending(item => item.Score)
+            .ThenByDescending(item => item.Biome.UpdatedAt)
+            .Take(count)
+            .Select(item => new HomeBiomeCardDto
+            {
+                Name = item.Biome.Name,
+                Slug = _slugService.ToSlug(item.Biome.Name),
+                State = item.Biome.State,
+                Temperature = item.Biome.Temperature,
+                AbsoluteHumidity = item.Biome.AbsoluteHumidity,
+                StabilityScore = item.Score,
+                SpeciesCount = item.Biome.BiomeSpeciesLinks.Count,
+                EquipmentCount = item.Biome.BiomeEquipmentLinks.Count,
+                UpdatedAt = item.Biome.UpdatedAt
+            })
+            .ToList();
+    }
+
+    private static double CalculateHomeStabilityScore(BiomeEntity biome)
+    {
+        var environmentScore = GetStateScore(biome.State);
+        var trophicScore = CalculateTrophicStability(biome);
+
+        var speciesBonus = Math.Min(biome.BiomeSpeciesLinks.Count * 4, 15);
+        var equipmentBonus = Math.Min(biome.BiomeEquipmentLinks.Count * 3, 10);
+
+        var score = environmentScore * 0.55
+                    + trophicScore * 0.35
+                    + speciesBonus
+                    + equipmentBonus;
+
+        return Math.Round(Math.Min(score, 100), 1);
+    }
+
+    private static int GetStateScore(string state)
+    {
+        if (state.Equals("Optimal", StringComparison.OrdinalIgnoreCase))
+        {
+            return 100;
+        }
+
+        if (state.Equals("Instable", StringComparison.OrdinalIgnoreCase))
+        {
+            return 60;
+        }
+
+        if (state.Equals("Critique", StringComparison.OrdinalIgnoreCase))
+        {
+            return 25;
+        }
+
+        return 50;
+    }
+
+    private static double CalculateTrophicStability(BiomeEntity biome)
+    {
+        var diets = biome.BiomeSpeciesLinks
+            .Select(link => link.Species.Diet ?? string.Empty)
+            .ToList();
+
+        var hasProducer = diets.Any(IsProducer);
+        var hasHerbivore = diets.Any(IsHerbivore) || diets.Any(IsOmnivore);
+        var hasCarnivore = diets.Any(IsCarnivore) || diets.Any(IsOmnivore);
+
+        double score = 20;
+
+        if (hasProducer)
+        {
+            score += 30;
+        }
+
+        if (hasHerbivore)
+        {
+            score += 25;
+        }
+
+        if (hasCarnivore)
+        {
+            score += 25;
+        }
+
+        return Math.Min(score, 100);
+    }
+
+    private static bool IsProducer(string diet)
+    {
+        return diet.Contains("photo", StringComparison.OrdinalIgnoreCase)
+               || diet.Contains("producteur", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsHerbivore(string diet)
+    {
+        return diet.Contains("herbivore", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsCarnivore(string diet)
+    {
+        return diet.Contains("carnivore", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsOmnivore(string diet)
+    {
+        return diet.Contains("omnivore", StringComparison.OrdinalIgnoreCase);
     }
 }

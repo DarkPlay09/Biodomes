@@ -1,5 +1,6 @@
 ﻿@page
 @model IndexModel
+
 @{
     ViewData["Title"] = "Accueil";
 }
@@ -27,7 +28,11 @@
     <div class="hero-wrapper">
         <div class="hero-text">
             <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
+                <span class="hero-badge-pulse">
+                    <span class="hero-badge-ping"></span>
+                    <span class="hero-badge-dot"></span>
+                </span>
+
                 <span>Phase Alpha : Accès anticipé</span>
             </div>
 
@@ -36,25 +41,223 @@
             </h1>
 
             <p class="hero-description">
-                Plongez dans une simulation de biome post-apocalyptique. Gérez des écosystèmes complexes et assurez la survie de la biodiversité face à l'extinction globale.
+                Plongez dans l’ultime simulation de biome post-apocalyptique.
+                Gérez des écosystèmes complexes et assurez la survie de la biodiversité
+                face à l’extinction globale.
             </p>
 
             <div class="hero-actions">
-                <a class="button button-primary" href="#">Commencer l'aventure</a>
-                <a class="button button-secondary" href="#">En savoir plus</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a class="button button-primary" asp-page="/Dashboard/Index">
+                        Commencer l’aventure
+                    </a>
+                }
+                else
+                {
+                    <a class="button button-primary" asp-area="Identity" asp-page="/Account/Register">
+                        Commencer l’aventure
+                    </a>
+                }
+
+                <a class="button button-secondary" href="#laboratoire">
+                    En savoir plus
+                </a>
             </div>
         </div>
 
         <div class="hero-visual">
             <div class="hero-image-frame">
-                <img src="~/images/home_hero_image.png" alt="Home Hero Image" class="hero-image"/>
-            </div>
-
-            <div class="hero-stat-card">
-                <p class="hero-stat-label">Stabilité écosystémique</p>
-                <p class="hero-stat-value">94.2%</p>
+                <img src="~/images/home/landscape.jpg"
+                     alt="Image d'un paysage"
+                     class="hero-image" />
             </div>
         </div>
+    </div>
+</section>
+
+<section id="laboratoire" class="lab-section">
+    <div class="home-container">
+        <header class="section-heading section-heading--center">
+            <h2>Technologie de Laboratoire</h2>
+            <div class="section-heading__line"></div>
+
+            <p>
+                Nos outils de pointe permettent une simulation précise des conditions
+                environnementales les plus extrêmes pour préserver l’avenir de notre planète.
+            </p>
+        </header>
+
+        <div class="lab-grid">
+            <article class="lab-card">
+                <div class="lab-card__icon">
+                    <img src="~/images/home/icons/brightness.png"
+                         alt="Icon soleil"
+                         aria-hidden="true" />
+                </div>
+
+                <h3>Analyse Moléculaire</h3>
+
+                <p>
+                    Surveillance en temps réel de la composition atmosphérique
+                    et détection de toxines environnementales.
+                </p>
+            </article>
+
+            <article class="lab-card">
+                <div class="lab-card__icon">
+                    <img src="~/images/home/icons/thermometer_white.png"
+                         alt="Icon thermomètre"
+                         aria-hidden="true" />
+                </div>
+
+                <h3>Contrôle Climatique</h3>
+
+                <p>
+                    Régulation automatisée de la température, de la pression
+                    et de l’humidité relative du biome.
+                </p>
+            </article>
+
+            <article class="lab-card">
+                <div class="lab-card__icon">
+                    <img src="~/images/home/icons/adn.png"
+                         alt="Icon adn"
+                         aria-hidden="true" />
+                </div>
+
+                <h3>Suivi Génétique</h3>
+
+                <p>
+                    Cartographie complète des espèces et surveillance proactive
+                    de leur évolution biologique adaptative.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="creators-section">
+    <div class="home-container creators-layout">
+        <div class="creators-text">
+            <p class="section-eyebrow">À propos des créateurs</p>
+
+            <h2>Laudot Solutions</h2>
+
+            <p>
+                Laudot Solutions s’impose comme un acteur spécialisé dans le domaine
+                des simulations environnementales et de la préservation de la biodiversité.
+                Son expertise technologique permet de modéliser des scénarios complexes
+                pour anticiper les crises écologiques.
+            </p>
+
+            <p>
+                Sa mission est claire : mobiliser les technologies les plus avancées
+                pour protéger les espèces menacées et restaurer les équilibres naturels fragiles.
+                Grâce à BioDomes, ces outils deviennent accessibles à une nouvelle génération
+                de gardiens de la Terre.
+            </p>
+        </div>
+
+        <div class="creators-visuals" aria-hidden="true">
+            <div class="creators-visual-card creators-visual-card--primary">
+                <img src="~/images/home/iguana.jpg"
+                     alt="Image iguana"
+                     aria-hidden="true"
+                     class="creators-visual-card__image" />
+            </div>
+
+            <div class="creators-visual-card creators-visual-card--accent">
+                <img src="~/images/home/biologist-woman.jpg"
+                     alt="Image scientifique"
+                     aria-hidden="true"
+                     class="creators-visual-card__image" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-biomes-section">
+    <div class="home-container">
+        <header class="section-heading section-heading--split">
+            <div>
+                <h2>Biomes à Haute Diversité</h2>
+                <p>
+                    Exploration des secteurs de recherche les plus stables,
+                    classés selon leur diversité d’espèces.
+                </p>
+            </div>
+        </header>
+
+        @if (Model.BestBiomes.Count == 0)
+        {
+            <div class="home-biome-empty">
+                <h3>Aucun biome en équilibre pour le moment</h3>
+                <p>
+                    Dès qu’un biome atteindra un état optimal avec des espèces associées,
+                    il apparaîtra automatiquement ici.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="home-biome-grid">
+                @foreach (var biome in Model.BestBiomes)
+                {
+                    var stateClass = biome.State switch
+                    {
+                        "Optimal" => "home-biome-card__state--optimal",
+                        "Instable" => "home-biome-card__state--unstable",
+                        "Critique" => "home-biome-card__state--critical",
+                        _ => "home-biome-card__state--neutral"
+                    };
+                    
+                    <article class="home-biome-card">
+                        <div class="home-biome-card__header">
+                            <div>
+                                <h3>@biome.Name</h3>
+                            </div>
+
+                            <strong>@biome.StabilityScore.ToString()/100</strong>
+                        </div>
+
+                        <div class="home-biome-card__metrics">
+                            <div>
+                                <img src="~/images/home/icons/thermometer_green.png"
+                                     alt="Icon de thermomètre"
+                                     aria-hidden="true"
+                                     class="home-biome-card__icon" />
+                                <p>@biome.Temperature.ToString("0.#")°C</p>
+                            </div>
+
+                            <div>
+                                <img src="~/images/home/icons/humidity.png"
+                                     alt="Icon d'humidité"
+                                     aria-hidden="true"
+                                     class="home-biome-card__icon" />
+                                <p>@biome.AbsoluteHumidity.ToString("0.#") g/m³</p>
+                            </div>
+
+                            <div>
+                                <img src="~/images/home/icons/paws.png"
+                                     alt="Icon des espèces"
+                                     aria-hidden="true"
+                                     class="home-biome-card__icon" />
+                                <p>@biome.SpeciesCount espèces</p>
+                            </div>
+
+                            <div>
+                                <img src="~/images/home/icons/beaker.png"
+                                     alt="Icon des équipements"
+                                     aria-hidden="true"
+                                     class="home-biome-card__icon" />
+                                <p>@biome.EquipmentCount</p>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
     </div>
 </section>
 
@@ -67,13 +270,26 @@
         </h2>
 
         <p class="final-cta-text">
-            Rejoignez des milliers de scientifiques et passionnés dans la mission de
-            préservation la plus ambitieuse du 21ème siècle.
+            Rejoignez des scientifiques et passionnés dans une mission de préservation
+            ambitieuse, portée par la simulation et l’observation écologique.
         </p>
 
         <div class="final-cta-actions">
-            <a class="final-cta-button final-cta-button-main" href="#">
-                Créer mon laboratoire gratuit
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a class="final-cta-button final-cta-button-main" asp-page="/Dashboard/Index">
+                    Accéder au laboratoire
+                </a>
+            }
+            else
+            {
+                <a class="final-cta-button final-cta-button-main" asp-area="Identity" asp-page="/Account/Register">
+                    Créer mon laboratoire gratuit
+                </a>
+            }
+
+            <a class="final-cta-button final-cta-button-secondary" href="#laboratoire">
+                Voir le simulateur
             </a>
         </div>
     </div>

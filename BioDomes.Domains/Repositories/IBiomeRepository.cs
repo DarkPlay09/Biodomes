@@ -1,5 +1,6 @@
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Queries.Biome.Details;
+using BioDomes.Domains.Queries.Biome.Home;
 using BioDomes.Domains.Queries.Biome.SelectEquipment;
 using BioDomes.Domains.Queries.Biome.SelectSpecies;
 using BioDomes.Domains.Queries.Biome.Species;
@@ -24,4 +25,5 @@ public interface IBiomeRepository
     void RemoveEquipmentFromBiome(int biomeId, int equipmentId);
     BiomeSpeciesManagementPageDto? GetSpeciesManagementPageData(string biomeSlug, int creatorId, BiomeSpeciesManagementFiltersDto filters);
     void SetSpeciesCountInBiome(int biomeId, int speciesId, int individualCount);
+    IReadOnlyList<HomeBiomeCardDto> GetBestBiomesForHome(int count);
 }
