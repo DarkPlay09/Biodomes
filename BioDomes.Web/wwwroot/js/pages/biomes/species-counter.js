@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const SCROLL_KEY = "biomeSpeciesScrollY";
 
     const savedY = sessionStorage.getItem(SCROLL_KEY);

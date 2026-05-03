@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("deleteConfirmModal");
     const openButton = document.querySelector("[data-open-delete-modal]");
     const closeButtons = document.querySelectorAll("[data-close-delete-modal]");

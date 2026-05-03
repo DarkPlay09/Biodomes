@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById("dashboardSidebar");
     const overlay = document.getElementById("dashboardOverlay");
     const openButton = document.getElementById("dashboardMenuToggle");

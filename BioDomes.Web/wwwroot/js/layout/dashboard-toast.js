@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const toasts = document.querySelectorAll("[data-dashboard-toast]");
 
     if (!toasts.length) {

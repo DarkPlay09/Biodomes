@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
     const root = document.querySelector('.select-species-page');
     const form = document.getElementById('confirmSelectionForm');
 

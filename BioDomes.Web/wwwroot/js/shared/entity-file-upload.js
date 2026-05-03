@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const uploadBlocks = document.querySelectorAll("[data-file-upload]");
 
     uploadBlocks.forEach(block => {

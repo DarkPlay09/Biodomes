@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll("[data-cooldown-seconds]");
 
     buttons.forEach((button) => {
