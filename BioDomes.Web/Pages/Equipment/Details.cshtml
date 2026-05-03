@@ -41,7 +41,7 @@
         <strong>@Model.EquipmentDetails.Name</strong>
     </nav>
 
-    <div class="species-details-layout">
+    <div class="species-details-layout @(isAuthenticated ? "" : "species-details--public")">
         <div class="species-details-media">
             <article class="species-details-image-card">
                 <img src="@imageSrc"

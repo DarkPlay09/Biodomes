@@ -42,7 +42,7 @@
     </div>
 }
 
-<section class="species-details">
+<section class="species-details @(isAuthenticated ? "" : "species-details--public")">
     <nav class="species-details-breadcrumb" aria-label="Fil d'Ariane">
         <a asp-page="./Index">Espèces</a>
         <span>›</span>
