@@ -752,3 +752,27 @@
 .auth-password-toggle--visible .auth-password-toggle__icon--hide {
     display: block;
 }
+
+/* =========================
+   Auth - Contact
+   ========================= */
+
+.contact-form {
+    gap: 1.35rem;
+}
+
+.auth-textarea {
+    min-height: 10rem;
+    height: auto;
+    padding: 1rem;
+    resize: vertical;
+    line-height: 1.55;
+}
+
+.auth-textarea::placeholder {
+    color: #98a2b3;
+}
+
+.contact-form .auth-status-message {
+    margin-bottom: 1rem;
+}

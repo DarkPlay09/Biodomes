@@ -41,13 +41,6 @@
             + Ajouter une espèce
         </a>
     </header>
-    
-    @if (!string.IsNullOrWhiteSpace(Model.LastInsertedSpeciesName))
-    {
-        <div class="catalog-page__success">
-            Espèce ajoutée : <strong>@Model.LastInsertedSpeciesName</strong>
-        </div>
-    }
 
     <form method="get" class="catalog-filter-card">
         <div class="catalog-filter-card__search">

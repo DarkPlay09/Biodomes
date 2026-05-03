@@ -178,8 +178,6 @@ public class AddModel : PageModel
             return Page();
         }
 
-        LastInsertedSpeciesName = Input.Name;
-
         if (Url.IsLocalUrl(ReturnUrl))
         {
             return LocalRedirect(ReturnUrl);

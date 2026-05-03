@@ -1,0 +1,99 @@
+﻿@page "/contact"
+@model BioDomes.Web.Pages.ContactModel
+
+@{
+    Layout = "/Pages/Shared/_AuthLayout.cshtml";
+
+    ViewData["Title"] = "Contact";
+    ViewData["AuthHeroTitle"] = "Cultiver le futur,<br />une question à la fois.";
+    ViewData["AuthHeroText"] = "Contactez l’équipe BioDomes pour toute question concernant le simulateur, les biomes ou l’utilisation de la plateforme.";
+    ViewData["AuthPageTitle"] = "Nous contacter";
+    ViewData["AuthPageSubtitle"] = "Envoyez-nous un message, nous vous répondrons dès que possible.";
+}
+
+<form method="post" class="auth-form contact-form">
+    <div asp-validation-summary="ModelOnly" class="auth-validation"></div>
+
+    <div class="auth-field">
+        <label asp-for="Input.FullName" class="auth-label"></label>
+
+        <div class="auth-input-wrap">
+            <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M20 21a8 8 0 0 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" stroke-width="2" />
+                </svg>
+            </span>
+
+            <input asp-for="Input.FullName"
+                   class="auth-input"
+                   placeholder="Votre nom complet" />
+        </div>
+
+        <span asp-validation-for="Input.FullName" class="auth-field-error"></span>
+    </div>
+
+    <div class="auth-field">
+        <label asp-for="Input.Email" class="auth-label"></label>
+
+        <div class="auth-input-wrap">
+            <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 6h16v12H4V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                    <path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </span>
+
+            <input asp-for="Input.Email"
+                   class="auth-input"
+                   placeholder="votre@email.com" />
+        </div>
+
+        <span asp-validation-for="Input.Email" class="auth-field-error"></span>
+    </div>
+
+    <div class="auth-field">
+        <label asp-for="Input.Subject" class="auth-label"></label>
+
+        <div class="auth-input-wrap">
+            <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5 5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M5 19h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </span>
+
+            <input asp-for="Input.Subject"
+                   class="auth-input"
+                   placeholder="Sujet de votre message" />
+        </div>
+
+        <span asp-validation-for="Input.Subject" class="auth-field-error"></span>
+    </div>
+
+    <div class="auth-field">
+        <label asp-for="Input.Message" class="auth-label"></label>
+
+        <div class="auth-input-wrap">
+            <textarea asp-for="Input.Message"
+                      class="auth-input auth-textarea"
+                      rows="6"
+                      placeholder="Expliquez votre demande..."></textarea>
+        </div>
+
+        <span asp-validation-for="Input.Message" class="auth-field-error"></span>
+    </div>
+
+    <button type="submit" class="auth-submit">
+        Envoyer le message
+    </button>
+
+    <p class="auth-required-note">
+        Les champs marqués d’un <span class="auth-required">*</span> sont obligatoires.
+    </p>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,23 +1,30 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-    const toast = document.querySelector("[data-dashboard-toast]");
+    const toasts = document.querySelectorAll("[data-dashboard-toast]");
 
-    if (!toast) {
+    if (!toasts.length) {
         return;
     }
 
-    const closeButton = toast.querySelector("[data-dashboard-toast-close]");
+    toasts.forEach((toast) => {
+        const closeButton = toast.querySelector("[data-dashboard-toast-close]");
 
-    const hideToast = () => {
-        toast.classList.add("dashboard-toast--hidden");
+        const hideToast = () => {
+            toast.classList.add("dashboard-toast--hidden");
 
-        window.setTimeout(() => {
-            toast.remove();
-        }, 220);
-    };
+            window.setTimeout(() => {
+                toast.remove();
+            }, 220);
+        };
 
-    if (closeButton) {
-        closeButton.addEventListener("click", hideToast);
-    }
+        const timeoutId = window.setTimeout(() => {
+            hideToast();
+        }, 4500);
 
-    window.setTimeout(hideToast, 4500);
+        if (closeButton) {
+            closeButton.addEventListener("click", () => {
+                window.clearTimeout(timeoutId);
+                hideToast();
+            });
+        }
+    });
 });

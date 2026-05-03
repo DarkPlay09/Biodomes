@@ -41,13 +41,6 @@
             + Ajouter un équipement
         </a>
     </header>
-    
-    @if (!string.IsNullOrWhiteSpace(Model.LastInsertedEquipmentName))
-    {
-        <div class="catalog-page__success">
-            Equipement ajouté : <strong>@Model.LastInsertedEquipmentName</strong>
-        </div>
-    }
 
     <form method="get" class="catalog-filter-card">
         <div class="catalog-filter-card__search">
