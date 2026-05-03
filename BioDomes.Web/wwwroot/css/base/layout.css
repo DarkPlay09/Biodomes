@@ -39,6 +39,11 @@
     letter-spacing: -.02em;
 }
 
+.brand-block:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
 .brand-logo {
     width : 42px;
     height : 42px;

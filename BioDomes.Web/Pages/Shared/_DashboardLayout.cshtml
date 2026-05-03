@@ -38,7 +38,6 @@
     <title>@ViewData["Title"] - BioDomes</title>
     <link rel="icon" type="image/png" href="~/images/logo_biodomes.png" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/pages/dashboard.css" asp-append-version="true"/>
 </head>
 <body class="dashboard-shell-body">
 <div class="dashboard-mobile-overlay" id="dashboardOverlay"></div>
@@ -65,10 +64,13 @@
 <div class="dashboard-shell">
     <aside class="dashboard-sidebar" id="dashboardSidebar">
         <div class="dashboard-sidebar__top">
-            <div class="dashboard-sidebar__brand">
-                <img class="brand-logo" src="~/images/logo_biodomes.png" alt="Logo BioDomes"/>
+            <a asp-area=""
+               asp-page="/Index"
+               class="dashboard-sidebar__brand"
+               aria-label="Retour à l'accueil BioDomes">
+                <img class="dashboard-sidebar__brand-image" src="~/images/logo_biodomes.png" alt="Logo BioDomes"/>
                 <span>BioDomes</span>
-            </div>
+            </a>
 
             <button type="button"
                     class="dashboard-sidebar__close"
