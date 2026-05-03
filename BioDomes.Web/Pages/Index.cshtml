@@ -4,6 +4,25 @@
     ViewData["Title"] = "Accueil";
 }
 
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="dashboard-toast dashboard-toast--success" data-dashboard-toast>
+        <div class="dashboard-toast__icon">✓</div>
+
+        <div class="dashboard-toast__content">
+            <strong>Succès</strong>
+            <p>@successMessage</p>
+        </div>
+
+        <button type="button"
+                class="dashboard-toast__close"
+                data-dashboard-toast-close
+                aria-label="Fermer la notification">
+            ×
+        </button>
+    </div>
+}
+
 <section class="hero-section">
     <div class="hero-wrapper">
         <div class="hero-text">
@@ -59,3 +78,7 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/dashboard-toast.js" asp-append-version="true"></script>
+}
