@@ -5,6 +5,8 @@
 
 @{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    
+    var homeUrl = Url.Page("/Index", new { area = "" }) ?? Url.Content("~/");
 
     var isDashboardPage = currentPage.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase);
     var isBiomesPage = currentPage.StartsWith("/Biome", StringComparison.OrdinalIgnoreCase);
@@ -101,11 +103,6 @@
                 <span>Équipements</span>
             </a>
 
-            <a asp-page="/Stats/Index"
-               class="dashboard-sidebar__link @(isStatsPage ? "dashboard-nav__link--active" : "")">
-                Rapports
-            </a>
-
             @if (isAdmin)
             {
                 <div class="dashboard-sidebar__section">
@@ -156,7 +153,7 @@
                 {
                     <form asp-area="Identity"
                           asp-page="/Account/Logout"
-                          asp-route-returnUrl="/"
+                          asp-route-returnUrl="@homeUrl"
                           method="post"
                           class="dashboard-sidebar__logout-form">
                         <button type="submit" class="dashboard-sidebar__logout-button">
