@@ -22,6 +22,10 @@
         : null;
     
     var isAdmin = string.Equals(dashboardUser?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+    
+    var connectedRoleLabel = isAdmin
+        ? "Admin connecté"
+        : "Chercheur connecté";
 
     var displayName = dashboardUser?.UserName ?? User.Identity?.Name ?? "Chercheur";
     var avatarPath = dashboardUser?.AvatarPath;
@@ -140,7 +144,7 @@
 
                 <div>
                     <strong>@displayName</strong>
-                    <span>Chercheur connecté</span>
+                    <span>@connectedRoleLabel</span>
                 </div>
             </div>
 
