@@ -19,26 +19,35 @@
 
     <div asp-validation-summary="ModelOnly" class="auth-validation"></div>
 
-    <div class="register-avatar-block">
+    <div class="register-avatar-block" data-file-upload>
         <input asp-for="Input.AvatarFile"
                id="avatarInput"
                type="file"
                accept=".jpg,.jpeg,.png,.webp"
-               class="register-avatar-input" />
+               class="register-avatar-input entity-file-upload__input" />
 
         <label for="avatarInput" class="register-avatar-label" title="Choisir un avatar">
-            <div class="register-avatar-frame">
-                <img id="avatarPreview" class="register-avatar-preview" alt="Aperçu de l'avatar" hidden />
+            <span class="register-avatar-frame">
+                <img id="avatarPreview"
+                     data-file-preview
+                     class="register-avatar-preview"
+                     src=""
+                     alt="Aperçu de l’avatar"
+                     style="display:none;" />
 
-                <div id="avatarPlaceholder" class="register-avatar-placeholder" aria-hidden="true">
+                <span id="avatarPlaceholder"
+                      data-file-placeholder
+                      class="register-avatar-placeholder"
+                      aria-hidden="true"
+                      style="display:flex;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                         <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H8l1-1.5h6L16 5h1.5A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z"></path>
                         <circle cx="12" cy="12" r="3.5"></circle>
                         <path d="M18.5 4.5v3"></path>
                         <path d="M17 6h3"></path>
                     </svg>
-                </div>
-            </div>
+                </span>
+            </span>
 
             <span class="register-avatar-edit" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -47,7 +56,7 @@
                 </svg>
             </span>
         </label>
-        
+
         <span asp-validation-for="Input.AvatarFile" class="auth-field-error"></span>
     </div>
 
@@ -134,28 +143,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <script>
-        const avatarInput = document.getElementById("avatarInput");
-        const avatarPreview = document.getElementById("avatarPreview");
-        const avatarPlaceholder = document.getElementById("avatarPlaceholder");
-
-        avatarInput?.addEventListener("change", function () {
-            const file = this.files && this.files[0];
-            if (!file) {
-                avatarPreview.hidden = true;
-                avatarPreview.src = "";
-                avatarPlaceholder.hidden = false;
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                avatarPreview.src = e.target.result;
-                avatarPreview.hidden = false;
-                avatarPlaceholder.hidden = true;
-            };
-            reader.readAsDataURL(file);
-        });
-    </script>
+    <script src="~/js/entity-file-upload.js" asp-append-version="true"></script>
 }
