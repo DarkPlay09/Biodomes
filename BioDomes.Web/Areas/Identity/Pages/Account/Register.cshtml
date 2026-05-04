@@ -3,11 +3,12 @@
 
 @{
     Layout = "/Pages/Shared/_AuthLayout.cshtml";
-    ViewData["Title"] = "Créer un profil";
-    ViewData["AuthPageTitle"] = "Rejoindre BioDomes";
-    ViewData["AuthPageSubtitle"] = "Commencez votre voyage de recherche durable.";
-    ViewData["AuthHeroTitle"] = "Observer, comprendre,<br />faire grandir<br />le vivant.";
-    ViewData["AuthHeroText"] = "Créez votre compte chercheur et accédez à la plateforme BioDomes.";
+    
+    ViewData["Title"] = "Inscription";
+    ViewData["AuthPageTitle"] = "Créer un compte chercheur";
+    ViewData["AuthPageSubtitle"] = "Rejoignez BioDomes et commencez à concevoir vos premiers écosystèmes sous dôme.";
+    ViewData["AuthHeroTitle"] = "Créez<br />votre premier biome.";
+    ViewData["AuthHeroText"] = "Définissez vos conditions, ajoutez des espèces et testez la stabilité de vos environnements.";
 }
 
 <form method="post"
@@ -118,7 +119,7 @@
     </div>
 
     <button type="submit" class="auth-submit register-submit">
-        Créer mon profil
+        Créer mon compte
     </button>
     
     <p class="auth-required-note">
@@ -126,7 +127,7 @@
     </p>
 
     <p class="auth-register">
-        Déjà membre ?
+        Déjà inscrit ?
         <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="auth-link">Se connecter</a>
     </p>
 </form>
