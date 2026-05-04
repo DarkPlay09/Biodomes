@@ -43,12 +43,6 @@
 }
 
 <section class="species-details">
-    <nav class="species-details-breadcrumb" aria-label="Fil d'Ariane">
-        <a asp-page="./Index">Équipements</a>
-        <span>›</span>
-        <strong>@Model.EquipmentDetails.Name</strong>
-    </nav>
-
     <div class="species-details-layout @(isAuthenticated ? "" : "species-details--public")">
         <div class="species-details-media">
             <article class="species-details-image-card">

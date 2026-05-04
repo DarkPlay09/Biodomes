@@ -8,29 +8,6 @@
     gap: 1.5rem;
 }
 
-.species-details-breadcrumb {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    color: #64748b;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.species-details-breadcrumb a {
-    color: #64748b;
-    text-decoration: none;
-}
-
-.species-details-breadcrumb a:hover {
-    color: #0b3d39;
-}
-
-.species-details-breadcrumb strong {
-    color: #0b3d39;
-}
-
 .species-details-media {
     display: flex;
     flex-direction: column;
@@ -548,10 +525,6 @@
     width: min(1180px, calc(100% - 3rem));
     margin: 0 auto;
     padding: 3rem 0 5rem;
-}
-
-.species-details--public .species-details-breadcrumb {
-    margin-bottom: 2rem;
 }
 
 .species-details--public .species-details-layout {
