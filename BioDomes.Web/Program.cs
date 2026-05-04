@@ -59,8 +59,13 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddDbContext<BioDomesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BioDomesDb")));
 
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
-builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+builder.Services.Configure<SmtpSettings>(
+    builder.Configuration.GetSection("Smtp"));
+
+builder.Services.AddTransient<SmtpEmailSender>();
+
+builder.Services.AddTransient<IEmailSender>(serviceProvider =>
+    serviceProvider.GetRequiredService<SmtpEmailSender>());
 
 builder.Services
     .AddDefaultIdentity<UserEntity>(options =>
