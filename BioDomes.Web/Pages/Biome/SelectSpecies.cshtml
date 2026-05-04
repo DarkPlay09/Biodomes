@@ -206,7 +206,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        <footer class="species-pagination">
+        <footer class="catalog-pagination">
             <div>
                 Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
             </div>
@@ -214,7 +214,7 @@
             <nav aria-label="Pagination des espèces">
                 @if (Model.PageNumber <= 1)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Précédent
                     </span>
                 }
@@ -228,7 +228,7 @@
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
                        asp-route-PageNumber="@(Model.PageNumber - 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Précédent
                     </a>
                 }
@@ -236,7 +236,7 @@
                 @foreach (var pageNumber in Model.VisiblePages)
                 {
                     var activeClass = pageNumber == Model.PageNumber
-                        ? "species-pagination__link--active"
+                        ? "catalog-pagination__link--active"
                         : "";
 
                     <a asp-page="./SelectSpecies"
@@ -247,14 +247,14 @@
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
                        asp-route-PageNumber="@pageNumber"
-                       class="species-pagination__link @activeClass">
+                       class="catalog-pagination__link @activeClass">
                         @pageNumber
                     </a>
                 }
 
                 @if (Model.PageNumber >= Model.TotalPages)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Suivant
                     </span>
                 }
@@ -268,7 +268,7 @@
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
                        asp-route-PageNumber="@(Model.PageNumber + 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Suivant
                     </a>
                 }

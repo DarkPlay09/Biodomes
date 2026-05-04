@@ -29,6 +29,30 @@
     justify-content: flex-end;
 }
 
+.biome-details-page__degradation-alert {
+    margin-top: -0.15rem;
+    margin-bottom: 0.2rem;
+    border: 1px solid #e7c7a8;
+    background: #f7efe7;
+    border-radius: 1rem;
+    color: #a14d00;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.biome-details-page__alerts-title {
+    display: block;
+    margin-bottom: 0.45rem;
+}
+
+.biome-details-page__alerts-list {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.biome-details-page__alerts-list li + li {
+    margin-top: 0.35rem;
+}
+
 .biome-details-page .kpi-grid {
     margin-top: 1.35rem;
     margin-bottom: 3rem;

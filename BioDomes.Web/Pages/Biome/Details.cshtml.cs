@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using BioDomes.Domains.Queries.Biome.Details;
 using BioDomes.Domains.Repositories;
+using BioDomes.Domains.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -10,10 +11,12 @@ namespace BioDomes.Web.Pages.Biome;
 public class DetailsModel : PageModel
 {
     private readonly IBiomeRepository _repository;
+    private readonly IBiomeStabilityService _biomeStabilityService;
 
-    public DetailsModel(IBiomeRepository repository)
+    public DetailsModel(IBiomeRepository repository, IBiomeStabilityService biomeStabilityService)
     {
         _repository = repository;
+        _biomeStabilityService = biomeStabilityService;
     }
     
     public BiomeDetailsViewModel? Details { get; private set; }
@@ -73,6 +76,7 @@ public class DetailsModel : PageModel
     private void InitializeViewModel(BiomeDetailsDto detailsDto)
     {
         var fr = CultureInfo.GetCultureInfo("fr-BE");
+        var alerts = BiomeAlertsBuilder.BuildDetailsAlerts(detailsDto, _biomeStabilityService);
 
         Details = new BiomeDetailsViewModel
         {
@@ -82,6 +86,7 @@ public class DetailsModel : PageModel
             TemperatureLabel = $"{detailsDto.Temperature.ToString("0.0", fr)} °C",
             AbsoluteHumidityLabel = $"{detailsDto.AbsoluteHumidity.ToString("0.00", fr)} g/m³",
             StateLabel = detailsDto.State,
+            Alerts = alerts,
             LastUpdatedLabel = detailsDto.UpdatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm", fr),
             SpeciesCount = detailsDto.SpeciesCount,
             EquipmentCount = detailsDto.EquipmentCount,
@@ -109,7 +114,7 @@ public class DetailsModel : PageModel
                     ConsumedElement = e.ConsumedElement ?? "-",
                     ImagePath = e.ImagePath
                 })
-                .ToList(),
+                .ToList()
         };
     }
     
@@ -129,6 +134,7 @@ public class BiomeDetailsViewModel
     public string TemperatureLabel { get; init; } = string.Empty;
     public string AbsoluteHumidityLabel { get; init; } = string.Empty;
     public string StateLabel { get; init; } = string.Empty;
+    public IReadOnlyList<string> Alerts { get; init; } = [];
     public string LastUpdatedLabel { get; init; } = string.Empty;
     public int SpeciesCount { get; init; }
     public int TotalIndividuals { get; init; }

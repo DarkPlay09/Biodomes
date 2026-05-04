@@ -55,6 +55,19 @@ else
             </div>
         </div>
 
+        @if (Model.Details.Alerts.Any())
+        {
+            <div class="species-catalog__success biome-details-page__degradation-alert" role="status">
+                <strong class="biome-details-page__alerts-title">Alertes du biome</strong>
+                <ul class="biome-details-page__alerts-list">
+                    @foreach (var alert in Model.Details.Alerts)
+                    {
+                        <li>@alert</li>
+                    }
+                </ul>
+            </div>
+        }
+
         <div class="kpi-grid">
             <article class="kpi-card kpi-card--total">
                 <div class="kpi-card__top">
@@ -219,23 +232,6 @@ else
                                 </tr>
                             }
                         }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="biome-details-page__chart-column">
-                <div class="table-wrapper">
-                    <table class="entity-table">
-                        <thead>
-                        <tr>
-                            <th>Graphique d'évolution (bientôt)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="biome-details-page__chart-placeholder">Zone réservée au graphique (US15).</td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>

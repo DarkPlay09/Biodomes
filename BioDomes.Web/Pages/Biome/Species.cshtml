@@ -49,6 +49,19 @@ else
             </div>
         </header>
 
+        @if (Model.PageData.SpeciesAlerts.Any())
+        {
+            <div class="species-catalog__success biome-species-page__degradation-alert" role="status">
+                <strong class="biome-species-page__alerts-title">Alertes espèces</strong>
+                <ul class="biome-species-page__alerts-list">
+                    @foreach (var alert in Model.PageData.SpeciesAlerts)
+                    {
+                        <li>@alert</li>
+                    }
+                </ul>
+            </div>
+        }
+
         <form method="get" class="catalog-filter-card biome-species-page__filters">
             <input type="hidden" name="slug" value="@Model.PageData.BiomeSlug" />
 

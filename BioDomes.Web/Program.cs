@@ -1,4 +1,5 @@
 using BioDomes.Domains.Repositories;
+using BioDomes.Domains.Services;
 using BioDomes.Infrastructures;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Files;
@@ -28,11 +29,13 @@ builder.Services.AddScoped<IBiomeRepository, EfBiomeRepository>();
 builder.Services.AddScoped<ISpeciesMapper, SpeciesMapper>();
 builder.Services.AddScoped<IEquipmentMapper, EquipmentMapper>();
 builder.Services.AddScoped<IBiomeMapper, BiomeMapper>();
+builder.Services.AddScoped<IBiomeSpeciesFoodSnapshotMapper, BiomeSpeciesFoodSnapshotMapper>();
 builder.Services.AddScoped<IUserResolver, UserResolver>();
 builder.Services.AddScoped<ISlugService, SlugService>();
 builder.Services.AddScoped<ISpeciesImageStorage, SpeciesImageStorage>();
 builder.Services.AddScoped<IEquipmentImageStorage, EquipmentImageStorage>();
 builder.Services.AddScoped<IStatsDashboardService, StatsDashboardService>();
+builder.Services.AddScoped<IBiomeStabilityService, BiomeStabilityService>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
     pipeline.AddCssBundle("/css/bundle.css",

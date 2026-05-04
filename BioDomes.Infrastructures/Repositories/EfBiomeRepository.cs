@@ -1,10 +1,12 @@
 ﻿using BioDomes.Domains.Entities;
+using BioDomes.Domains.Enums;
 using BioDomes.Domains.Queries.Biome.Details;
 using BioDomes.Domains.Queries.Biome.Home;
 using BioDomes.Domains.Queries.Biome.SelectEquipment;
 using BioDomes.Domains.Queries.Biome.SelectSpecies;
 using BioDomes.Domains.Queries.Biome.Species;
 using BioDomes.Domains.Repositories;
+using BioDomes.Domains.Services;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.EntityFramework.Links;
 using BioDomes.Infrastructures.Mappers.Biome;
@@ -20,14 +22,19 @@ public class EfBiomeRepository : IBiomeRepository
     private readonly BioDomesDbContext _context;
     private readonly ISlugService _slugService;
     private readonly IUserResolver _userResolver;
+    private readonly IBiomeStabilityService _biomeStabilityService;
+    private readonly IBiomeSpeciesFoodSnapshotMapper _biomeSpeciesFoodSnapshotMapper;
 
     public EfBiomeRepository(BioDomesDbContext context, IBiomeMapper biomeMapper, IUserResolver userResolver,
-        ISlugService slugService)
+        ISlugService slugService, IBiomeStabilityService biomeStabilityService,
+        IBiomeSpeciesFoodSnapshotMapper biomeSpeciesFoodSnapshotMapper)
     {
         _context = context;
         _biomeMapper = biomeMapper;
         _userResolver = userResolver;
         _slugService = slugService;
+        _biomeStabilityService = biomeStabilityService;
+        _biomeSpeciesFoodSnapshotMapper = biomeSpeciesFoodSnapshotMapper;
     }
 
     public void Add(Biome biome)
@@ -143,6 +150,7 @@ public class EfBiomeRepository : IBiomeRepository
                 Name = link.Species.Name,
                 Classification = link.Species.Classification,
                 Diet = link.Species.Diet,
+                Weight = link.Species.Weight,
                 IndividualCount = link.IndividualCount,
                 ImagePath = link.Species.ImagePath
             })
@@ -280,6 +288,8 @@ public class EfBiomeRepository : IBiomeRepository
                     IndividualCount = countPerSpecies
                 });
 
+        _context.SaveChanges();
+        RecomputeBiomeStateFromSpecies(biomeId);
         _context.SaveChanges();
     }
 
@@ -513,6 +523,32 @@ public class EfBiomeRepository : IBiomeRepository
         }
 
         _context.SaveChanges();
+        RecomputeBiomeStateFromSpecies(biomeId);
+        _context.SaveChanges();
+    }
+
+    private void RecomputeBiomeStateFromSpecies(int biomeId)
+    {
+        var biomeEntity = _context.Biomes
+            .FirstOrDefault(b => b.Id == biomeId);
+
+        if (biomeEntity is null)
+            return;
+
+        var speciesLinks = _context.BiomeSpeciesLinks
+            .Where(link => link.BiomeId == biomeId && link.IndividualCount > 0)
+            .Include(link => link.Species)
+            .ToList();
+
+        var speciesSnapshots = _biomeSpeciesFoodSnapshotMapper.ToFoodSnapshots(speciesLinks);
+
+        var finalState = _biomeStabilityService.ComputeFinalState(
+            biomeEntity.Temperature,
+            biomeEntity.AbsoluteHumidity,
+            speciesSnapshots);
+
+        biomeEntity.State = finalState.ToString();
+        biomeEntity.UpdatedAt = DateTime.UtcNow;
     }
 
     public IReadOnlyList<HomeBiomeCardDto> GetBestBiomesForHome(int count)
