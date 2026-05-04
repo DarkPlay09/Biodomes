@@ -5,8 +5,8 @@
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
     ViewData["Title"] = "Modifier un équipement";
-    ViewData["DashboardTitle"] = "Modifier un équipement";
-    ViewData["DashboardSubtitle"] = "Modifie les informations de cet équipement.";
+    ViewData["DashboardTitle"] = "Modifier l’équipement";
+    ViewData["DashboardSubtitle"] = "Ajustez ses ressources avec prudence : les biomes qui l’utilisent peuvent être impactés.";
 }
 
 <div class="layout-width">
@@ -22,7 +22,7 @@
                     <div class="entity-impact-warning">
                         <strong>Attention :</strong>
                         cet équipement est utilisé dans @Model.ImpactedBiomesCount biome(s).
-                        Modifier l'élément produit ou consommé peut impacter ces biomes.
+                        Modifier ce qu’il produit ou consomme peut influencer l’équilibre des biomes concernés.
                     </div>
                 }
 

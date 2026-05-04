@@ -12,8 +12,8 @@
 
     if (isAuthenticated)
     {
-        ViewData["DashboardTitle"] = "Fiche espèce détaillée";
-        ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
+        ViewData["DashboardTitle"] = Model.SpeciesDetails.Name;
+        ViewData["DashboardSubtitle"] = "Consultez ses caractéristiques, sa visibilité et son utilisation dans les biomes.";
     }
 
     var request = ViewContext.HttpContext.Request;
@@ -152,7 +152,7 @@
                                     class="species-details-delete-button species-details-delete-button--disabled"
                                     disabled
                                     title="Cette espèce est utilisée dans un ou plusieurs biomes.">
-                                Suppression bloquée
+                                Suppression impossible
                             </button>
                         }
                     </form>

@@ -8,12 +8,12 @@
         ? "/Pages/Shared/_DashboardLayout.cshtml"
         : "/Pages/Shared/_Layout.cshtml";
 
-    ViewData["Title"] = "Catalogue des équipements";
+    ViewData["Title"] = "Équipements";
 
     if (isAuthenticated)
     {
-        ViewData["DashboardTitle"] = "Catalogue des équipements";
-        ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les équipements enregistrés dans BioDomes.";
+        ViewData["DashboardTitle"] = "Équipements";
+        ViewData["DashboardSubtitle"] = "Gérez les équipements qui produisent ou consomment des ressources dans vos biomes.";
     }
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
@@ -50,7 +50,7 @@
             @if (!isAuthenticated)
             {
                 <h1>Catalogue des équipements</h1>
-                <p>Découvre les équipements publics disponibles dans BioDomes.</p>
+                <p>Explorez les équipements publics disponibles pour soutenir l’équilibre des biomes.</p>
             }
         </div>
 

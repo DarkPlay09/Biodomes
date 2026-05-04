@@ -12,8 +12,8 @@
 
     if (isAuthenticated)
     {
-        ViewData["DashboardTitle"] = "Fiche équipement détaillée";
-        ViewData["DashboardSubtitle"] = "Consulte les informations principales de cet équipement.";
+        ViewData["DashboardTitle"] = Model.EquipmentDetails.Name;
+        ViewData["DashboardSubtitle"] = "Consultez sa production, sa consommation, sa visibilité et son utilisation dans les biomes.";
     }
 
     var request = ViewContext.HttpContext.Request;
@@ -122,7 +122,7 @@
                                     class="species-details-delete-button species-details-delete-button--disabled"
                                     disabled
                                     title="Cet équipement est utilisé dans un ou plusieurs biomes.">
-                                Équipement utilisé
+                                Suppression impossible
                             </button>
                         }
                     </form>
