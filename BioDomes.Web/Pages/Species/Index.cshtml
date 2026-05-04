@@ -53,8 +53,10 @@
 
         @if (isAuthenticated)
         {
-            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
-                Ajouter une espèce
+            <a asp-page="./Add"
+               asp-route-returnUrl="@currentUrl"
+               class="action-button">
+                + Ajouter une espèce
             </a>
         }
     </header>
