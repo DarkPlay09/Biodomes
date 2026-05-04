@@ -5,23 +5,12 @@
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
     ViewData["Title"] = "Modifier un biome";
-    ViewData["DashboardTitle"] = "Modifier un biome";
-    ViewData["DashboardSubtitle"] = "Modifie la température et l'humidité absolue du biome.";
+    ViewData["DashboardTitle"] = "Modifier le biome";
+    ViewData["DashboardSubtitle"] = "Ajustez les conditions environnementales du dôme.";
 }
 
 <div class="layout-width">
     <section class="entity-form-page">
-        <div class="entity-form-page__intro">
-            <span class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Modification
-            </span>
-            <h1 class="hero-title">Modifier un biome</h1>
-            <p class="entity-form-page__text">
-                Renseigne les nouvelles conditions. L'état sera recalculé automatiquement.
-            </p>
-        </div>
-
         <div class="entity-form-card">
             <form method="post" class="entity-form">
                 <input type="hidden" asp-for="ReturnUrl" />
@@ -54,8 +43,8 @@
                 </div>
 
                 <div class="entity-form__actions">
-                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
-                    <button type="submit" class="action-button">Enregistrer</button>
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Annuler</a>
+                    <button type="submit" class="action-button">Enregistrer les modifications</button>
                 </div>
             </form>
         </div>

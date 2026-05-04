@@ -4,24 +4,13 @@
 @{
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
-    ViewData["Title"] = "Ajouter un biome";
-    ViewData["DashboardTitle"] = "Ajouter un biome";
-    ViewData["DashboardSubtitle"] = "Crée un biome avec sa température et son humidité absolue.";
+    ViewData["Title"] = "Créer un biome";
+    ViewData["DashboardTitle"] = "Nouveau biome";
+    ViewData["DashboardSubtitle"] = "Définissez les conditions environnementales de votre prochain dôme.";
 }
 
 <div class="layout-width">
     <section class="entity-form-page">
-        <div class="entity-form-page__intro">
-            <span class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Nouvelle entrée
-            </span>
-            <h1 class="hero-title">Ajouter un biome</h1>
-            <p class="entity-form-page__text">
-                Renseigne les conditions du biome. L'état sera calculé automatiquement.
-            </p>
-        </div>
-
         <div class="entity-form-card">
             <form method="post" class="entity-form">
                 <input type="hidden" asp-for="ReturnUrl" />
@@ -54,7 +43,7 @@
                 </div>
 
                 <div class="entity-form__actions">
-                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Annuler</a>
                     <button type="submit" class="action-button">Créer le biome</button>
                 </div>
             </form>

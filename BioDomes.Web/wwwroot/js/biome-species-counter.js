@@ -1,95 +1,61 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-    const SCROLL_KEY = "biomeSpeciesScrollY";
+    const refreshCardState = card => {
+        const input = card.querySelector("[data-linked-count-input]");
+        const saveButton = card.querySelector("[data-linked-save-button]");
 
-    const savedY = sessionStorage.getItem(SCROLL_KEY);
-    if (savedY !== null) {
-        const y = Number.parseInt(savedY, 10);
-        if (!Number.isNaN(y)) {
-            window.scrollTo(0, y);
-        }
-        sessionStorage.removeItem(SCROLL_KEY);
-    }
-
-    const decButtons = document.querySelectorAll("[data-counter-dec]");
-    const incButtons = document.querySelectorAll("[data-counter-inc]");
-    const preserveScrollForms = document.querySelectorAll("form[data-preserve-scroll]");
-    const preserveScrollTriggers = document.querySelectorAll("[data-preserve-scroll-trigger]");
-    const removeConfirmForms = document.querySelectorAll("form[data-remove-confirm-form]");
-
-    const clampInput = (input) => {
-        const min = Number.parseInt(input.min || "0", 10);
-        const value = Number.parseInt(input.value || "0", 10);
-
-        if (Number.isNaN(value)) {
-            input.value = String(min);
-            return min;
-        }
-
-        const safe = Math.max(min, value);
-        input.value = String(safe);
-        return safe;
-    };
-
-    const update = (button, delta) => {
-        const targetId = button.getAttribute("data-target-input");
-        if (!targetId) return;
-
-        const input = document.getElementById(targetId);
-        if (!(input instanceof HTMLInputElement)) return;
-
-        const current = clampInput(input);
-        input.value = String(Math.max(0, current + delta));
-    };
-
-    decButtons.forEach((button) => {
-        button.addEventListener("click", () => update(button, -1));
-    });
-
-    incButtons.forEach((button) => {
-        button.addEventListener("click", () => update(button, 1));
-    });
-
-    preserveScrollForms.forEach((form) => {
-        form.addEventListener("submit", () => {
-            sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
-        });
-    });
-
-    preserveScrollTriggers.forEach((trigger) => {
-        trigger.addEventListener("click", () => {
-            sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
-        });
-    });
-
-    removeConfirmForms.forEach((form) => {
-        const button = form.querySelector("[data-remove-confirm-button]");
-        if (!(button instanceof HTMLButtonElement)) {
+        if (!input || !saveButton) {
             return;
         }
 
-        form.addEventListener("submit", (event) => {
-            const isArmed = button.dataset.confirmArmed === "true";
-            if (isArmed) {
+        const initialValue = Number.parseInt(input.dataset.initialValue || "0", 10);
+        const currentValue = Number.parseInt(input.value || "0", 10);
+        const safeCurrentValue = Number.isNaN(currentValue) ? 0 : currentValue;
+        const hasChanged = safeCurrentValue !== initialValue;
+
+        saveButton.disabled = !hasChanged;
+        card.classList.toggle("is-dirty", hasChanged);
+    };
+
+    document.querySelectorAll("[data-linked-item-card]").forEach(card => {
+        const input = card.querySelector("[data-linked-count-input]");
+
+        if (!input) {
+            return;
+        }
+
+        input.addEventListener("input", () => refreshCardState(card));
+        input.addEventListener("change", () => refreshCardState(card));
+
+        refreshCardState(card);
+    });
+
+    document.querySelectorAll("[data-counter-dec], [data-counter-inc]").forEach(button => {
+        button.addEventListener("click", () => {
+            const targetId = button.dataset.targetInput;
+            const input = document.getElementById(targetId);
+
+            if (!input) {
                 return;
             }
 
-            event.preventDefault();
+            const card = input.closest("[data-linked-item-card]");
+            const min = Number.parseInt(input.min || "0", 10);
+            let currentValue = Number.parseInt(input.value || "0", 10);
 
-            button.dataset.confirmArmed = "true";
-            button.classList.add("is-confirm");
-            button.textContent = "Confirmer";
-        });
-
-        button.addEventListener("blur", () => {
-            if (button.dataset.confirmArmed !== "true") {
-                return;
+            if (Number.isNaN(currentValue)) {
+                currentValue = min;
             }
 
-            window.setTimeout(() => {
-                button.dataset.confirmArmed = "false";
-                button.classList.remove("is-confirm");
-                button.textContent = "Retirer";
-            }, 180);
+            currentValue = button.hasAttribute("data-counter-dec")
+                ? Math.max(min, currentValue - 1)
+                : currentValue + 1;
+
+            input.value = currentValue;
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+
+            if (card) {
+                refreshCardState(card);
+            }
         });
     });
 });

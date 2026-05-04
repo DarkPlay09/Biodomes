@@ -232,6 +232,19 @@
     color: #ffffff;
 }
 
+.dashboard-btn--icon-only {
+    width: 48px;
+    min-width: 48px;
+    padding: 0;
+}
+
+.dashboard-btn__icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+    object-fit: contain;
+}
+
 .dashboard-kpi-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
