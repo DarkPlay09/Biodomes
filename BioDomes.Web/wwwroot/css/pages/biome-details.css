@@ -108,6 +108,12 @@
     letter-spacing: -0.045em;
 }
 
+.biome-detail-kpi-card__unit {
+    font-size: 0.55em;
+    opacity: 0.70;
+    font-weight: 800;
+}
+
 .biome-detail-kpi-card small {
     display: block;
     margin-top: 0.75rem;

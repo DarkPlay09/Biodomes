@@ -84,7 +84,9 @@ public class DetailsModel : PageModel
             Slug = detailsDto.Slug,
             Name = detailsDto.Name,
             TemperatureLabel = $"{detailsDto.Temperature.ToString("0.0", fr)} °C",
+            TemperatureUnit = "°C",
             AbsoluteHumidityLabel = $"{detailsDto.AbsoluteHumidity.ToString("0.00", fr)} g/m³",
+            AbsoluteHumidityUnit = "g/m³",
             StateLabel = detailsDto.State,
             Alerts = alerts,
             LastUpdatedLabel = detailsDto.UpdatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm", fr),
@@ -132,7 +134,9 @@ public class BiomeDetailsViewModel
     public string Slug { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
     public string TemperatureLabel { get; init; } = string.Empty;
+    public string TemperatureUnit { get; init; } = "°C";
     public string AbsoluteHumidityLabel { get; init; } = string.Empty;
+    public string AbsoluteHumidityUnit { get; init; } = "g/m³";
     public string StateLabel { get; init; } = string.Empty;
     public IReadOnlyList<string> Alerts { get; init; } = [];
     public string LastUpdatedLabel { get; init; } = string.Empty;

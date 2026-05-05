@@ -103,13 +103,19 @@
     <div class="biome-detail-kpi-grid">
         <article class="biome-detail-kpi-card">
             <span class="biome-detail-kpi-card__label">Température</span>
-            <strong>@biome.TemperatureLabel</strong>
+            <strong>
+                @biome.TemperatureLabel.Replace($" {biome.TemperatureUnit}", string.Empty)
+                <span class="biome-detail-kpi-card__unit">@biome.TemperatureUnit</span>
+            </strong>
             <small>Condition thermique du dôme.</small>
         </article>
 
         <article class="biome-detail-kpi-card">
             <span class="biome-detail-kpi-card__label">Humidité absolue</span>
-            <strong>@biome.AbsoluteHumidityLabel</strong>
+            <strong>
+                @biome.AbsoluteHumidityLabel.Replace($" {biome.AbsoluteHumidityUnit}", string.Empty)
+                <span class="biome-detail-kpi-card__unit">@biome.AbsoluteHumidityUnit</span>
+            </strong>
             <small>Humidité disponible dans l’environnement.</small>
         </article>
 
