@@ -10,6 +10,7 @@ using BioDomes.Infrastructures.Mappers.Species;
 using BioDomes.Infrastructures.Repositories;
 using BioDomes.Infrastructures.Services.Identity;
 using BioDomes.Infrastructures.Services.Slug;
+using BioDomes.Web.Areas.Identity;
 using BioDomes.Web.Middlewares;
 using BioDomes.Web.Routing;
 using BioDomes.Web.Services;
@@ -73,13 +74,14 @@ builder.Services
         options.SignIn.RequireConfirmedAccount = true;
 
         options.Password.RequiredLength = 8;
-        options.Password.RequireDigit = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireLowercase = false;
+        options.Password.RequireDigit = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireLowercase = true;
         options.Password.RequireNonAlphanumeric = false;
-
+        options.Password.RequiredUniqueChars = 4;
         options.User.RequireUniqueEmail = true;
     })
+    .AddErrorDescriber<FrenchIdentityErrorDescriber>()
     .AddEntityFrameworkStores<BioDomesDbContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>
