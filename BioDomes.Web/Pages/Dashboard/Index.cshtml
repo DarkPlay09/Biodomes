@@ -4,11 +4,31 @@
 @{
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
     ViewData["Title"] = "Dashboard";
-    ViewData["DashboardTitle"] = "Bonjour, " + Model.DisplayName;
-    ViewData["DashboardSubtitle"] = $"{Model.CurrentDateLabel} · Station Alpha-7";
+    ViewData["DashboardTitle"] = "Bonjour " + Model.DisplayName;
+    ViewData["DashboardSubtitle"] = Model.CurrentDateLabel;
 }
 
-<section class="dashboard-kpi-grid">
+<section class="dashboard-hero" aria-labelledby="dashboard-hero-title">
+    <div class="dashboard-hero__content">
+        <h2 id="dashboard-hero-title">Bienvenue dans votre laboratoire BioDomes</h2>
+        <p>
+            Analysez vos écosystèmes sous dôme, surveillez leur stabilité et améliorez progressivement
+            leur équilibre. Votre expertise scientifique est la clé de la survie de ces espèces uniques.
+        </p>
+
+        <div class="dashboard-hero__actions">
+            <a asp-page="/Biome/Index" class="dashboard-btn dashboard-btn--primary">Gérer les biomes</a>
+        </div>
+    </div>
+
+    <div class="dashboard-hero__visual dashboard-hero__visual--image" aria-hidden="true">
+        <img src="~/images/dashboard/panoramic-mountain.jpg"
+             asp-append-version="true"
+             alt="Image panoramic mountain" />
+    </div>
+</section>
+
+<section class="dashboard-kpi-grid" aria-label="Indicateurs principaux">
     <article class="dashboard-kpi-card">
         <div class="dashboard-kpi-card__top">
             <div class="dashboard-kpi-card__icon dashboard-kpi-card__icon--blue">
@@ -52,7 +72,7 @@
         <div class="dashboard-kpi-card__top">
             <div class="dashboard-kpi-card__icon dashboard-kpi-card__icon--green">
                 <img class="dashboard-kpi-card__icon-img"
-                     src="~/images/dashboard/icons/line.png"
+                     src="~/images/dashboard/icons/leaf.png"
                      alt="Icône équilibre" />
             </div>
         </div>
@@ -64,34 +84,157 @@
 
 <div class="dashboard-main-grid">
     <div class="dashboard-main-grid__left">
-        <section class="dashboard-card">
-            <div class="dashboard-card__header">
-                <h3>Raccourcis rapides</h3>
+        <section class="dashboard-card" aria-labelledby="dashboard-biomes-title">
+            <div class="dashboard-card__header dashboard-card__header--spread">
+                <div>
+                    <h3 id="dashboard-biomes-title">Mes derniers biomes</h3>
+                </div>
+
+                <div class="dashboard-status-pills" aria-label="Résumé des états">
+                    <span class="dashboard-status-pill dashboard-status-pill--success">
+                        Optimal : @Model.OptimalBiomeCount
+                    </span>
+                    <span class="dashboard-status-pill dashboard-status-pill--warning">
+                        Instable : @Model.UnstableBiomeCount
+                    </span>
+                    <span class="dashboard-status-pill dashboard-status-pill--danger">
+                        Critique : @Model.CriticalBiomeCount
+                    </span>
+                </div>
             </div>
 
-            <div class="dashboard-shortcuts">
-                <a asp-page="/Biomes/Add" class="dashboard-shortcut">
-                    <!-- créer les logos sur photoshop -->
-                    <span class="dashboard-shortcut__label">Créer biome</span>
-                </a>
+            @if (!Model.RecentBiomes.Any())
+            {
+                <div class="dashboard-empty-state">
+                    <p class="dashboard-empty-state__title">Aucun biome pour le moment</p>
+                    <p>Créez votre premier biome pour commencer à suivre son équilibre.</p>
 
-                <a asp-page="/Species/Add" class="dashboard-shortcut">
-                    <!-- créer les logos sur photoshop -->
-                    <span class="dashboard-shortcut__label">Ajouter espèce</span>
-                </a>
-            </div>
+                    <div class="dashboard-empty-state__actions">
+                        <a asp-page="/Biome/Add" class="dashboard-btn dashboard-btn--primary">
+                            Créer un biome
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="dashboard-biome-list">
+                    @foreach (var biome in Model.RecentBiomes)
+                    {
+                        <article class="dashboard-biome-card">
+                            <div class="dashboard-biome-card__top">
+                                <div class="dashboard-biome-card__identity">
+                                    <div>
+                                        <h4>@biome.Name</h4>
+
+                                        <div class="dashboard-biome-card__meta">
+                                            <span class="dashboard-status-pill @biome.StateCssClass">
+                                                @biome.StateLabel
+                                            </span>
+                                            <span>Score : @biome.StabilityScore/100</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a asp-page="/Biome/Details"
+                                   asp-route-slug="@biome.Slug"
+                                   class="dashboard-link-inline">
+                                    Voir le biome
+                                </a>
+                            </div>
+
+                            <dl class="dashboard-biome-card__metrics">
+                                <div>
+                                    <dt>Température</dt>
+                                    <dd class="@biome.TemperatureCssClass">@biome.TemperatureLabel</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Humidité</dt>
+                                    <dd>@biome.AbsoluteHumidityLabel</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Espèces</dt>
+                                    <dd>@biome.SpeciesCount espèces</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Équipements</dt>
+                                    <dd>@biome.EquipmentCount actifs</dd>
+                                </div>
+                            </dl>
+                        </article>
+                    }
+                </div>
+            }
         </section>
     </div>
 
     <div class="dashboard-main-grid__right">
-        <section class="dashboard-card">
+        <section class="dashboard-card dashboard-alert-card" aria-labelledby="dashboard-alert-title">
             <div class="dashboard-card__header dashboard-card__header--spread">
-                <h3>Alertes critiques</h3>
-                <span class="dashboard-counter">0</span>
+                <h3 id="dashboard-alert-title">Alertes et recommandations</h3>
+                <span class="dashboard-counter">@Model.AlertCount</span>
             </div>
 
-            <div class="dashboard-empty-state">
-                <p class="dashboard-empty-state__title">Aucune information disponible</p>
+            @if (!Model.Alerts.Any())
+            {
+                <div class="dashboard-empty-state dashboard-empty-state--success">
+                    <span class="dashboard-empty-state__mark" aria-hidden="true">OK</span>
+                    <p class="dashboard-empty-state__title">Aucune alerte pour le moment</p>
+                    <p>Votre complexe de biomes est stable.</p>
+                </div>
+            }
+            else
+            {
+                <div class="dashboard-alert-list">
+                    @foreach (var alert in Model.Alerts)
+                    {
+                        <article class="dashboard-alert @alert.CssClass">
+                            <h4>@alert.Title</h4>
+                            <p>@alert.Message</p>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="dashboard-card" aria-labelledby="dashboard-shortcuts-title">
+            <div class="dashboard-card__header">
+                <h3 id="dashboard-shortcuts-title">Raccourcis rapides</h3>
+            </div>
+
+            <div class="dashboard-shortcuts dashboard-shortcuts--stack">
+                <a asp-page="/Biome/Add" class="dashboard-shortcut dashboard-shortcut--horizontal">
+                    <span class="dashboard-shortcut__icon-box dashboard-shortcut__icon-box--green" aria-hidden="true">
+                        <img src="~/images/dashboard/icons/forest_add.png" alt="" />
+                    </span>
+                    <span class="dashboard-shortcut__text">
+                        <span class="dashboard-shortcut__label">Créer un biome</span>
+                        <span class="dashboard-shortcut__hint">Définisser un nouveau biome sous dôme.</span>
+                    </span>
+                </a>
+
+                <a asp-page="/Species/Add" class="dashboard-shortcut dashboard-shortcut--horizontal">
+                    <span class="dashboard-shortcut__icon-box dashboard-shortcut__icon-box--amber" aria-hidden="true">
+                        <img src="~/images/dashboard/icons/paws_add.png" alt="" />
+                    </span>
+                    <span class="dashboard-shortcut__text">
+                        <span class="dashboard-shortcut__label">Ajouter une espèce</span>
+                        <span class="dashboard-shortcut__hint">Enregistrer une espèce dans votre catalogue.</span>
+                    </span>
+                </a>
+
+                <a asp-page="/Equipment/Add" class="dashboard-shortcut dashboard-shortcut--horizontal">
+                    <span class="dashboard-shortcut__icon-box dashboard-shortcut__icon-box--purple" aria-hidden="true">
+                        <img src="~/images/dashboard/icons/beaker_add.png" alt="" />
+                    </span>
+                    <span class="dashboard-shortcut__text">
+                        <span class="dashboard-shortcut__label">Ajouter un équipement</span>
+                        <span class="dashboard-shortcut__hint">Ajouter un équipement dans votre catalogue.</span>
+                    </span>
+                </a>
             </div>
         </section>
     </div>

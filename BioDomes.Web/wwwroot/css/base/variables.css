@@ -38,4 +38,18 @@
     --error-accent: #b45309;
     --error-accent-soft: rgba(180, 83, 9, 0.10);
     --error-border: rgba(180, 83, 9, 0.18);
+
+    --biome-linked-primary: #0b3d39;
+    --biome-linked-primary-hover: #094944;
+    --biome-linked-border: rgba(11, 61, 57, 0.10);
+    --biome-linked-border-strong: #d8e4e1;
+    --biome-linked-bg: #ffffff;
+    --biome-linked-bg-soft: #f8fbfa;
+    --biome-linked-bg-muted: #eef5f3;
+    --biome-linked-text: #0f172a;
+    --biome-linked-muted: #64748b;
+    --biome-linked-danger: #b42318;
+    --biome-linked-danger-hover: #991b1b;
+    
+    
 }

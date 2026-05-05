@@ -4,20 +4,20 @@
     --error-muted: #475467;
     --error-primary: #0b3d39;
     --error-primary-dark: #082f2c;
-    --error-accent: #b45309;
-    --error-accent-soft: rgba(180, 83, 9, 0.10);
-    --error-border: rgba(180, 83, 9, 0.18);
+    --error-accent: #64748b;
+    --error-accent-soft: rgba(100, 116, 139, 0.10);
+    --error-border: rgba(100, 116, 139, 0.18);
 
     min-height: 100vh;
     margin: 0;
     background:
-            radial-gradient(circle at 50% 18%, rgba(180, 83, 9, 0.06), transparent 32%),
+            radial-gradient(circle at 50% 18%, var(--error-accent-soft), transparent 32%),
             linear-gradient(180deg, #ffffff 0%, var(--error-bg) 100%);
     color: var(--error-text);
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.error-status-page--forbidden {
+body.error-status-page.error-status-page--forbidden {
     --error-primary: #7a271a;
     --error-primary-dark: #631f15;
     --error-accent: #b42318;
@@ -25,7 +25,7 @@
     --error-border: rgba(180, 35, 24, 0.18);
 }
 
-.error-status-page--not-found {
+body.error-status-page.error-status-page--not-found {
     --error-primary: #0b3d39;
     --error-primary-dark: #082f2c;
     --error-accent: #b45309;
@@ -49,7 +49,7 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background: rgba(180, 83, 9, 0.08);
+    background: var(--error-accent-soft);
 }
 
 .error-status::before {
@@ -114,7 +114,7 @@
     border-radius: 18px;
     color: var(--error-accent);
     background: rgba(255, 255, 255, 0.78);
-    box-shadow: 0 24px 70px rgba(180, 83, 9, 0.08);
+    box-shadow: 0 24px 70px var(--error-accent-soft);
 }
 
 .error-status__icon::before {
@@ -160,7 +160,7 @@
     max-width: 520px;
     margin: 1rem 0 0;
     padding-left: 1.25rem;
-    border-left: 2px solid rgba(180, 83, 9, 0.18);
+    border-left: 2px solid var(--error-border);
     color: var(--error-muted);
     font-size: 1rem;
     line-height: 1.7;

@@ -8,12 +8,12 @@
         ? "/Pages/Shared/_DashboardLayout.cshtml"
         : "/Pages/Shared/_Layout.cshtml";
 
-    ViewData["Title"] = "Catalogue des espèces";
+    ViewData["Title"] = "Espèces";
 
     if (isAuthenticated)
     {
-        ViewData["DashboardTitle"] = "Catalogue des espèces";
-        ViewData["DashboardSubtitle"] = "Consulte, filtre et gère les espèces enregistrées dans BioDomes.";
+        ViewData["DashboardTitle"] = "Espèces";
+        ViewData["DashboardSubtitle"] = "Gérez les espèces disponibles pour composer vos biomes et équilibrer vos réseaux trophiques.";
     }
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
@@ -47,14 +47,16 @@
             @if (!isAuthenticated)
             {
                 <h1>Catalogue des espèces</h1>
-                <p>Découvre les espèces publiques disponibles dans BioDomes.</p>
+                <p>Explorez les espèces publiques disponibles pour créer des biomes viables.</p>
             }
         </div>
 
         @if (isAuthenticated)
         {
-            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
-                Ajouter une espèce
+            <a asp-page="./Add"
+               asp-route-returnUrl="@currentUrl"
+               class="action-button">
+                + Ajouter une espèce
             </a>
         }
     </header>

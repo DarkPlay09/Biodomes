@@ -6,7 +6,7 @@
 
     ViewData["Title"] = "Sélection des espèces";
     ViewData["DashboardTitle"] = "Sélection des espèces";
-    ViewData["DashboardSubtitle"] = "Choisis des espèces à ajouter dans ton biome.";
+    ViewData["DashboardSubtitle"] = "Choisissez des espèces à ajouter dans votre biome.";
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
     var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
@@ -16,32 +16,102 @@
     var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 }
 
-<section class="species-catalog select-species-page" data-biome-slug="@Model.BiomeSlug">
-    <header class="species-catalog__header">
-        <a asp-page="/Biome/Species"
-           asp-route-slug="@Model.BiomeSlug"
-           class="dashboard-btn dashboard-btn--ghost">
-            ← Retour à la gestion du biome
+<section class="species-catalog select-species-page biome-select-catalog-page" data-biome-slug="@Model.BiomeSlug">
+    <nav class="biome-linked-breadcrumb" aria-label="Fil d’Ariane">
+        <a asp-page="/Biome/Index">
+            Mes biomes
         </a>
 
-        <div class="select-species-page__header-actions">
+        <span aria-hidden="true">›</span>
+
+        <a asp-page="/Biome/Details"
+           asp-route-slug="@Model.BiomeSlug">
+            @Model.BiomeName
+        </a>
+
+        <span aria-hidden="true">›</span>
+
+        <a asp-page="/Biome/Species"
+           asp-route-slug="@Model.BiomeSlug">
+            Espèces
+        </a>
+
+        <span aria-hidden="true">›</span>
+
+        <span aria-current="page">
+            Sélection
+        </span>
+    </nav>
+
+    <header class="biome-select-catalog-hero">
+        <div>
+            <h2>Sélection des espèces</h2>
+
+            <p>
+                Ajoutez de nouvelles espèces dans <strong>@Model.BiomeName</strong>.
+                Les espèces sélectionnées seront introduites avec une population initiale de
+                <strong>1 individu</strong>.
+            </p>
+        </div>
+
+        <div class="biome-select-catalog-hero__actions">
+            <a asp-page="/Biome/Species"
+               asp-route-slug="@Model.BiomeSlug"
+               class="biome-linked-button biome-linked-button--outline">
+                Retour aux espèces
+            </a>
+
             <button type="submit"
                     form="confirmSelectionForm"
-                    class="action-button">
+                    class="biome-linked-button biome-linked-button--primary">
                 Valider la sélection
             </button>
 
             <a asp-page="/Species/Add"
                asp-route-returnUrl="@currentUrl"
-               class="action-button">
-                + Créer une espèce
+               class="biome-linked-button biome-linked-button--ghost">
+                Créer une espèce
             </a>
         </div>
     </header>
 
-    <div class="species-catalog__success">
-        Biome ciblé : <strong>@Model.BiomeName</strong>
-    </div>
+    <section class="biome-linked-summary-grid">
+        <article class="biome-linked-summary-card">
+            <span>Espèces affichées</span>
+            <strong>@Model.SpeciesCards.Count</strong>
+            <small>Résultats visibles avec les filtres actuels.</small>
+        </article>
+
+        <article class="biome-linked-summary-card">
+            <span>Page actuelle</span>
+            <strong>@Model.PageNumber / @Model.TotalPages</strong>
+            <small>Navigation dans le catalogue des espèces.</small>
+        </article>
+
+        <article class="biome-linked-summary-card">
+            <span>Catalogue</span>
+            <strong>@(Model.IncludeAlreadyInBiome ? "Complet" : "Disponible")</strong>
+            <small>
+                @(Model.IncludeAlreadyInBiome
+                    ? "Les espèces déjà présentes sont affichées."
+                    : "Les espèces déjà présentes sont masquées.")
+            </small>
+        </article>
+    </section>
+
+    <section class="biome-linked-help-card">
+        <div>
+            <span class="biome-linked-eyebrow">Aide à la sélection</span>
+
+            <h3>Construisez un biome cohérent</h3>
+
+            <p>
+                Pour améliorer la stabilité du biome, privilégiez des espèces compatibles avec
+                les conditions climatiques actuelles et capables de former une chaîne alimentaire
+                équilibrée : producteurs, herbivores, omnivores et carnivores selon les besoins.
+            </p>
+        </div>
+    </section>
 
     <form method="get" class="catalog-filter-card">
         <input type="hidden" name="slug" value="@Model.BiomeSlug" />
@@ -119,16 +189,21 @@
 
     @if (Model.SpeciesCards.Count == 0)
     {
-        <div class="species-empty-card">
-            <div class="species-empty-card__icon">+</div>
+        <div class="empty-state empty-state--public-catalog">
+            <div class="empty-state__icon" aria-hidden="true">
+                +
+            </div>
 
             <h3>Aucune espèce trouvée</h3>
 
             <p>
-                Modifie ta recherche ou crée une nouvelle espèce.
+                Aucune espèce ne correspond aux filtres actuels.
+                Modifiez votre recherche ou créez une nouvelle espèce pour enrichir le catalogue.
             </p>
 
-            <a asp-page="/Species/Add" class="dashboard-btn dashboard-btn--primary">
+            <a asp-page="/Species/Add"
+               asp-route-returnUrl="@currentUrl"
+               class="biome-linked-button biome-linked-button--primary">
                 Créer une espèce
             </a>
         </div>
@@ -206,7 +281,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        <footer class="species-pagination">
+        <footer class="catalog-pagination">
             <div>
                 Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
             </div>
@@ -214,7 +289,7 @@
             <nav aria-label="Pagination des espèces">
                 @if (Model.PageNumber <= 1)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Précédent
                     </span>
                 }
@@ -228,7 +303,7 @@
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
                        asp-route-PageNumber="@(Model.PageNumber - 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Précédent
                     </a>
                 }
@@ -236,7 +311,7 @@
                 @foreach (var pageNumber in Model.VisiblePages)
                 {
                     var activeClass = pageNumber == Model.PageNumber
-                        ? "species-pagination__link--active"
+                        ? "catalog-pagination__link--active"
                         : "";
 
                     <a asp-page="./SelectSpecies"
@@ -247,14 +322,14 @@
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
                        asp-route-PageNumber="@pageNumber"
-                       class="species-pagination__link @activeClass">
+                       class="catalog-pagination__link @activeClass">
                         @pageNumber
                     </a>
                 }
 
                 @if (Model.PageNumber >= Model.TotalPages)
                 {
-                    <span class="species-pagination__link species-pagination__link--disabled">
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
                         Suivant
                     </span>
                 }
@@ -268,7 +343,7 @@
                        asp-route-VisibilityFilter="@Model.VisibilityFilter"
                        asp-route-IncludeAlreadyInBiome="@Model.IncludeAlreadyInBiome"
                        asp-route-PageNumber="@(Model.PageNumber + 1)"
-                       class="species-pagination__link">
+                       class="catalog-pagination__link">
                         Suivant
                     </a>
                 }

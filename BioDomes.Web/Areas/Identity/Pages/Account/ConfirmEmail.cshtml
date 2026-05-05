@@ -3,13 +3,14 @@
 
 @{
     Layout = "/Pages/Shared/_AuthLayout.cshtml";
-    ViewData["Title"] = "Confirmation d'email";
-    ViewData["AuthPageTitle"] = Model.IsSuccess ? "Confirmation réussie" : "Confirmation impossible";
+    
+    ViewData["Title"] = "Confirmation d'e-mail";
+    ViewData["AuthPageTitle"] = Model.IsSuccess ? "Compte activé" : "Confirmation impossible";
     ViewData["AuthPageSubtitle"] = Model.IsSuccess
-        ? "Votre compte BioDomes est maintenant activé."
-        : "Nous n'avons pas pu valider votre adresse e-mail.";
-    ViewData["AuthHeroTitle"] = "Créer, suivre,<br />et faire évoluer<br />vos BioDomes.";
-    ViewData["AuthHeroText"] = "Confirmez votre adresse e-mail pour activer votre accès à la plateforme.";
+        ? "Votre compte BioDomes est maintenant prêt."
+        : "Nous n’avons pas pu valider votre adresse e-mail.";
+    ViewData["AuthHeroTitle"] = "Bienvenue<br />dans BioDomes.";
+    ViewData["AuthHeroText"] = "Votre espace de recherche vous attend pour créer et observer vos premiers biomes.";
 }
 
 <div class="auth-confirm-box">
@@ -35,7 +36,7 @@
     <h3 class="auth-confirm-title">
         @(Model.IsSuccess
             ? "Votre adresse e-mail a bien été confirmée."
-            : "Le lien de confirmation n'est pas valide.")
+            : "Ce lien de confirmation n’est pas valide ou a expiré.")
     </h3>
 
     <p class="auth-confirm-text">@Model.Message</p>

@@ -5,8 +5,8 @@
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
     ViewData["Title"] = "Ajouter une espèce";
-    ViewData["DashboardTitle"] = "Ajouter une espèce";
-    ViewData["DashboardSubtitle"] = "Ajoute une nouvelle espèce au catalogue BioDomes.";
+    ViewData["DashboardTitle"] = "Nouvelle espèce";
+    ViewData["DashboardSubtitle"] = "Encodez ses caractéristiques pour l’ajouter à votre catalogue BioDomes.";
 }
 
 <div class="layout-width">
@@ -20,8 +20,8 @@
                 <partial name="Species/_SpeciesForm" model="new SpeciesFormViewModel { Input = Model.Input, ClassificationOptions = Model.ClassificationOptions, DietOptions = Model.DietOptions }"/>
 
                 <div class="entity-form__actions">
-                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
-                    <button type="submit" class="action-button">Créer l'espèce</button>
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Annuler</a>
+                    <button type="submit" class="action-button">Ajouter l'espèce</button>
                 </div>
                 
                 <p class="entity-form__required-note">

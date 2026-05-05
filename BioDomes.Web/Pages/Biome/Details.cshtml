@@ -1,290 +1,392 @@
-﻿@page "/biome/{slug}/details"
+﻿@page "/biome/details/{slug}"
 @model BioDomes.Web.Pages.Biome.DetailsModel
 
 @{
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
-    ViewData["Title"] = "Détail du biome";
+    var biome = Model.Details;
+
+    ViewData["Title"] = biome?.Name ?? "Détail du biome";
     ViewData["DashboardTitle"] = "Détail du biome";
-    ViewData["DashboardSubtitle"] = "Visualise et gère un biome.";
-    
-    var request = ViewContext.HttpContext.Request;
-    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
+    ViewData["DashboardSubtitle"] = "Visualisez les conditions, les espèces et les équipements associés à ce biome.";
+
+    var stateClass = biome?.StateLabel switch
+    {
+        "Optimal" => "dashboard-pill--success",
+        "Instable" => "dashboard-pill--warning",
+        "Critique" => "dashboard-pill--danger",
+        _ => "dashboard-pill--neutral"
+    };
+
+    var hasAlerts = biome?.Alerts.Count > 0;
 }
 
-@if (Model.Details is null)
+@if (biome is null)
 {
-    <div class="layout-width entity-list-page">
-        <div class="entity-list-empty">
-            <p>Biome introuvable.</p>
-            <a asp-page="/Biome/Index" class="action-button">Retour à mes biomes</a>
+    <section class="dashboard-card">
+        <h2>Biome introuvable</h2>
+        <p>Le biome demandé n’existe pas ou n’est plus accessible.</p>
+
+        <a asp-page="./Index" class="dashboard-btn dashboard-btn--primary">
+            Retour aux biomes
+        </a>
+    </section>
+
+    return;
+}
+
+<section class="biome-detail-page">
+    <nav class="biome-linked-breadcrumb" aria-label="Fil d’Ariane">
+        <a asp-page="./Index">
+            Mes biomes
+        </a>
+
+        <span aria-hidden="true">›</span>
+
+        <span aria-current="page">
+            @biome.Name
+        </span>
+    </nav>
+    
+    <div class="biome-detail-header">
+        <div>
+            <h2>@biome.Name</h2>
+
+            <p>
+                Dernière mise à jour :
+                <strong>@biome.LastUpdatedLabel</strong>
+            </p>
+        </div>
+
+        <div class="biome-detail-actions">
+            <a asp-page="./Stats"
+               asp-route-slug="@biome.Slug"
+               class="biome-linked-button biome-linked-button--primary">
+                Statistiques
+            </a>
+
+            <a asp-page="./Edit"
+               asp-route-slug="@biome.Slug"
+               class="biome-linked-button biome-linked-button--outline">
+                Modifier le biome
+            </a>
+
+            <button type="button"
+                    class="dashboard-btn dashboard-btn--danger dashboard-btn--icon-only"
+                    data-open-delete-modal
+                    aria-label="Supprimer le biome"
+                    title="Supprimer le biome">
+                <img src="~/images/biomes/icons/trash.png"
+                     alt=""
+                     aria-hidden="true"
+                     class="dashboard-btn__icon"/>
+            </button>
         </div>
     </div>
-}
-else
-{
-    <div class="layout-width entity-list-page biome-details-page">
-        <div class="entity-page-header">
+
+    @if (hasAlerts)
+    {
+        <div class="biome-detail-alert" role="alert">
+            <div class="biome-detail-alert__icon">!</div>
+
             <div>
-                <h1 class="hero-title">@Model.Details.Name</h1>
-                <p class="mb-0 text-muted biome-details-page__updated">
-                    Dernière mise à jour : @Model.Details.LastUpdatedLabel
+                <strong>Attention : équilibre à surveiller</strong>
+
+                <p>
+                    Certaines conditions du biome nécessitent votre attention avant de poursuivre
+                    l’ajout d’espèces ou d’équipements.
                 </p>
             </div>
-            <div class="biome-details-page__actions">
-                <a asp-page="/Biome/Stats"
+        </div>
+    }
+
+    <div class="biome-detail-kpi-grid">
+        <article class="biome-detail-kpi-card">
+            <span class="biome-detail-kpi-card__label">Température</span>
+            <strong>@biome.TemperatureLabel</strong>
+            <small>Condition thermique du dôme.</small>
+        </article>
+
+        <article class="biome-detail-kpi-card">
+            <span class="biome-detail-kpi-card__label">Humidité absolue</span>
+            <strong>@biome.AbsoluteHumidityLabel</strong>
+            <small>Humidité disponible dans l’environnement.</small>
+        </article>
+
+        <article class="biome-detail-kpi-card">
+            <span class="biome-detail-kpi-card__label">État du biome</span>
+
+            <span class="dashboard-pill @stateClass">
+                @biome.StateLabel
+            </span>
+
+            <small>État calculé selon les conditions encodées.</small>
+        </article>
+
+        <article class="biome-detail-kpi-card">
+            <span class="biome-detail-kpi-card__label">Vivants / équipements</span>
+            <strong>@biome.SpeciesCount / @biome.EquipmentCount</strong>
+            <small>@biome.TotalIndividuals individus introduits.</small>
+        </article>
+    </div>
+
+    <section class="biome-detail-help-card">
+        <div>
+            <span class="biome-detail-eyebrow">Aide à l’équilibre</span>
+
+            <h3>Analyse du biome</h3>
+
+            @if (hasAlerts)
+            {
+                <ul class="biome-detail-help-list">
+                    @foreach (var alert in biome.Alerts)
+                    {
+                        var cleanAlert = alert.TrimStart('-', ' ', '•');
+
+                        <li>@cleanAlert</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>
+                    Aucun problème majeur n’a été détecté pour le moment.
+                    Continuez à surveiller la cohérence entre les conditions climatiques,
+                    les espèces introduites et les équipements disponibles.
+                </p>
+            }
+        </div>
+    </section>
+
+    <div class="biome-detail-grid">
+        <section class="biome-detail-card" id="biome-species">
+            <header class="biome-detail-card__header">
+                <div>
+                    <h3>Espèces et populations</h3>
+                    <p>
+                        Consultez les espèces introduites dans ce biome et leur population.
+                    </p>
+                </div>
+
+                <a asp-page="/Biome/Species"
                    asp-route-slug="@Model.Details.Slug"
-                   class="dashboard-btn dashboard-btn--primary">
-                    Statistiques
-                </a>
-                
-                <a asp-page="/Biome/Edit" asp-route-slug="@Model.Details.Slug" class="biome-row-action biome-row-action--edit">Modifier le biome</a>
-                
-                <form id="deleteEntityForm"
-                      method="post"
-                      asp-page-handler="Delete"
-                      asp-route-slug="@Model.Details.Slug"
-                      asp-route-returnUrl="@currentUrl"
-                      class="species-details-delete-form">
-                    <button type="button"
-                            class="biome-row-action biome-row-action--delete biome-details-page__delete"
-                            data-open-delete-modal>
-                        Supprimer le biome
-                    </button>
-                </form>
-            </div>
-        </div>
+                   class="dashboard-link-inline">Gérer</a>
 
-        <div class="kpi-grid">
-            <article class="kpi-card kpi-card--total">
-                <div class="kpi-card__top">
-                    <h3>Température</h3>
-                    <span class="kpi-card__icon kpi-card__icon--total" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 14.76V3.5a2 2 0 1 0-4 0v11.26a4 4 0 1 0 4 0Z" />
-                        </svg>
-                    </span>
+            </header>
+
+            @if (biome.Species.Count == 0)
+            {
+                <div class="biome-detail-empty">
+                    <strong>Aucune espèce introduite</strong>
+                    <p>
+                        Ajoutez des espèces pour commencer à construire un réseau trophique viable.
+                    </p>
                 </div>
-                <strong>@Model.Details.TemperatureLabel</strong>
-            </article>
-
-            <article class="kpi-card kpi-card--instable">
-                <div class="kpi-card__top">
-                    <h3>Humidité absolue</h3>
-                    <span class="kpi-card__icon kpi-card__icon--instable" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2s6 6.2 6 11a6 6 0 1 1-12 0C6 8.2 12 2 12 2Z" />
-                        </svg>
-                    </span>
-                </div>
-                <strong>@Model.Details.AbsoluteHumidityLabel</strong>
-            </article>
-
-            <article class="kpi-card kpi-card--@Model.Details.StateLabel.ToLowerInvariant()">
-                <div class="kpi-card__top">
-                    <h3>État du biome</h3>
-                    <span class="state-badge state-badge--@Model.Details.StateLabel.ToLowerInvariant()">
-                        @Model.Details.StateLabel
-                    </span>
-                </div>
-                <strong>@Model.Details.StateLabel</strong>
-            </article>
-
-            <article class="kpi-card kpi-card--total">
-                <div class="kpi-card__top">
-                    <h3>Espèces / Équipements</h3>
-                    <span class="kpi-card__icon kpi-card__icon--optimal" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 7h18" />
-                            <path d="M8 7V5a4 4 0 0 1 8 0v2" />
-                            <rect x="4" y="7" width="16" height="13" rx="2" />
-                        </svg>
-                    </span>
-                </div>
-                <strong>@Model.Details.SpeciesCount / @Model.Details.EquipmentCount</strong>
-            </article>
-        </div>
-
-        <div class="biome-details-page__content">
-            <div class="biome-details-page__main-column">
-                <div class="table-wrapper h-100">
-                    <div class="biome-details-page__species-header">
-                        <h2 class="biome-details-page__species-title">Espèces et populations</h2>
-                        <a asp-page="/Biome/Species" asp-route-slug="@Model.Details.Slug" class="action-button biome-details-page__species-add">Gérer</a>
-                    </div>
-                    <table class="entity-table">
+            }
+            else
+            {
+                <div class="biome-detail-table-wrap">
+                    <table class="biome-detail-table">
                         <thead>
                         <tr>
-                            <th></th>
-                            <th>Nom</th>
+                            <th>Espèce</th>
                             <th>Classification</th>
                             <th>Régime</th>
-                            <th>Population</th>
+                            <th class="biome-detail-table__right">Population</th>
                         </tr>
                         </thead>
+
                         <tbody>
-                        @if (!Model.Details.Species.Any())
+                        @foreach (var species in biome.Species)
                         {
-                            <tr>
-                                <td colspan="6">Aucune espèce ajoutée pour l'instant.</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var species in Model.Details.Species)
+                            var speciesImagePath = species.ImagePath;
+
+                            if (!string.IsNullOrWhiteSpace(speciesImagePath) && speciesImagePath.StartsWith("/"))
                             {
-                                <tr>
-                                    <td>
-                                        <img src="@(string.IsNullOrWhiteSpace(species.ImagePath) 
-                                                      ? "" 
-                                                      : Url.Content($"~{species.ImagePath}"))" 
-                                             alt="Image de @species.Name" 
-                                             class="biome-details-species-thumb" />
-                                    </td>
-                                <td><strong>@species.Name</strong></td>
-                                    <td>@species.Classification</td>
-                                    <td>@species.Diet</td>
-                                    <td>@species.IndividualCount</td>
-                                </tr>
+                                speciesImagePath = "~" + speciesImagePath;
                             }
+
+                            <tr>
+                                <td>
+                                    <div class="biome-detail-entity">
+                                        <img src="@Url.Content(speciesImagePath)"
+                                             alt=""
+                                             aria-hidden="true"/>
+
+                                        <strong>@species.Name</strong>
+                                    </div>
+                                </td>
+
+                                <td>@species.Classification</td>
+                                <td>@species.Diet</td>
+
+                                <td class="biome-detail-table__right">
+                                    @species.IndividualCount
+                                </td>
+                            </tr>
                         }
                         </tbody>
                     </table>
                 </div>
-            </div>
+            }
+        </section>
 
-            <div class="biome-details-page__side-column">
-                <div class="table-wrapper h-100">
-                    <div class="biome-details-page__species-header">
-                        <h2 class="biome-details-page__species-title">Équipements</h2>
-                        <a asp-page="/Biome/SelectEquipment"
-                           asp-route-slug="@Model.Details.Slug"
-                           class="action-button biome-details-page__species-add">+ Ajouter</a>
-                    </div>
-                    <table class="entity-table">
+        <section class="biome-detail-card" id="biome-equipment">
+            <header class="biome-detail-card__header">
+                <div>
+                    <h3>Équipements</h3>
+                    <p>
+                        Consultez les équipements qui produisent ou consomment des ressources.
+                    </p>
+                </div>
+
+                <a asp-page="/Biome/SelectEquipment"
+                   asp-route-slug="@Model.Details.Slug"
+                   class="dashboard-link-inline">Gérer</a>
+            </header>
+
+            @if (biome.Equipments.Count == 0)
+            {
+                <div class="biome-detail-empty">
+                    <strong>Aucun équipement associé</strong>
+                    <p>
+                        Ajoutez des équipements pour soutenir les conditions environnementales du biome.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="biome-detail-table-wrap">
+                    <table class="biome-detail-table">
                         <thead>
                         <tr>
-                            <th></th>
-                            <th>Nom</th>
+                            <th>Équipement</th>
                             <th>Produit</th>
                             <th>Consomme</th>
-                            <th>Actions</th>
+                            <th class="biome-detail-table__right">Action</th>
                         </tr>
                         </thead>
+
                         <tbody>
-                        @if (!Model.Details.Equipments.Any())
+                        @foreach (var equipment in biome.Equipments)
                         {
+                            var equipmentImagePath = equipment.ImagePath;
+
+                            if (!string.IsNullOrWhiteSpace(equipmentImagePath) && equipmentImagePath.StartsWith("/"))
+                            {
+                                equipmentImagePath = "~" + equipmentImagePath;
+                            }
+
                             <tr>
-                                <td colspan="5">Aucun équipement lié.</td>
+                                <td>
+                                    <div class="biome-detail-entity">
+                                        @if (!string.IsNullOrWhiteSpace(equipmentImagePath))
+                                        {
+                                            <img src="@Url.Content(equipmentImagePath)"
+                                                 alt=""
+                                                 aria-hidden="true"/>
+                                        }
+                                        else
+                                        {
+                                            <span class="biome-detail-entity__fallback">
+                                                @equipment.Name.Substring(0, 1).ToUpperInvariant()
+                                            </span>
+                                        }
+
+                                        <strong>@equipment.Name</strong>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="biome-detail-tag">
+                                        @equipment.ProducedElement
+                                    </span>
+                                </td>
+
+                                <td>@equipment.ConsumedElement</td>
+
+                                <td class="biome-detail-table__right">
+                                    <form method="post"
+                                          asp-page-handler="RemoveEquipment"
+                                          asp-route-slug="@biome.Slug"
+                                          asp-route-equipmentId="@equipment.EquipmentId">
+                                        <button type="submit"
+                                                class="biome-detail-remove-button">
+                                            Retirer
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         }
-                        else
-                        {
-                            @foreach (var equipment in Model.Details.Equipments)
-                            {
-                                <tr>
-                                    <td>
-                                        <img src="@(string.IsNullOrWhiteSpace(equipment.ImagePath)
-                                                      ? ""
-                                                      : Url.Content($"~{equipment.ImagePath}"))"
-                                             alt="Image de @equipment.Name"
-                                             class="biome-details-species-thumb" />
-                                    </td>
-                                    <td><strong>@equipment.Name</strong></td>
-                                    <td>@equipment.ProducedElement</td>
-                                    <td>@equipment.ConsumedElement</td>
-                                    <td>
-                                        <form method="post"
-                                              asp-page-handler="RemoveEquipment"
-                                              asp-route-slug="@Model.Details.Slug"
-                                              asp-route-equipmentId="@equipment.EquipmentId"
-                                              class="biome-details-page__equipment-remove-form">
-                                            <button type="submit"
-                                                    class="biome-details-page__equipment-remove-button"
-                                                    aria-label="Retirer @equipment.Name du biome"
-                                                    title="Retirer du biome">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     fill="none"
-                                                     viewBox="0 0 24 24"
-                                                     stroke-width="1.5"
-                                                     stroke="currentColor"
-                                                     class="biome-details-page__equipment-remove-icon">
-                                                    <path stroke-linecap="round"
-                                                          stroke-linejoin="round"
-                                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            }
-                        }
                         </tbody>
                     </table>
                 </div>
-            </div>
+            }
+        </section>
+    </div>
 
-            <div class="biome-details-page__chart-column">
-                <div class="table-wrapper">
-                    <table class="entity-table">
-                        <thead>
-                        <tr>
-                            <th>Graphique d'évolution (bientôt)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="biome-details-page__chart-placeholder">Zone réservée au graphique (US15).</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <section class="biome-detail-observation">
+        <img src="~/images/home/landscape.jpg"
+             alt=""
+             aria-hidden="true"/>
+
+        <div class="biome-detail-observation__overlay">
+            <h3>Secteur écologique expérimental</h3>
+
+            <p>
+                Les conditions de ce biome sont analysées à partir de sa température,
+                de son humidité, des espèces introduites et des équipements de soutien.
+            </p>
         </div>
+    </section>
 
-        <div class="custom-modal" id="deleteConfirmModal" aria-hidden="true">
-            <div class="custom-modal__overlay" data-close-delete-modal></div>
+    <form id="deleteEntityForm"
+          method="post"
+          asp-page-handler="Delete"
+          asp-route-slug="@biome.Slug">
+    </form>
 
-            <div class="custom-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="custom-modal" id="deleteConfirmModal" aria-hidden="true">
+        <div class="custom-modal__overlay" data-close-delete-modal></div>
+
+        <div class="custom-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+            <button type="button"
+                    class="custom-modal__close"
+                    aria-label="Fermer"
+                    data-close-delete-modal>
+                ×
+            </button>
+
+            <div class="custom-modal__icon">
+                !
+            </div>
+
+            <h3 class="custom-modal__title" id="deleteModalTitle">
+                Confirmer la suppression
+            </h3>
+
+            <p class="custom-modal__text">
+                Voulez-vous vraiment supprimer le biome <strong>@biome.Name</strong> ?
+                Cette action est <strong>définitive</strong>.
+            </p>
+
+            <div class="custom-modal__actions">
                 <button type="button"
-                        class="custom-modal__close"
-                        aria-label="Fermer"
+                        class="custom-modal__button custom-modal__button--secondary"
                         data-close-delete-modal>
-                    ×
+                    Annuler
                 </button>
 
-                <div class="custom-modal__icon">
-                    !
-                </div>
-
-                <h3 class="custom-modal__title" id="deleteModalTitle">
-                    Confirmer la suppression
-                </h3>
-
-                <p class="custom-modal__text">
-                    Voulez-vous vraiment supprimer ce biome ?
-                    Cette action est <strong>définitive</strong>.
-                </p>
-
-                <div class="custom-modal__actions">
-                    <button type="button"
-                            class="custom-modal__button custom-modal__button--secondary"
-                            data-close-delete-modal>
-                        Annuler
-                    </button>
-
-                    <button type="button"
-                            class="custom-modal__button custom-modal__button--danger"
-                            id="confirmDeleteButton">
-                        Oui, supprimer
-                    </button>
-                </div>
+                <button type="button"
+                        class="custom-modal__button custom-modal__button--danger"
+                        id="confirmDeleteButton">
+                    Oui, supprimer
+                </button>
             </div>
         </div>
     </div>
-}
+</section>
 
 @section Scripts {
-    <script src="~/js/shared/confirm-delete-modal.js" asp-append-version="true"></script>
+    <script src="~/js/confirm-delete-modal.js" asp-append-version="true"></script>
 }
-

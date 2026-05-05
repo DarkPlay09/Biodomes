@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using BioDomes.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,6 +7,13 @@ namespace BioDomes.Web.Pages;
 
 public class ContactModel : PageModel
 {
+    private readonly SmtpEmailSender _emailSender;
+
+    public ContactModel(SmtpEmailSender emailSender)
+    {
+        _emailSender = emailSender;
+    }
+
     [BindProperty]
     public ContactInputModel Input { get; set; } = new();
 
@@ -13,19 +21,33 @@ public class ContactModel : PageModel
     {
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        // Pour le moment, le message n'est pas envoyé réellement.
-        // A faire si on a le temps
+        try
+        {
+            await _emailSender.SendContactEmailAsync(
+                Input.FullName,
+                Input.Email,
+                Input.Subject,
+                Input.Message);
 
-        TempData["SuccessMessage"] = "Votre message a bien été envoyé. L’équipe BioDomes vous répondra prochainement.";
+            TempData["SuccessMessage"] = "Votre message a bien été envoyé. L’équipe BioDomes vous répondra prochainement.";
 
-        return RedirectToPage("/Index");
+            return RedirectToPage("/Index");
+        }
+        catch
+        {
+            ModelState.AddModelError(
+                string.Empty,
+                "L’envoi du message a échoué. Veuillez réessayer plus tard.");
+
+            return Page();
+        }
     }
 
     public class ContactInputModel

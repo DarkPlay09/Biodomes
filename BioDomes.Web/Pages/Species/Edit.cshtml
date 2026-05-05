@@ -5,8 +5,8 @@
     Layout = "/Pages/Shared/_DashboardLayout.cshtml";
 
     ViewData["Title"] = "Modifier une espèce";
-    ViewData["DashboardTitle"] = "Modifier une espèce";
-    ViewData["DashboardSubtitle"] = "Mets à jour les informations, caractéristiques et visuels d’une espèce du catalogue BioDomes.";
+    ViewData["DashboardTitle"] = "Modifier l’espèce";
+    ViewData["DashboardSubtitle"] = "Adaptez ses informations avec prudence : certains changements peuvent influencer les biomes qui l’utilisent.";
 }
 
 <div class="layout-width">
@@ -22,14 +22,14 @@
                     <div class="entity-impact-warning">
                         <strong>Attention :</strong>
                         cette espèce est utilisée dans @Model.ImpactedBiomesCount biome(s).
-                        Modifier son poids ou son régime alimentaire peut impacter ces biomes.
+                        Modifier son poids ou son régime alimentaire peut influencer l’équilibre des réseaux trophiques concernés.
                     </div>
                 }
 
                 <partial name="Species/_SpeciesForm" model="new SpeciesFormViewModel { Input = Model.Input, ClassificationOptions = Model.ClassificationOptions, DietOptions = Model.DietOptions, CurrentImagePath = Model.CurrentImagePath, CurrentImageFileName = string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? null : System.IO.Path.GetFileName(Model.CurrentImagePath) }"/>
 
                 <div class="entity-form__actions">
-                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Retour</a>
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Annuler</a>
                     <button type="submit" class="action-button">Enregistrer</button>
                 </div>
                 

@@ -12,8 +12,8 @@
 
     if (isAuthenticated)
     {
-        ViewData["DashboardTitle"] = "Fiche espèce détaillée";
-        ViewData["DashboardSubtitle"] = "Consulte les informations principales de cette espèce.";
+        ViewData["DashboardTitle"] = Model.SpeciesDetails.Name;
+        ViewData["DashboardSubtitle"] = "Consultez ses caractéristiques, sa visibilité et son utilisation dans les biomes.";
     }
 
     var request = ViewContext.HttpContext.Request;
@@ -43,14 +43,6 @@
 }
 
 <section class="species-details @(isAuthenticated ? "" : "species-details--public")">
-    <nav class="species-details-breadcrumb" aria-label="Fil d'Ariane">
-        <a asp-page="./Index">Espèces</a>
-        <span>›</span>
-        <span>@Model.SpeciesDetails.ClassificationLabel</span>
-        <span>›</span>
-        <strong>@Model.SpeciesDetails.Name</strong>
-    </nav>
-
     <div class="species-details-layout">
         <div class="species-details-media">
             <article class="species-details-image-card">
@@ -157,8 +149,9 @@
                         else
                         {
                             <button type="button"
-                                    class="species-details-delete-button"
-                                    disabled>
+                                    class="species-details-delete-button species-details-delete-button--disabled"
+                                    disabled
+                                    title="Cette espèce est utilisée dans un ou plusieurs biomes.">
                                 Suppression impossible
                             </button>
                         }

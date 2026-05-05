@@ -11,6 +11,25 @@
 }
 
 <section class="analytics-page">
+    <nav class="biome-linked-breadcrumb" aria-label="Fil d’Ariane">
+        <a asp-page="./Index">
+            Mes biomes
+        </a>
+
+        <span aria-hidden="true">›</span>
+
+        <a asp-page="./Details"
+           asp-route-slug="@Model.Dashboard.BiomeSlug">
+            @Model.Dashboard.BiomeName
+        </a>
+
+        <span aria-hidden="true">›</span>
+
+        <span aria-current="page">
+            Statistiques
+        </span>
+    </nav>
+    
     <header class="analytics-hero analytics-hero--biome">
         <div class="analytics-hero__content">
             <div class="analytics-hero__text">
@@ -20,7 +39,7 @@
             <div class="analytics-biome-meta">
                 <article class="analytics-biome-pill analytics-biome-pill--state">
                     <span class="analytics-biome-pill__icon">
-                        <img src="~/images/dashboard/icons/line.png"
+                        <img src="~/images/dashboard/icons/leaf.png"
                              alt=""
                              class="analytics-icon-img"
                              aria-hidden="true"/>
@@ -168,36 +187,18 @@
 
         <section class="analytics-grid analytics-grid--two">
             <partial name="/Pages/Stats/_ChartPanel.cshtml"
-                     model='new ChartPanelVm(
-                         "Biodiversité du biome",
-                         "Visualisation de l’évolution disponible à partir des données historiques du biome.",
-                         "biodiversityChart",
-                         "analytics-chart--large")'/>
+                     model='new ChartPanelVm("Biodiversité du biome", "Visualisation de l’évolution disponible à partir des données historiques du biome.", "biodiversityChart", "analytics-chart--large")'/>
 
             <partial name="/Pages/Stats/_ChartPanel.cshtml"
-                     model='new ChartPanelVm(
-                         "Espèces par classification",
-                         "Répartition des individus du biome par type d’espèce.",
-                         "classificationChart",
-                         "analytics-chart--donut",
-                         Model.Dashboard.TotalDistinctSpecies.ToString("N0"),
-                         "Espèces")'/>
+                     model='new ChartPanelVm("Espèces par classification", "Répartition des individus du biome par type d’espèce.", "classificationChart", "analytics-chart--donut", Model.Dashboard.TotalDistinctSpecies.ToString("N0"), "Espèces")'/>
         </section>
 
         <section class="analytics-grid analytics-grid--two">
             <partial name="/Pages/Stats/_ChartPanel.cshtml"
-                     model='new ChartPanelVm(
-                         "Nombre d’éléments par espèce",
-                         "Population totale de chaque espèce dans ce biome.",
-                         "speciesChart",
-                         "analytics-chart--large")'/>
+                     model='new ChartPanelVm("Nombre d’éléments par espèce", "Population totale de chaque espèce dans ce biome.", "speciesChart", "analytics-chart--large")'/>
 
             <partial name="/Pages/Stats/_ChartPanel.cshtml"
-                     model='new ChartPanelVm(
-                         "Répartition par régime alimentaire",
-                         "Nombre d’individus regroupés par régime alimentaire dans ce biome.",
-                         "dietChart",
-                         "analytics-chart--large")'/>
+                     model='new ChartPanelVm("Répartition par régime alimentaire", "Nombre d’individus regroupés par régime alimentaire dans ce biome.", "dietChart", "analytics-chart--large")'/>
         </section>
 
         <section class="analytics-grid analytics-grid--secondary">
@@ -216,11 +217,7 @@
             </article>
 
             <partial name="/Pages/Stats/_ChartPanel.cshtml"
-                     model='new ChartPanelVm(
-                         "Réseau trophique simplifié",
-                         "Déplace les nœuds, zoome et clique pour analyser les relations de ce biome.",
-                         "trophicGraphChart",
-                         "analytics-chart--network")'/>
+                     model='new ChartPanelVm("Réseau trophique simplifié", "Déplace les nœuds, zoome et clique pour analyser les relations de ce biome.", "trophicGraphChart", "analytics-chart--network")'/>
         </section>
 
         <partial name="/Pages/Stats/_CriticalSpeciesTable.cshtml"

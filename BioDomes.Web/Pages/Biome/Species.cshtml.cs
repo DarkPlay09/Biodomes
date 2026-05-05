@@ -1,6 +1,7 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using BioDomes.Domains.Queries.Biome.Species;
 using BioDomes.Domains.Repositories;
+using BioDomes.Domains.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -9,10 +10,12 @@ namespace BioDomes.Web.Pages.Biome;
 public class SpeciesModel : PageModel
 {
     private readonly IBiomeRepository _biomeRepository;
+    private readonly IBiomeStabilityService _biomeStabilityService;
 
-    public SpeciesModel(IBiomeRepository biomeRepository)
+    public SpeciesModel(IBiomeRepository biomeRepository, IBiomeStabilityService biomeStabilityService)
     {
         _biomeRepository = biomeRepository;
+        _biomeStabilityService = biomeStabilityService;
     }
 
     public BiomeSpeciesPageViewModel? PageData { get; private set; }
@@ -98,7 +101,6 @@ public class SpeciesModel : PageModel
 
         TempData["SuccessMessage"] = "Population mise à jour.";
 
-        
         return RedirectToPage(new
         {
             slug,
@@ -151,6 +153,8 @@ public class SpeciesModel : PageModel
             return;
         }
 
+        var detailsData = _biomeRepository.GetDetailsBySlugForCreator(biomeSlug, currentUserId);
+
         var linkedSpecies = managementData.SpeciesCards
             .Select(species => new BiomeLinkedSpeciesViewModel(
                 species.SpeciesId,
@@ -179,13 +183,18 @@ public class SpeciesModel : PageModel
             .OrderBy(value => value)
             .ToList();
 
+        var speciesAlerts = detailsData is null
+            ? Array.Empty<string>()
+            : BiomeAlertsBuilder.BuildSpeciesAlerts(detailsData.Species, _biomeStabilityService);
+
         PageData = new BiomeSpeciesPageViewModel(
             BiomeId: managementData.BiomeId,
             BiomeName: managementData.BiomeName,
             BiomeSlug: managementData.BiomeSlug,
             LinkedSpecies: linkedSpecies,
             ClassificationOptions: classifications,
-            DietOptions: diets);
+            DietOptions: diets,
+            SpeciesAlerts: speciesAlerts);
     }
 
     private bool TryGetCurrentUserId(out int userId)
@@ -201,7 +210,8 @@ public sealed record BiomeSpeciesPageViewModel(
     string BiomeSlug,
     IReadOnlyList<BiomeLinkedSpeciesViewModel> LinkedSpecies,
     IReadOnlyList<string> ClassificationOptions,
-    IReadOnlyList<string> DietOptions);
+    IReadOnlyList<string> DietOptions,
+    IReadOnlyList<string> SpeciesAlerts);
 
 public sealed record BiomeLinkedSpeciesViewModel(
     int SpeciesId,

@@ -33,7 +33,7 @@
                     <span class="hero-badge-dot"></span>
                 </span>
 
-                <span>Phase Alpha : Accès anticipé</span>
+                <span>Accès anticipé</span>
             </div>
 
             <h1 class="hero-title">
@@ -41,27 +41,27 @@
             </h1>
 
             <p class="hero-description">
-                Plongez dans l’ultime simulation de biome post-apocalyptique.
-                Gérez des écosystèmes complexes et assurez la survie de la biodiversité
-                face à l’extinction globale.
+                Créez des biomes capables de survivre dans des conditions postapocalyptiques.
+                Ajustez la température, contrôlez l’humidité, introduisez des espèces et utilisez
+                des équipements pour maintenir un écosystème viable.
             </p>
 
             <div class="hero-actions">
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <a class="button button-primary" asp-page="/Dashboard/Index">
-                        Commencer l’aventure
+                        Accéder à mon laboratoire
                     </a>
                 }
                 else
                 {
                     <a class="button button-primary" asp-area="Identity" asp-page="/Account/Register">
-                        Commencer l’aventure
+                        Créer mon profil de chercheur
                     </a>
                 }
 
                 <a class="button button-secondary" href="#laboratoire">
-                    En savoir plus
+                    Découvrir le simulateur
                 </a>
             </div>
         </div>
@@ -69,7 +69,7 @@
         <div class="hero-visual">
             <div class="hero-image-frame">
                 <img src="~/images/home/landscape.jpg"
-                     alt="Image d'un paysage"
+                     alt="Paysage naturel utilisé pour illustrer un biome expérimental"
                      class="hero-image" />
             </div>
         </div>
@@ -79,12 +79,13 @@
 <section id="laboratoire" class="lab-section">
     <div class="home-container">
         <header class="section-heading section-heading--center">
-            <h2>Technologie de Laboratoire</h2>
+            <h2>Un simulateur de biomes sous dôme</h2>
             <div class="section-heading__line"></div>
 
             <p>
-                Nos outils de pointe permettent une simulation précise des conditions
-                environnementales les plus extrêmes pour préserver l’avenir de notre planète.
+                Terrarium Zero permet aux chercheurs de tester différents scénarios climatiques,
+                d’associer des espèces à un environnement et d’observer si l’équilibre du biome
+                peut être maintenu durablement.
             </p>
         </header>
 
@@ -92,45 +93,46 @@
             <article class="lab-card">
                 <div class="lab-card__icon">
                     <img src="~/images/home/icons/brightness.png"
-                         alt="Icon soleil"
+                         alt=""
                          aria-hidden="true" />
                 </div>
 
-                <h3>Analyse Moléculaire</h3>
+                <h3>Conditions du biome</h3>
 
                 <p>
-                    Surveillance en temps réel de la composition atmosphérique
-                    et détection de toxines environnementales.
+                    Définissez les paramètres essentiels du dôme, comme la température
+                    et l’humidité absolue, afin d’évaluer si le biome est optimal, instable
+                    ou critique.
                 </p>
             </article>
 
             <article class="lab-card">
                 <div class="lab-card__icon">
                     <img src="~/images/home/icons/thermometer_white.png"
-                         alt="Icon thermomètre"
+                         alt=""
                          aria-hidden="true" />
                 </div>
 
-                <h3>Contrôle Climatique</h3>
+                <h3>Équilibre environnemental</h3>
 
                 <p>
-                    Régulation automatisée de la température, de la pression
-                    et de l’humidité relative du biome.
+                    Surveillez les limites climatiques du biome et adaptez vos choix pour
+                    éviter que l’environnement ne devienne trop hostile pour les espèces.
                 </p>
             </article>
 
             <article class="lab-card">
                 <div class="lab-card__icon">
                     <img src="~/images/home/icons/adn.png"
-                         alt="Icon adn"
+                         alt=""
                          aria-hidden="true" />
                 </div>
 
-                <h3>Suivi Génétique</h3>
+                <h3>Réseaux trophiques</h3>
 
                 <p>
-                    Cartographie complète des espèces et surveillance proactive
-                    de leur évolution biologique adaptative.
+                    Composez un écosystème cohérent en ajoutant des espèces, des individus
+                    et des ressources pour que chaque organisme puisse trouver sa place.
                 </p>
             </article>
         </div>
@@ -140,36 +142,36 @@
 <section class="creators-section">
     <div class="home-container creators-layout">
         <div class="creators-text">
-            <p class="section-eyebrow">À propos des créateurs</p>
+            <p class="section-eyebrow">Studio à l’origine du projet</p>
 
             <h2>Laudot Solutions</h2>
 
             <p>
-                Laudot Solutions s’impose comme un acteur spécialisé dans le domaine
-                des simulations environnementales et de la préservation de la biodiversité.
-                Son expertise technologique permet de modéliser des scénarios complexes
-                pour anticiper les crises écologiques.
+                Laudot Solutions imagine Terrarium Zero comme une plateforme de recherche
+                en ligne dédiée à la simulation de biomes extrêmes. L’objectif est de fournir
+                aux chercheurs un outil clair pour créer, comparer et améliorer des écosystèmes
+                artificiels.
             </p>
 
             <p>
-                Sa mission est claire : mobiliser les technologies les plus avancées
-                pour protéger les espèces menacées et restaurer les équilibres naturels fragiles.
-                Grâce à BioDomes, ces outils deviennent accessibles à une nouvelle génération
-                de gardiens de la Terre.
+                Avec BioDomes, le studio met l’accent sur la viabilité des environnements :
+                chaque biome doit tenir compte de ses conditions climatiques, des espèces
+                présentes, des équipements disponibles et de l’équilibre alimentaire entre
+                les organismes.
             </p>
         </div>
 
         <div class="creators-visuals" aria-hidden="true">
             <div class="creators-visual-card creators-visual-card--primary">
                 <img src="~/images/home/iguana.jpg"
-                     alt="Image iguana"
+                     alt=""
                      aria-hidden="true"
                      class="creators-visual-card__image" />
             </div>
 
             <div class="creators-visual-card creators-visual-card--accent">
                 <img src="~/images/home/biologist-woman.jpg"
-                     alt="Image scientifique"
+                     alt=""
                      aria-hidden="true"
                      class="creators-visual-card__image" />
             </div>
@@ -181,10 +183,10 @@
     <div class="home-container">
         <header class="section-heading section-heading--split">
             <div>
-                <h2>Biomes à Haute Diversité</h2>
+                <h2>Biomes équilibrés les plus diversifiés</h2>
                 <p>
-                    Exploration des secteurs de recherche les plus stables,
-                    classés selon leur diversité d’espèces.
+                    Consultez les dômes les plus prometteurs : ceux qui combinent
+                    stabilité, conditions maîtrisées et forte diversité d’espèces.
                 </p>
             </div>
         </header>
@@ -192,10 +194,10 @@
         @if (Model.BestBiomes.Count == 0)
         {
             <div class="home-biome-empty">
-                <h3>Aucun biome en équilibre pour le moment</h3>
+                <h3>Aucun biome équilibré à afficher</h3>
                 <p>
-                    Dès qu’un biome atteindra un état optimal avec des espèces associées,
-                    il apparaîtra automatiquement ici.
+                    Les biomes apparaîtront ici dès qu’ils atteindront un état viable
+                    avec des espèces associées et un bon niveau de diversité.
                 </p>
             </div>
         }
@@ -224,7 +226,7 @@
                         <div class="home-biome-card__metrics">
                             <div>
                                 <img src="~/images/home/icons/thermometer_green.png"
-                                     alt="Icon de thermomètre"
+                                     alt=""
                                      aria-hidden="true"
                                      class="home-biome-card__icon" />
                                 <p>@biome.Temperature.ToString("0.#")°C</p>
@@ -232,7 +234,7 @@
 
                             <div>
                                 <img src="~/images/home/icons/humidity.png"
-                                     alt="Icon d'humidité"
+                                     alt=""
                                      aria-hidden="true"
                                      class="home-biome-card__icon" />
                                 <p>@biome.AbsoluteHumidity.ToString("0.#") g/m³</p>
@@ -240,7 +242,7 @@
 
                             <div>
                                 <img src="~/images/home/icons/paws.png"
-                                     alt="Icon des espèces"
+                                     alt=""
                                      aria-hidden="true"
                                      class="home-biome-card__icon" />
                                 <p>@biome.SpeciesCount espèces</p>
@@ -248,10 +250,10 @@
 
                             <div>
                                 <img src="~/images/home/icons/beaker.png"
-                                     alt="Icon des équipements"
+                                     alt=""
                                      aria-hidden="true"
                                      class="home-biome-card__icon" />
-                                <p>@biome.EquipmentCount</p>
+                                <p>@biome.EquipmentCount équipements</p>
                             </div>
                         </div>
                     </article>
@@ -266,30 +268,30 @@
 
     <div class="final-cta-wrapper">
         <h2 class="final-cta-title">
-            Devenez le gardien de la biodiversité de demain.
+            Construisez votre premier biome viable.
         </h2>
 
         <p class="final-cta-text">
-            Rejoignez des scientifiques et passionnés dans une mission de préservation
-            ambitieuse, portée par la simulation et l’observation écologique.
+            Expérimentez, observez et améliorez vos écosystèmes sous dôme.
+            Chaque choix compte : climat, espèces, équipements et équilibre alimentaire.
         </p>
 
         <div class="final-cta-actions">
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <a class="final-cta-button final-cta-button-main" asp-page="/Dashboard/Index">
-                    Accéder au laboratoire
+                    Ouvrir mon espace de recherche
                 </a>
             }
             else
             {
                 <a class="final-cta-button final-cta-button-main" asp-area="Identity" asp-page="/Account/Register">
-                    Créer mon laboratoire gratuit
+                    Rejoindre Terrarium Zero
                 </a>
             }
 
             <a class="final-cta-button final-cta-button-secondary" href="#laboratoire">
-                Voir le simulateur
+                Voir les principes du simulateur
             </a>
         </div>
     </div>

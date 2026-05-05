@@ -99,23 +99,28 @@
 .auth-hero {
     margin-top: auto;
     margin-bottom: auto;
-    max-width: 30rem;
+    max-width: 36rem;
 }
 
 .auth-hero h1 {
     margin: 0 0 1.75rem;
-    font-size: clamp(2.6rem, 4.8vw, 5rem);
-    line-height: 0.98;
+    max-width: 36rem;
+    font-size: clamp(3rem, 4vw, 4.4rem);
+    line-height: 1.05;
     font-weight: 800;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.045em;
+}
+
+.auth-hero h1 span {
+    display: block;
 }
 
 .auth-hero p {
+    max-width: 520px;
     margin: 0;
-    font-size: 1.45rem;
+    font-size: 1.15rem;
     line-height: 1.65;
     color: rgba(255, 255, 255, 0.86);
-    max-width: 30rem;
 }
 
 .auth-visual__footer {
@@ -143,11 +148,12 @@
 
 .auth-card__header h2 {
     margin: 0 0 0.8rem;
-    font-size: clamp(2rem, 2.5vw, 3.25rem);
+    font-size: clamp(2rem, 2.5vw, 3rem);
     line-height: 1.08;
     font-weight: 800;
     letter-spacing: -0.04em;
     color: #101828;
+    text-align: center;
 }
 
 .auth-card__header p {
@@ -155,6 +161,7 @@
     font-size: 1.35rem;
     line-height: 1.5;
     color: var(--bio-muted);
+    text-align: center;
 }
 
 .auth-form {

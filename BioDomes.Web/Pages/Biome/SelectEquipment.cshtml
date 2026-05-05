@@ -6,7 +6,7 @@
 
     ViewData["Title"] = "Sélection des équipements";
     ViewData["DashboardTitle"] = "Sélection des équipements";
-    ViewData["DashboardSubtitle"] = "Choisis des équipements à ajouter dans ton biome.";
+    ViewData["DashboardSubtitle"] = "Choisissez des équipements à ajouter dans votre biome.";
 
     var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
     var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
@@ -16,32 +16,106 @@
     var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 }
 
-<section class="species-catalog select-species-page select-equipment-page" data-biome-slug="equipment-@Model.BiomeSlug">
-    <header class="species-catalog__header">
-        <a asp-page="/Biome/Details"
-           asp-route-slug="@Model.BiomeSlug"
-           class="dashboard-btn dashboard-btn--ghost">
-            ← Retour au détail du biome
+<section class="species-catalog select-species-page select-equipment-page biome-select-catalog-page"
+         data-biome-slug="equipment-@Model.BiomeSlug">
+
+    <nav class="biome-linked-breadcrumb" aria-label="Fil d’Ariane">
+        <a asp-page="/Biome/Index">
+            Mes biomes
         </a>
 
-        <div class="select-species-page__header-actions">
+        <span aria-hidden="true">›</span>
+
+        <a asp-page="/Biome/Details"
+           asp-route-slug="@Model.BiomeSlug">
+            @Model.BiomeName
+        </a>
+
+        <span aria-hidden="true">›</span>
+
+        <a asp-page="/Biome/Details"
+           asp-route-slug="@Model.BiomeSlug"
+           asp-fragment="biome-equipment">
+            Équipements
+        </a>
+
+        <span aria-hidden="true">›</span>
+
+        <span aria-current="page">
+            Sélection
+        </span>
+    </nav>
+
+    <header class="biome-select-catalog-hero">
+        <div>
+            <h2>Sélection des équipements</h2>
+
+            <p>
+                Ajoutez de nouveaux équipements dans <strong>@Model.BiomeName</strong>.
+                Chaque équipement sélectionné pourra contribuer à produire, consommer ou stabiliser
+                les ressources nécessaires au bon fonctionnement du biome.
+            </p>
+        </div>
+
+        <div class="biome-select-catalog-hero__actions">
+            <a asp-page="/Biome/Details"
+               asp-route-slug="@Model.BiomeSlug"
+               asp-fragment="biome-equipment"
+               class="biome-linked-button biome-linked-button--outline">
+                Retour aux équipements
+            </a>
+
             <button type="submit"
                     form="confirmSelectionForm"
-                    class="action-button">
+                    class="biome-linked-button biome-linked-button--primary">
                 Valider la sélection
             </button>
 
             <a asp-page="/Equipment/Add"
                asp-route-returnUrl="@currentUrl"
-               class="action-button">
-                + Créer un équipement
+               class="biome-linked-button biome-linked-button--ghost">
+                Créer un équipement
             </a>
         </div>
     </header>
 
-    <div class="species-catalog__success">
-        Biome ciblé : <strong>@Model.BiomeName</strong>
-    </div>
+    <section class="biome-linked-summary-grid">
+        <article class="biome-linked-summary-card">
+            <span>Équipements affichés</span>
+            <strong>@Model.EquipmentCards.Count</strong>
+            <small>Résultats visibles avec les filtres actuels.</small>
+        </article>
+
+        <article class="biome-linked-summary-card">
+            <span>Page actuelle</span>
+            <strong>@Model.PageNumber / @Model.TotalPages</strong>
+            <small>Navigation dans le catalogue des équipements.</small>
+        </article>
+
+        <article class="biome-linked-summary-card">
+            <span>Catalogue</span>
+            <strong>@(Model.IncludeAlreadyInBiome ? "Complet" : "Disponible")</strong>
+            <small>
+                @(Model.IncludeAlreadyInBiome
+                    ? "Les équipements déjà présents sont affichés."
+                    : "Les équipements déjà présents sont masqués.")
+            </small>
+        </article>
+    </section>
+
+    <section class="biome-linked-help-card">
+        <div>
+            <span class="biome-linked-eyebrow">Aide à la sélection</span>
+
+            <h3>Stabilisez les ressources du biome</h3>
+
+            <p>
+                Pour améliorer l’équilibre du biome, choisissez des équipements cohérents avec
+                ses besoins actuels. Privilégiez ceux qui compensent les ressources manquantes
+                ou qui soutiennent les conditions environnementales déjà en place.
+            </p>
+        </div>
+    </section>
 
     <form method="get" class="catalog-filter-card">
         <input type="hidden" name="slug" value="@Model.BiomeSlug" />
@@ -113,16 +187,21 @@
 
     @if (Model.EquipmentCards.Count == 0)
     {
-        <div class="species-empty-card">
-            <div class="species-empty-card__icon">+</div>
+        <div class="empty-state empty-state--public-catalog">
+            <div class="empty-state__icon" aria-hidden="true">
+                +
+            </div>
 
             <h3>Aucun équipement trouvé</h3>
 
             <p>
-                Modifie ta recherche ou crée un nouvel équipement.
+                Aucun équipement ne correspond aux filtres actuels.
+                Modifiez votre recherche ou créez un nouvel équipement pour enrichir le catalogue.
             </p>
 
-            <a asp-page="/Equipment/Add" class="dashboard-btn dashboard-btn--primary">
+            <a asp-page="/Equipment/Add"
+               asp-route-returnUrl="@currentUrl"
+               class="biome-linked-button biome-linked-button--primary">
                 Créer un équipement
             </a>
         </div>
