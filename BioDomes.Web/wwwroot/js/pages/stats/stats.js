@@ -1,7 +1,7 @@
-import { createStatsCharts } from "./stats/charts.js";
-import { registerExports } from "./stats/exports.js";
-import { registerSearch } from "./stats/search.js";
-import { createDetailRenderer, readJsonElement } from "./stats/utils.js";
+import { createStatsCharts } from "./charts.js";
+import { registerExports } from "./exports.js";
+import { registerSearch } from "./search.js";
+import { createDetailRenderer, readJsonElement } from "./utils.js";
 
 const dataElement = document.getElementById("stats-data");
 const echartsInstance = window.echarts;
