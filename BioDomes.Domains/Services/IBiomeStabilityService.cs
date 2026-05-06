@@ -1,5 +1,6 @@
 ﻿using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
+using BioDomes.Domains.Services;
 
 namespace BioDomes.Domains.Services;
 

@@ -4,13 +4,25 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AIWebHostEnvironment_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003Ftheos_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E3_003Fresharper_002Dhost_003FSourcesCache_003F1612976c39f433f6e8a97eda6d2e6bb5251ce346a4e0f5be8e87f51d7cf46_003FIWebHostEnvironment_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ARazorPageBase_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003Ftheos_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E3_003Fresharper_002Dhost_003FSourcesCache_003F6888d268113295cfcdc76a84c4c278e42377eae2c9e6648376871d19143c89c4_003FRazorPageBase_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AResourceType_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003Ftheos_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E3_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F970b2beffd704e10bd878a4ca1fbc18c38930_003F78_003F6caa36fd_003FResourceType_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5be9549a_002Dfb65_002D4dcb_002Dba81_002De42360c4a836/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="StringExtensionsTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/dotCover/Editor/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\banan\AppData\Local\JetBrains\Rider2026.1\resharper-host\temp\Rider\vAny\CoverageData\_BioDomes.2082637213\Snapshot\snapshot.utdcvr</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bb403c57_002D11c8_002D4e94_002D8324_002D0cc0a645c46c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="BiomeSpeciesItemDtoTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::StringExtensionsTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Queries.Biome.Details.BiomeSpeciesItemDtoTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=91f021eb_002Da34c_002D4710_002D9247_002Dc1a6743b9233/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="StringExtensionsTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ca5d9fe2_002De9a4_002D4114_002Da5b8_002D80ac924caaa1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="BiomeEquipmentItemDtoTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="D:\HELMo\Bloc_02\UE19-Web\biodomes\BioDomes.Domains.Tests" Presentation="&amp;lt;test&amp;gt;\&amp;lt;BioDomes.Domains.Tests&amp;gt;" /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d7d57e68_002D2632_002D4110_002Db6cc_002D963ce1dd3ce4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="BiomeTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::StringExtensionsTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Entities.SpeciesTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Entities.EquipmentTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Entities.UserAccountTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Entities.BiomeSpeciesFoodSnapshotTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Entities.BiomeTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Extensions.StringExtensionsTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::22BC8654-79A4-4583-97A3-300E1790EA0C::net8.0::BioDomes.Domains.Tests.Queries.Biome.Details.BiomeDetailsDtoTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	
+	</wpf:ResourceDictionary>
