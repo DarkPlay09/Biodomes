@@ -1,0 +1,56 @@
+@page "/biome/{slug}/edit"
+@model BioDomes.Web.Pages.Biome.EditModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Modifier un biome";
+    ViewData["DashboardTitle"] = "Modifier le biome";
+    ViewData["DashboardSubtitle"] = "Ajustez les conditions environnementales du dôme.";
+}
+
+<div class="layout-width">
+    <section class="entity-form-page">
+        <div class="entity-form-card">
+            <form method="post" class="entity-form">
+                <input type="hidden" asp-for="ReturnUrl" />
+                <div asp-validation-summary="ModelOnly" class="entity-form__summary"></div>
+
+                <div class="entity-form__grid">
+                    <div class="entity-form__field">
+                        <label asp-for="Input.Name"></label>
+                        <input asp-for="Input.Name" class="entity-form__control" placeholder="Savane expérimentale" />
+                        <span asp-validation-for="Input.Name" class="entity-form__error"></span>
+                    </div>
+
+                    <div class="entity-form__field">
+                        <label asp-for="Input.Temperature"></label>
+                        <div class="entity-form__input-with-suffix">
+                            <input asp-for="Input.Temperature" type="number" step="0.01" class="entity-form__control entity-form__control--with-suffix" />
+                            <span class="entity-form__suffix">°C</span>
+                        </div>
+                        <span asp-validation-for="Input.Temperature" class="entity-form__error"></span>
+                    </div>
+
+                    <div class="entity-form__field">
+                        <label asp-for="Input.AbsoluteHumidity"></label>
+                        <div class="entity-form__input-with-suffix">
+                            <input asp-for="Input.AbsoluteHumidity" type="number" step="0.01" class="entity-form__control entity-form__control--with-suffix" />
+                            <span class="entity-form__suffix">g/m³</span>
+                        </div>
+                        <span asp-validation-for="Input.AbsoluteHumidity" class="entity-form__error"></span>
+                    </div>
+                </div>
+
+                <div class="entity-form__actions">
+                    <a href="@Model.SafeReturnUrl" class="entity-form__back">Annuler</a>
+                    <button type="submit" class="action-button">Enregistrer les modifications</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

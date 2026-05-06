@@ -35,7 +35,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Carnivore",
                 AdultSize = 2.5,
                 Weight = 190,
-                ImagePath = "/images/species/lion-dafrique-a1b2c3d4.jpg",
+                ImagePath = "/uploads/species/lion-dafrique-a1b2c3d4.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -47,7 +47,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Photosynthèse",
                 AdultSize = 9,
                 Weight = 12,
-                ImagePath = "/images/species/monstera-b2c3d4e5.jpg",
+                ImagePath = "/uploads/species/monstera-b2c3d4e5.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -59,7 +59,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Herbivore",
                 AdultSize = 0.95,
                 Weight = 1.2,
-                ImagePath = "/images/species/ara-rouge-c3d4e5f6.jpg",
+                ImagePath = "/uploads/species/ara-rouge-c3d4e5f6.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -71,7 +71,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Herbivore",
                 AdultSize = 1.5,
                 Weight = 250,
-                ImagePath = "/images/species/tortue-geante-d4e5f6a7.jpg",
+                ImagePath = "/uploads/species/tortue-geante-d4e5f6a7.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -83,7 +83,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Omnivore",
                 AdultSize = 0.46,
                 Weight = 2.2,
-                ImagePath = "/images/species/lemur-catta-e5f6a7b8.jpg",
+                ImagePath = "/uploads/species/lemur-catta-e5f6a7b8.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -95,7 +95,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Photosynthèse",
                 AdultSize = 85,
                 Weight = 1200000,
-                ImagePath = "/images/species/sequoia-geant-f6a7b8c9.jpg",
+                ImagePath = "/uploads/species/sequoia-geant-f6a7b8c9.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -107,7 +107,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Photosynthèse",
                 AdultSize = 0.8,
                 Weight = 15,
-                ImagePath = "/images/species/aloe-vera-a7b8c9d0.jpg",
+                ImagePath = "/uploads/species/aloe-vera-a7b8c9d0.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -119,7 +119,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Carnivore",
                 AdultSize = 1.6,
                 Weight = 45,
-                ImagePath = "/images/species/loup-gris-b8c9d0e1.jpg",
+                ImagePath = "/uploads/species/loup-gris-b8c9d0e1.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -131,7 +131,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Omnivore",
                 AdultSize = 0.6,
                 Weight = 9,
-                ImagePath = "/images/species/raton-laveur-c9d0e1f2.jpg",
+                ImagePath = "/uploads/species/raton-laveur-c9d0e1f2.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             },
@@ -143,7 +143,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
                 Diet = "Carnivore",
                 AdultSize = 2.2,
                 Weight = 13,
-                ImagePath = "/images/species/boa-constrictor-d0e1f2a3.jpg",
+                ImagePath = "/uploads/species/boa-constrictor-d0e1f2a3.jpg",
                 IsPublicAvailable = true,
                 CreatorId = 1
             }
@@ -154,7 +154,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
             {
                 Id = 1,
                 Name = "Helio Lamp A7F3K2Q1",
-                ImagePath = "/images/equipment/helio-lamp-a7f3k2q1.jpg",
+                ImagePath = "/uploads/equipment/helio-lamp-a7f3k2q1.jpg",
                 ProducedElement = ResourceType.Lumiere,
                 ConsumedElement = ResourceType.Hydrogene,
                 IsPublicAvailable = true,
@@ -164,7 +164,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
             {
                 Id = 2,
                 Name = "UV Array B9M4D8R2",
-                ImagePath = "/images/equipment/uv-array-b9m4d8r2.jpg",
+                ImagePath = "/uploads/equipment/uv-array-b9m4d8r2.jpg",
                 ProducedElement = ResourceType.Lumiere,
                 ConsumedElement = ResourceType.Azote,
                 IsPublicAvailable = true,
@@ -174,7 +174,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
             {
                 Id = 3,
                 Name = "Micro Pump C6P1T7L5",
-                ImagePath = "/images/equipment/micro-pump-c6p1t7l5.jpg",
+                ImagePath = "/uploads/equipment/micro-pump-c6p1t7l5.jpg",
                 ProducedElement = ResourceType.Eau,
                 ConsumedElement = ResourceType.Hydrogene,
                 IsPublicAvailable = true,
@@ -184,7 +184,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
             {
                 Id = 4,
                 Name = "Nitro Filter D3X8N4V6",
-                ImagePath = "/images/equipment/nitro-filter-d3x8n4v6.jpg",
+                ImagePath = "/uploads/equipment/nitro-filter-d3x8n4v6.jpg",
                 ProducedElement = ResourceType.Azote,
                 ConsumedElement = ResourceType.Eau,
                 IsPublicAvailable = true,
@@ -194,7 +194,7 @@ public class BioDomesDbContext : IdentityDbContext<UserEntity, IdentityRole<int>
             {
                 Id = 5,
                 Name = "Hydro Cell E2R9J5S8",
-                ImagePath = "/images/equipment/hydro-cell-e2r9j5s8.jpg",
+                ImagePath = "/uploads/equipment/hydro-cell-e2r9j5s8.jpg",
                 ProducedElement = ResourceType.Hydrogene,
                 ConsumedElement = ResourceType.Eau,
                 IsPublicAvailable = true,

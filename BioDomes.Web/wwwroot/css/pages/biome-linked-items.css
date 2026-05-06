@@ -1,0 +1,913 @@
+﻿/* =========================
+   Biome linked items
+   Utilisable pour espèces et équipements
+   ========================= */
+
+.biome-linked-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-bottom: 2.5rem;
+}
+
+/* =========================
+   Breadcrumb
+   ========================= */
+
+.biome-linked-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: -0.35rem;
+    color: #64748b;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.biome-linked-breadcrumb a {
+    color: #0b5d57;
+    text-decoration: none;
+    transition: color 0.18s ease;
+}
+
+.biome-linked-breadcrumb a:hover {
+    color: #0b3d39;
+    text-decoration: underline;
+}
+
+.biome-linked-breadcrumb span {
+    color: #94a3b8;
+}
+
+.biome-linked-breadcrumb span[aria-current="page"] {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+/* =========================
+   Header
+   ========================= */
+
+.biome-linked-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--biome-linked-border);
+}
+
+.biome-linked-hero h2 {
+    margin: 0;
+    color: var(--biome-linked-primary);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 1.03;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.biome-linked-hero p {
+    max-width: 760px;
+    margin: 0.8rem 0 0;
+    color: var(--biome-linked-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.biome-linked-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+/* =========================
+   Buttons
+   ========================= */
+
+.biome-linked-button {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0 1.15rem;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    font-weight: 850;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+            background-color 0.18s ease,
+            border-color 0.18s ease,
+            color 0.18s ease,
+            transform 0.18s ease,
+            box-shadow 0.18s ease;
+}
+
+.biome-linked-button:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.biome-linked-button--primary {
+    background: var(--biome-linked-primary);
+    border-color: var(--biome-linked-primary);
+    color: #ffffff;
+    box-shadow: 0 12px 24px rgba(11, 61, 57, 0.16);
+}
+
+.biome-linked-button--primary:hover {
+    background: var(--biome-linked-primary-hover);
+    border-color: var(--biome-linked-primary-hover);
+    color: #ffffff;
+}
+
+.biome-linked-button--outline {
+    background: #ffffff;
+    border: 2px solid var(--biome-linked-primary);
+    color: var(--biome-linked-primary);
+}
+
+.biome-linked-button--outline:hover {
+    background: #f3f8f7;
+    color: var(--biome-linked-primary);
+    box-shadow: 0 10px 22px rgba(12, 79, 73, 0.10);
+}
+
+.biome-linked-button--ghost {
+    background: var(--biome-linked-bg-muted);
+    border-color: var(--biome-linked-border);
+    color: var(--biome-linked-primary);
+}
+
+.biome-linked-button--ghost:hover {
+    background: #e3ece9;
+    color: var(--biome-linked-primary);
+}
+
+/* =========================
+   Biome - Select catalog page
+   ========================= */
+
+.biome-select-catalog-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.biome-select-catalog-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(11, 61, 57, 0.08);
+}
+
+.biome-select-catalog-hero h2 {
+    margin: 0;
+    color: #0b3d39;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 1.03;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.biome-select-catalog-hero p {
+    max-width: 780px;
+    margin: 0.8rem 0 0;
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.biome-select-catalog-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+/* =========================
+   Summary cards
+   ========================= */
+
+.biome-linked-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.biome-linked-summary-card {
+    padding: 1.25rem;
+    border-radius: 20px;
+    background: var(--biome-linked-bg);
+    border: 1px solid var(--biome-linked-border);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.biome-linked-summary-card span {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--biome-linked-muted);
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.biome-linked-summary-card strong {
+    display: block;
+    color: var(--biome-linked-primary);
+    font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+    font-weight: 950;
+    letter-spacing: -0.04em;
+}
+
+.biome-linked-summary-card small {
+    display: block;
+    margin-top: 0.55rem;
+    color: var(--biome-linked-muted);
+    line-height: 1.45;
+}
+
+.biome-linked-summary-card__status {
+    width: fit-content;
+    min-height: 34px;
+    display: inline-flex !important;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.9rem !important;
+    letter-spacing: 0;
+}
+
+.biome-linked-summary-card__status--success {
+    background: rgba(34, 197, 94, 0.12);
+    color: #15803d !important;
+}
+
+.biome-linked-summary-card__status--warning {
+    background: #fef3c7;
+    color: #92400e !important;
+}
+
+/* =========================
+   Help / alerts
+   ========================= */
+
+.biome-linked-help-card {
+    padding: 1.5rem;
+    border-radius: 22px;
+    background: var(--biome-linked-bg-muted);
+    border: 1px solid var(--biome-linked-border);
+}
+
+.biome-linked-help-card h3 {
+    margin: 0 0 0.7rem;
+    color: var(--biome-linked-primary);
+    font-size: 1.35rem;
+    font-weight: 950;
+    letter-spacing: -0.03em;
+}
+
+.biome-linked-help-card p {
+    max-width: 860px;
+    margin: 0;
+    color: #475569;
+    line-height: 1.65;
+}
+
+.biome-linked-alert-list {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.biome-linked-alert-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    color: #475569;
+    line-height: 1.55;
+}
+
+.biome-linked-alert-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.68rem;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #80b6ab;
+}
+
+/* =========================
+   Filters
+   ========================= */
+
+.biome-linked-filter-card {
+    padding: 1.25rem;
+    border-radius: 22px;
+    background: var(--biome-linked-bg);
+    border: 1px solid var(--biome-linked-border);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.biome-linked-filter-grid {
+    display: grid;
+    grid-template-columns: minmax(240px, 1.5fr) repeat(2, minmax(180px, 1fr)) auto;
+    gap: 1rem;
+    align-items: end;
+}
+
+.biome-linked-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.biome-linked-field label {
+    color: var(--biome-linked-muted);
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.biome-linked-input {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid rgba(128, 182, 171, 0.85);
+    border-radius: 12px;
+    background: #ffffff;
+    color: var(--biome-linked-text);
+    padding: 0 0.85rem;
+    font-size: 0.95rem;
+    outline: none;
+    transition:
+            border-color 0.18s ease,
+            box-shadow 0.18s ease;
+}
+
+.biome-linked-input:focus {
+    border-color: var(--biome-linked-primary);
+    box-shadow: 0 0 0 4px rgba(11, 61, 57, 0.10);
+}
+
+.biome-linked-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+/* =========================
+   Section heading
+   ========================= */
+
+.biome-linked-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.biome-linked-section__heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.biome-linked-section__heading h3 {
+    margin: 0;
+    color: var(--biome-linked-primary);
+    font-size: 1.45rem;
+    font-weight: 950;
+    letter-spacing: -0.035em;
+}
+
+.biome-linked-section__heading p {
+    margin: 0.35rem 0 0;
+    color: var(--biome-linked-muted);
+    line-height: 1.55;
+}
+
+/* =========================
+   Linked item list
+   Compact style like Stitch mockup
+   ========================= */
+
+.biome-linked-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.biome-linked-card {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.95rem 1rem;
+    border: 1px solid var(--biome-linked-border-strong);
+    border-radius: 10px;
+    background: var(--biome-linked-bg);
+    box-shadow: none;
+    transition:
+            border-color 0.18s ease,
+            box-shadow 0.18s ease,
+            background-color 0.18s ease;
+}
+
+.biome-linked-card:hover {
+    border-color: #bdd3ce;
+    box-shadow: 0 4px 12px rgba(12, 79, 73, 0.04);
+}
+
+.biome-linked-card.is-dirty {
+    border-color: #8ebbb2;
+    background: #fcfffe;
+}
+
+.biome-linked-card__thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #edf3f1;
+    border: 1px solid #dbe7e3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.biome-linked-card__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* fallback optionnel si vous voulez l’utiliser plus tard */
+.biome-linked-card__thumb-fallback {
+    color: #7b8794;
+    font-size: 1.35rem;
+    font-weight: 900;
+}
+
+.biome-linked-card__body {
+    min-width: 0;
+}
+
+.biome-linked-card__body h4 {
+    margin: 0;
+    color: #0f2740;
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.biome-linked-card__subtitle {
+    margin: 0.2rem 0 0.55rem;
+    color: var(--biome-linked-muted);
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.biome-linked-card__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.45rem;
+}
+
+.biome-linked-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    padding: 0.12rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.63rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.biome-linked-chip--neutral {
+    background: #eef2f4;
+    color: #304254;
+}
+
+.biome-linked-chip--danger {
+    background: #fde2e2;
+    color: var(--biome-linked-danger);
+}
+
+.biome-linked-chip--success {
+    background: #dff3ea;
+    color: #0f766e;
+}
+
+.biome-linked-chip--warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.biome-linked-chip--public {
+    background: #e5f4ef;
+    color: #0b5d57;
+}
+
+.biome-linked-chip--private {
+    background: #fff1e8;
+    color: #b45309;
+}
+
+.biome-linked-card__link {
+    color: #0b5d57;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.biome-linked-card__link:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   Counter
+   ========================= */
+
+.biome-linked-card__counter-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0 1rem;
+    border-left: 1px solid #e1ebea;
+    border-right: 1px solid #e1ebea;
+}
+
+.biome-linked-card__counter-label {
+    color: #74829a;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.biome-linked-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.biome-linked-counter__button {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid #8ebbb2;
+    background: #ffffff;
+    color: #0b5d57;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition:
+            background-color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+}
+
+.biome-linked-counter__button:hover {
+    background: var(--biome-linked-bg-muted);
+    border-color: #0b5d57;
+    transform: translateY(-1px);
+}
+
+.biome-linked-count-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+}
+
+.biome-linked-remove-form {
+    margin: 0;
+}
+
+.biome-linked-counter__input {
+    width: 52px;
+    height: 34px;
+    padding: 0 0.35rem;
+    border: 1px solid #d5e1de;
+    border-radius: 9px;
+    background: #f9fbfb;
+    color: var(--biome-linked-text);
+    font-size: 1rem;
+    font-weight: 800;
+    text-align: center;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.biome-linked-counter__input::-webkit-outer-spin-button,
+.biome-linked-counter__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* =========================
+   Actions
+   ========================= */
+
+.biome-linked-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.biome-linked-icon-button {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #7b8794;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+            background-color 0.18s ease,
+            border-color 0.18s ease,
+            color 0.18s ease,
+            transform 0.18s ease;
+}
+
+.biome-linked-icon-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+.biome-linked-icon-button--danger:hover {
+    background: #fff5f5;
+    border-color: #f3caca;
+    color: var(--biome-linked-danger);
+    transform: translateY(-1px);
+}
+
+.biome-linked-icon-button.is-confirm {
+    background: #fff5f5;
+    border-color: #f3caca;
+    color: var(--biome-linked-danger);
+}
+
+.biome-linked-save-button {
+    min-width: 112px;
+    height: 38px;
+    padding: 0 1rem;
+    border-radius: 8px;
+    border: 1px solid #0b5d57;
+    background: #ffffff;
+    color: #0b5d57;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+            background-color 0.18s ease,
+            border-color 0.18s ease,
+            color 0.18s ease,
+            transform 0.18s ease,
+            opacity 0.18s ease;
+}
+
+.biome-linked-save-button:hover:not(:disabled) {
+    background: var(--biome-linked-bg-muted);
+    border-color: #0b5d57;
+    color: #0b5d57;
+    transform: translateY(-1px);
+}
+
+.biome-linked-save-button:disabled {
+    border-color: #d8e1df;
+    background: #f5f7f7;
+    color: #a3afb8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 1;
+}
+
+/* ancien bouton texte, conservé au cas où une page équipement l’utilise */
+.biome-linked-remove-button {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.85rem;
+    border: 1px solid var(--biome-linked-danger);
+    border-radius: 8px;
+    background: var(--biome-linked-danger);
+    color: #ffffff;
+    font-size: 0.86rem;
+    font-weight: 850;
+    cursor: pointer;
+    transition:
+            background-color 0.18s ease,
+            border-color 0.18s ease,
+            color 0.18s ease,
+            transform 0.18s ease;
+}
+
+.biome-linked-remove-button:hover {
+    background: var(--biome-linked-danger-hover);
+    border-color: var(--biome-linked-danger-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.biome-linked-remove-button.is-confirm {
+    background: #ffffff;
+    border-color: var(--biome-linked-danger);
+    color: var(--biome-linked-danger);
+}
+
+.biome-linked-remove-button.is-confirm:hover {
+    background: #fff5f5;
+    color: var(--biome-linked-danger);
+}
+
+/* ancien lien latéral, conservé si besoin */
+.biome-linked-side-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0b5d57;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.biome-linked-side-link:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   Empty
+   ========================= */
+
+.biome-linked-empty {
+    padding: 1.5rem;
+    border-radius: 22px;
+    background: var(--biome-linked-bg);
+    border: 1px solid var(--biome-linked-border);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.biome-linked-empty strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--biome-linked-text);
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.biome-linked-empty p {
+    margin: 0 0 1rem;
+    color: var(--biome-linked-muted);
+    line-height: 1.6;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 1250px) {
+    .biome-linked-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .biome-linked-field--search,
+    .biome-linked-filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .biome-linked-filter-actions {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 980px) {
+    .biome-linked-card {
+        grid-template-columns: 64px minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .biome-linked-card__counter-block,
+    .biome-linked-card__actions {
+        grid-column: 2;
+    }
+
+    .biome-linked-card__counter-block {
+        align-items: flex-start;
+        width: 100%;
+        padding: 0;
+        margin-top: 0.45rem;
+        border: none;
+    }
+
+    .biome-linked-card__actions {
+        margin-top: 0.55rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .biome-linked-hero,
+    .biome-linked-section__heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .biome-linked-hero__actions {
+        justify-content: flex-start;
+    }
+
+    .biome-linked-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .biome-select-catalog-hero {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .biome-select-catalog-hero__actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 640px) {
+    .biome-linked-hero__actions,
+    .biome-linked-filter-actions,
+    .biome-linked-card__actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .biome-linked-button,
+    .biome-linked-remove-button,
+    .biome-linked-save-button {
+        width: 100%;
+    }
+
+    .biome-linked-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .biome-linked-field--search,
+    .biome-linked-filter-actions {
+        grid-column: auto;
+    }
+
+    .biome-linked-card {
+        grid-template-columns: 1fr;
+    }
+
+    .biome-linked-card__thumb,
+    .biome-linked-card__counter-block,
+    .biome-linked-card__actions {
+        grid-column: auto;
+    }
+
+    .biome-linked-card__thumb {
+        width: 56px;
+        height: 56px;
+    }
+
+    .biome-linked-card__counter-block {
+        align-items: stretch;
+    }
+
+    .biome-linked-counter {
+        justify-content: flex-start;
+    }
+
+    .biome-select-catalog-hero__actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .biome-select-catalog-hero__actions .biome-linked-button {
+        width: 100%;
+    }
+}

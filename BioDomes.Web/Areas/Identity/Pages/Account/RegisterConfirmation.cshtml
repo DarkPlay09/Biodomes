@@ -3,11 +3,12 @@
 
 @{
     Layout = "/Pages/Shared/_AuthLayout.cshtml";
-    ViewData["Title"] = "Vérifiez votre boîte mail";
-    ViewData["AuthPageTitle"] = "Inscription enregistrée";
-    ViewData["AuthPageSubtitle"] = "Un e-mail de confirmation vous a été envoyé.";
-    ViewData["AuthHeroTitle"] = "Créer, suivre,<br />et faire évoluer<br />vos BioDomes.";
-    ViewData["AuthHeroText"] = "Confirmez votre adresse e-mail pour activer votre accès à la plateforme.";
+    
+    ViewData["Title"] = "Vérification du compte";
+    ViewData["AuthPageTitle"] = "Confirmez votre compte";
+    ViewData["AuthPageSubtitle"] = "Un e-mail de confirmation vient de vous être envoyé.";
+    ViewData["AuthHeroTitle"] = "Dernière étape<br />avant le dôme.";
+    ViewData["AuthHeroText"] = "Validez votre adresse e-mail pour accéder au simulateur BioDomes.";
 }
 
 <div class="auth-confirm-box">
@@ -21,12 +22,12 @@
     <h3 class="auth-confirm-title">Vérifiez votre boîte mail</h3>
 
     <p class="auth-confirm-text">
-        Nous avons envoyé un lien de confirmation à <strong>@Model.Email</strong>.
-        Cliquez sur ce lien pour activer votre compte BioDomes.
+        Un lien de confirmation a été envoyé à <strong>@Model.Email</strong>.
+        Cliquez sur ce lien pour activer votre compte chercheur.
     </p>
 
     <p class="auth-confirm-text">
-        Pensez aussi à vérifier vos spams ou courriers indésirables.
+        Si vous ne trouvez pas l’e-mail, pensez à vérifier vos spams ou courriers indésirables.
     </p>
 
     @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
@@ -52,11 +53,11 @@
         </form>
 
         <a asp-page="./Login" class="auth-secondary-link">
-            Aller à la connexion
+            Retour à la connexion
         </a>
     </div>
 </div>
 
 @section Scripts {
-    <script src="~/js/auth-resend.js" asp-append-version="true"></script>
+    <script src="~/js/pages/account/resend-email.js" asp-append-version="true"></script>
 }

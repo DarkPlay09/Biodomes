@@ -1,0 +1,256 @@
+﻿@page "/biome"
+@model BioDomes.Web.Pages.Biome.IndexModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Mes biomes";
+    ViewData["DashboardTitle"] = "Mes biomes";
+    ViewData["DashboardSubtitle"] = "Consulte, filtre et gère tes environnements BioDomes.";
+
+    var temperatureAllSelected = string.IsNullOrWhiteSpace(Model.TemperatureFilter) ? "selected" : null;
+    var temperatureColdSelected = Model.TemperatureFilter == "cold" ? "selected" : null;
+    var temperatureNormalSelected = Model.TemperatureFilter == "normal" ? "selected" : null;
+    var temperatureHotSelected = Model.TemperatureFilter == "hot" ? "selected" : null;
+
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
+}
+
+<section class="biome-catalog">
+    <header class="biome-catalog__header">
+        <a asp-page="./Add"
+           asp-route-returnUrl="@currentUrl"
+           class="action-button">
+            + Ajouter un biome
+        </a>
+    </header>
+
+    <div class="biome-kpi-grid">
+        <article class="biome-kpi-card">
+            <span>Total biomes</span>
+            <strong>@Model.TotalCount</strong>
+        </article>
+
+        <article class="biome-kpi-card biome-kpi-card--optimal">
+            <span>Optimaux</span>
+            <strong>@Model.OptimalCount</strong>
+        </article>
+
+        <article class="biome-kpi-card biome-kpi-card--unstable">
+            <span>Instables</span>
+            <strong>@Model.InstableCount</strong>
+        </article>
+
+        <article class="biome-kpi-card biome-kpi-card--critical">
+            <span>Critiques</span>
+            <strong>@Model.CritiqueCount</strong>
+        </article>
+    </div>
+
+    <form method="get" class="catalog-filter-card biome-filter-card">
+        <div class="catalog-filter-card__search">
+            <label for="Search">Recherche</label>
+            <input id="Search"
+                   name="Search"
+                   value="@Model.Search"
+                   type="search"
+                   placeholder="Rechercher par nom ou état..." />
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="StateFilter">État</label>
+            <select id="StateFilter" name="StateFilter">
+                <option value="">Tous</option>
+
+                @foreach (var state in Model.StateOptions)
+                {
+                    var selected = Model.StateFilter == state ? "selected" : null;
+
+                    <option value="@state" selected="@selected">
+                        @Model.FormatState(state)
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="TemperatureFilter">Température</label>
+            <select id="TemperatureFilter" name="TemperatureFilter">
+                <option value="" selected="@temperatureAllSelected">Toutes</option>
+                <option value="cold" selected="@temperatureColdSelected">Froides</option>
+                <option value="normal" selected="@temperatureNormalSelected">Stables</option>
+                <option value="hot" selected="@temperatureHotSelected">Chaudes</option>
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__actions">
+            <button type="submit" class="dashboard-btn dashboard-btn--primary">
+                Filtrer
+            </button>
+
+            <a asp-page="./Index" class="dashboard-btn dashboard-btn--ghost">
+                Réinitialiser
+            </a>
+        </div>
+    </form>
+
+    @if (Model.BiomeCards.Count == 0)
+    {
+        <div class="biome-empty-card">
+            <div class="empty-state__icon" aria-hidden="true">+</div>
+
+            <h3>Aucun biome trouvé</h3>
+
+            <p>
+                Modifie ta recherche ou initialise un nouveau biome.
+            </p>
+
+            <a asp-page="./Add" class="dashboard-btn dashboard-btn--primary">
+                Créer un biome
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="biome-grid">
+            @foreach (var biome in Model.BiomeCards)
+            {
+                var scoreWidth = $"{biome.Score}%";
+
+                <article class="biome-card @biome.StateCssClass">
+                    <div class="biome-card__visual">
+                        <span class="biome-card__status">
+                            @biome.StateLabel
+                        </span>
+                    </div>
+
+                    <div class="biome-card__body">
+                        <div class="biome-card__title-block">
+                            <h3>@biome.Name</h3>
+                        </div>
+
+                        <div class="biome-card__metrics">
+                            <div class="biome-card__metric @biome.TemperatureCssClass">
+                                <img src="@(string.IsNullOrWhiteSpace(biome.TemperatureIconPath) ? "" : Url.Content(biome.TemperatureIconPath))"
+                                     alt=""
+                                     aria-hidden="true" />
+                                <div>
+                                    <small>Temp</small>
+                                    <strong>@biome.TemperatureLabel</strong>
+                                </div>
+                            </div>
+
+                            <div class="biome-card__metric biome-card__metric--humidity">
+                                <div class="biome-card__humidity-icon"
+                                     style="--humidity-fill: @($"{biome.HumidityPercent}%")">
+                                    <img src="~/images/biomes/icons/drop-outline.png"
+                                         alt=""
+                                         aria-hidden="true" />
+
+                                    <span class="biome-card__humidity-fill"></span>
+                                </div>
+
+                                <div>
+                                    <small>Humidité</small>
+                                    <strong>@biome.AbsoluteHumidityLabel</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="biome-card__score">
+                            <div>
+                                <span>Score stabilité</span>
+                                <strong>@biome.Score</strong>
+                            </div>
+
+                            <div class="biome-card__score-track">
+                                <span style="width: @scoreWidth"></span>
+                            </div>
+                        </div>
+
+                        <div class="biome-card__footer">
+                            <a asp-page="./Details"
+                               asp-route-slug="@biome.Slug"
+                               asp-route-returnUrl="@currentUrl"
+                               class="biome-card__details">
+                                Voir détails
+                            </a>
+
+                            <a asp-page="./Edit"
+                               asp-route-slug="@biome.Slug"
+                               asp-route-returnUrl="@currentUrl"
+                               class="biome-card__settings"
+                               aria-label="Modifier @biome.Name">
+                                <img src="~/images/biomes/icons/setting.png" alt="" aria-hidden="true" />
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        <footer class="catalog-pagination">
+            <div>
+                Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
+            </div>
+
+            <nav aria-label="Pagination des biomes">
+                @if (Model.PageNumber <= 1)
+                {
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
+                        Précédent
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-StateFilter="@Model.StateFilter"
+                       asp-route-TemperatureFilter="@Model.TemperatureFilter"
+                       asp-route-PageNumber="@(Model.PageNumber - 1)"
+                       class="catalog-pagination__link">
+                        Précédent
+                    </a>
+                }
+
+                @foreach (var pageNumber in Model.VisiblePages)
+                {
+                    var activeClass = pageNumber == Model.PageNumber
+                        ? "catalog-pagination__link--active"
+                        : "";
+
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-StateFilter="@Model.StateFilter"
+                       asp-route-TemperatureFilter="@Model.TemperatureFilter"
+                       asp-route-PageNumber="@pageNumber"
+                       class="catalog-pagination__link @activeClass">
+                        @pageNumber
+                    </a>
+                }
+
+                @if (Model.PageNumber >= Model.TotalPages)
+                {
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
+                        Suivant
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-StateFilter="@Model.StateFilter"
+                       asp-route-TemperatureFilter="@Model.TemperatureFilter"
+                       asp-route-PageNumber="@(Model.PageNumber + 1)"
+                       class="catalog-pagination__link">
+                        Suivant
+                    </a>
+                }
+            </nav>
+        </footer>
+    }
+</section>

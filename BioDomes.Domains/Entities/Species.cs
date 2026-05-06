@@ -12,7 +12,7 @@ public class Species
     public double AdultSize { get; set; }
     public double Weight { get; set; }
     public string? ImagePath { get; set; }
-    public UserAccount? Creator { get; set; }
+    public UserAccount Creator { get; set; }
     public bool IsPublicAvailable { get; set; }
     
     public Species(
@@ -21,8 +21,8 @@ public class Species
         DietType diet,
         double adultSize,
         double weight,
-        string? imagePath = null,
-        UserAccount? creator = null,
+        string? imagePath,
+        UserAccount creator,
         bool isPublicAvailable = false)
     {
         Name = name;
@@ -31,7 +31,7 @@ public class Species
         AdultSize = adultSize;
         Weight = weight;
         ImagePath = imagePath;
-        Creator = creator;
+        Creator = creator ?? throw new ArgumentNullException(nameof(creator));
         IsPublicAvailable = isPublicAvailable;
     }
 }

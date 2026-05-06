@@ -1,0 +1,252 @@
+﻿@page "/admin/equipment"
+@model BioDomes.Web.Pages.Admin.Equipment.IndexModel
+
+@{
+    Layout = "/Pages/Shared/_DashboardLayout.cshtml";
+
+    ViewData["Title"] = "Validation des équipements";
+    ViewData["DashboardTitle"] = "Validation des équipements";
+    ViewData["DashboardSubtitle"] = "Gère la visibilité des équipements créés par les utilisateurs.";
+
+    var visibilityAllSelected = string.IsNullOrWhiteSpace(Model.VisibilityFilter) ? "selected" : null;
+    var visibilityPublicSelected = Model.VisibilityFilter == "public" ? "selected" : null;
+    var visibilityPrivateSelected = Model.VisibilityFilter == "private" ? "selected" : null;
+
+    var request = ViewContext.HttpContext.Request;
+    var currentUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
+}
+
+@functions {
+    private string ResolveImageUrl(string? imagePath, string fallbackPath)
+    {
+        if (string.IsNullOrWhiteSpace(imagePath))
+            return Url.Content(fallbackPath);
+
+        var normalizedPath = imagePath
+            .Replace("\\", "/")
+            .Trim();
+
+        if (normalizedPath.StartsWith("~/"))
+            return Url.Content(normalizedPath);
+
+        return Url.Content("~/" + normalizedPath.TrimStart('/'));
+    }
+}
+
+<section class="catalog-page">
+    <form method="get" class="catalog-filter-card">
+        <div class="catalog-filter-card__search">
+            <label for="Search">Recherche</label>
+            <input id="Search"
+                   name="Search"
+                   value="@Model.Search"
+                   type="search"
+                   placeholder="Rechercher par nom, créateur ou ressource..." />
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="ProducedElementFilter">Produit</label>
+            <select id="ProducedElementFilter" name="ProducedElementFilter">
+                <option value="">Tous</option>
+
+                @foreach (var resource in Model.ResourceOptions)
+                {
+                    var selected = Model.ProducedElementFilter == resource ? "selected" : null;
+
+                    <option value="@resource" selected="@selected">
+                        @Model.FormatResource(resource)
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="ConsumedElementFilter">Consomme</label>
+            <select id="ConsumedElementFilter" name="ConsumedElementFilter">
+                <option value="">Tous</option>
+
+                @foreach (var resource in Model.ResourceOptions)
+                {
+                    var selected = Model.ConsumedElementFilter == resource ? "selected" : null;
+
+                    <option value="@resource" selected="@selected">
+                        @Model.FormatResource(resource)
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__select">
+            <label for="VisibilityFilter">Visibilité</label>
+            <select id="VisibilityFilter" name="VisibilityFilter">
+                <option value="" selected="@visibilityAllSelected">Toutes</option>
+                <option value="public" selected="@visibilityPublicSelected">Disponibles</option>
+                <option value="private" selected="@visibilityPrivateSelected">Non visibles</option>
+            </select>
+        </div>
+
+        <div class="catalog-filter-card__actions">
+            <button type="submit" class="dashboard-btn dashboard-btn--primary">
+                Filtrer
+            </button>
+
+            <a asp-page="./Index" class="dashboard-btn dashboard-btn--ghost">
+                Réinitialiser
+            </a>
+        </div>
+    </form>
+
+    @if (Model.EquipmentList.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="empty-state__icon" aria-hidden="true">+</div>
+
+            <h3>Aucun équipement trouvé</h3>
+
+            <p>
+                Aucun équipement créé par un utilisateur ne correspond aux filtres sélectionnés.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="admin-entity-list">
+            @foreach (var equipment in Model.EquipmentList)
+            {
+                var actionButtonClass = equipment.IsPublicAvailable
+                    ? "admin-entity-card__button admin-entity-card__button--hidden"
+                    : "admin-entity-card__button admin-entity-card__button--visible";
+
+                <article class="admin-entity-card">
+                    <div class="admin-entity-card__image">
+                        @{
+                            var imageSrc = ResolveImageUrl(
+                                equipment.ImagePath,
+                                "~/uploads/equipment/noImageEquipment.png"
+                            );
+                        }
+
+                        <img src="@imageSrc" alt="Image de @equipment.Name" />
+                    </div>
+
+                    <div class="admin-entity-card__content">
+                        <div>
+                            <h3>@equipment.Name</h3>
+
+                            <dl class="admin-entity-card__meta">
+                                <div>
+                                    <dt>Produit</dt>
+                                    <dd>@equipment.ProducedElementLabel</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Consomme</dt>
+                                    <dd>@equipment.ConsumedElementLabel</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Créateur</dt>
+                                    <dd>@equipment.CreatorName</dd>
+                                </div>
+
+                                <div>
+                                    <dt>Visibilité</dt>
+                                    <dd>@equipment.VisibilityLabel</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="admin-entity-card__actions">
+                            <a asp-page="/Equipment/Details"
+                               asp-route-slug="@equipment.Slug"
+                               asp-route-returnUrl="@currentUrl"
+                               class="admin-entity-card__button admin-entity-card__button--ghost">
+                                Voir la fiche
+                            </a>
+
+                            <form method="post"
+                                  asp-page-handler="SetVisibility"
+                                  asp-route-slug="@equipment.Slug"
+                                  asp-route-makePublic="@(!equipment.IsPublicAvailable)"
+                                  asp-route-Search="@Model.Search"
+                                  asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                                  asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                                  asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                                  asp-route-PageNumber="@Model.PageNumber">
+                                <button type="submit" class="@actionButtonClass">
+                                    @(equipment.IsPublicAvailable ? "Rendre non visible" : "Rendre disponible")
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        <footer class="catalog-pagination">
+            <div>
+                Page <strong>@Model.PageNumber</strong> sur <strong>@Model.TotalPages</strong>
+            </div>
+
+            <nav aria-label="Pagination des équipements à valider">
+                @if (Model.PageNumber <= 1)
+                {
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
+                        Précédent
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                       asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-PageNumber="@(Model.PageNumber - 1)"
+                       class="catalog-pagination__link">
+                        Précédent
+                    </a>
+                }
+
+                @foreach (var pageNumber in Model.VisiblePages)
+                {
+                    var activeClass = pageNumber == Model.PageNumber
+                        ? "catalog-pagination__link--active"
+                        : "";
+
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                       asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-PageNumber="@pageNumber"
+                       class="catalog-pagination__link @activeClass">
+                        @pageNumber
+                    </a>
+                }
+
+                @if (Model.PageNumber >= Model.TotalPages)
+                {
+                    <span class="catalog-pagination__link catalog-pagination__link--disabled">
+                        Suivant
+                    </span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-ProducedElementFilter="@Model.ProducedElementFilter"
+                       asp-route-ConsumedElementFilter="@Model.ConsumedElementFilter"
+                       asp-route-VisibilityFilter="@Model.VisibilityFilter"
+                       asp-route-PageNumber="@(Model.PageNumber + 1)"
+                       class="catalog-pagination__link">
+                        Suivant
+                    </a>
+                }
+            </nav>
+        </footer>
+    }
+</section>

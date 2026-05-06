@@ -8,7 +8,12 @@ public class SpeciesEntityTypeConfiguration : IEntityTypeConfiguration<SpeciesEn
 {
     public void Configure(EntityTypeBuilder<SpeciesEntity> builder)
     {
-        builder.ToTable("Species");
+        builder.ToTable("Species", t =>
+        {
+            t.HasCheckConstraint("CK_Species_Name_NotBlank", "[Name] <> ''");
+            t.HasCheckConstraint("CK_Species_AdultSizeAndWeight_Positive",
+                "[AdultSize] > 0 AND  [Weight] > 0");
+        });
 
         builder.HasKey(x => x.Id);
 

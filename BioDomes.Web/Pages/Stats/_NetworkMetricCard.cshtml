@@ -1,0 +1,12 @@
+﻿@model BioDomes.Web.ViewModels.Stats.NetworkMetricVm
+
+<div class="analytics-metric-card @Model.CardTone">
+    <p class="analytics-metric-card__eyebrow">@Model.Title</p>
+
+    <div class="analytics-metric-card__value-row">
+        <strong>@Model.Value</strong>
+        <span class="analytics-metric-card__status @Model.StatusTone">@Model.Status</span>
+    </div>
+
+    <p class="analytics-metric-card__desc">@Model.Description</p>
+</div>

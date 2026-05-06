@@ -1,0 +1,181 @@
+/* =========================
+   Catalog layout commun
+   Species / Equipment / Biomes
+   ========================= */
+
+.catalog-page,
+.species-catalog,
+.biome-catalog {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.catalog-page__header,
+.species-catalog__header,
+.biome-catalog__header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.catalog-page__actions,
+.species-catalog__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.catalog-page__eyebrow,
+.species-catalog__eyebrow {
+    display: inline-flex;
+    margin: 0 0 0.45rem;
+    color: #0b3d39;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.catalog-page__success,
+.species-catalog__success {
+    padding: 1rem 1.2rem;
+    border: 1px solid rgba(11, 61, 57, 0.14);
+    border-radius: 16px;
+    background: rgba(11, 61, 57, 0.06);
+    color: #0b3d39;
+    font-weight: 700;
+}
+
+.entity-impact-warning {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(180, 83, 9, 0.18);
+    background: rgba(255, 247, 237, 0.95);
+    color: #92400e;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.catalog-grid,
+.species-grid,
+.biome-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+@media (max-width: 1300px) {
+    .catalog-grid,
+    .species-grid,
+    .biome-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .catalog-grid,
+    .species-grid,
+    .biome-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .catalog-grid,
+    .species-grid,
+    .biome-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   Catalog public layout
+   ========================= */
+
+.catalog-page--public {
+    width: min(1320px, calc(100% - 3rem));
+    margin: 0 auto;
+    padding: 3rem 0 5rem;
+}
+
+.catalog-page--public .catalog-page__header {
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    padding: 1rem 0 0.5rem;
+}
+
+.catalog-page--public .catalog-page__header h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+}
+
+.catalog-page--public .catalog-page__header p {
+    margin: 0.7rem 0 0;
+    max-width: 680px;
+    color: #475569;
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.catalog-page--public .catalog-filter-card {
+    grid-template-columns: minmax(260px, 1fr) 220px 190px auto;
+}
+
+.catalog-page--public .catalog-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 1100px) {
+    .catalog-page--public .catalog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .catalog-page--public .catalog-filter-card {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .catalog-page--public .catalog-filter-card__search,
+    .catalog-page--public .catalog-filter-card__actions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 700px) {
+    .catalog-page--public {
+        width: min(100% - 2rem, 1320px);
+        padding: 2rem 0 4rem;
+    }
+
+    .catalog-page--public .catalog-page__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .catalog-page--public .catalog-filter-card {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-page--public .catalog-filter-card__search,
+    .catalog-page--public .catalog-filter-card__actions {
+        grid-column: auto;
+    }
+
+    .catalog-page--public .catalog-filter-card__actions {
+        flex-direction: column;
+    }
+
+    .catalog-page--public .catalog-filter-card__actions .dashboard-btn {
+        width: 100%;
+    }
+
+    .catalog-page--public .catalog-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -7,8 +7,8 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <a class="action-link" asp-area="" asp-page="Dashboard/Index">Bonjour @User.Identity?.Name</a>
-    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index")" method="post" style="display:inline;">
+    <a class="action-link" asp-area="" asp-page="/Dashboard/Index">Bonjour @User.Identity?.Name</a>
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("~/")" method="post" style="display:inline;">
         <button type="submit" class="action-button">Déconnexion</button>
     </form>
 }

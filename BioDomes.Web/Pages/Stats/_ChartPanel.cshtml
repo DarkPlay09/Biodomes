@@ -1,0 +1,26 @@
+﻿@model BioDomes.Web.ViewModels.Stats.ChartPanelVm
+
+<article class="analytics-panel analytics-panel--chart">
+    <div class="analytics-panel__header">
+        <div>
+            <h3>@Model.Title</h3>
+            <p>@Model.Description</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.CenterValue))
+    {
+        <div class="analytics-chart analytics-chart--centered">
+            <div id="@Model.ChartId" class="analytics-chart @Model.ChartClass"></div>
+
+            <div class="analytics-donut-center">
+                <strong>@Model.CenterValue</strong>
+                <span>@Model.CenterLabel</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div id="@Model.ChartId" class="analytics-chart @Model.ChartClass"></div>
+    }
+</article>

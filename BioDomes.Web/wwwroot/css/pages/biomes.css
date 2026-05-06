@@ -1,0 +1,343 @@
+/* =========================
+   Biomes catalog
+   ========================= */
+
+.biome-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.biome-kpi-card {
+    padding: 1.1rem;
+    border: 1px solid rgba(11, 61, 57, 0.08);
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.biome-kpi-card span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.biome-kpi-card strong {
+    color: #0f172a;
+    font-size: 1.85rem;
+    font-weight: 900;
+}
+
+.biome-kpi-card--optimal strong {
+    color: #0b7a53;
+}
+
+.biome-kpi-card--unstable strong {
+    color: #b45309;
+}
+
+.biome-kpi-card--critical strong {
+    color: #dc2626;
+}
+
+.biome-card {
+    min-height: 320px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.biome-card {
+    overflow: hidden;
+    border: 1px solid rgba(11, 61, 57, 0.08);
+}
+
+.biome-card__visual {
+    position: relative;
+    height: 112px;
+    background: linear-gradient(135deg, #a9cfc5, #8fb5ab);
+}
+
+.biome-card--optimal .biome-card__visual {
+    background: linear-gradient(135deg, #b6d8ce, #86b4aa);
+}
+
+.biome-card--unstable .biome-card__visual {
+    background: linear-gradient(135deg, #eadab6, #e8b98e);
+}
+
+.biome-card--critical .biome-card__visual {
+    background: linear-gradient(135deg, #e5a6ad, #bc8792);
+}
+
+.biome-card__status {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    padding: 0.3rem 0.55rem;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.biome-card--optimal .biome-card__status {
+    background: #22c55e;
+}
+
+.biome-card--unstable .biome-card__status {
+    background: #eab308;
+}
+
+.biome-card--critical .biome-card__status {
+    background: #dc2626;
+}
+
+.biome-card__body {
+    padding: 1rem;
+}
+
+.biome-card__title-block {
+    margin-bottom: 0.95rem;
+}
+
+.biome-card__title-block h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.biome-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-bottom: 0.95rem;
+}
+
+.biome-card__metric {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    padding: 0.65rem;
+    border-radius: 12px;
+    background: #f5f8f7;
+}
+
+.biome-card__metric img {
+    width: 18px;
+    height: 18px;
+    display: block;
+    object-fit: contain;
+}
+
+.biome-card__metric small {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.62rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.biome-card__metric strong {
+    display: block;
+    color: #0f172a;
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+.biome-card__metric--cold {
+    background: rgba(59, 130, 246, 0.10);
+}
+
+.biome-card__metric--cold small,
+.biome-card__metric--cold strong {
+    color: #2563eb;
+}
+
+.biome-card__metric--stable {
+    background: rgba(34, 197, 94, 0.10);
+}
+
+.biome-card__metric--stable small,
+.biome-card__metric--stable strong {
+    color: #15803d;
+}
+
+.biome-card__metric--hot {
+    background: rgba(239, 68, 68, 0.10);
+}
+
+.biome-card__metric--hot small,
+.biome-card__metric--hot strong {
+    color: #dc2626;
+}
+
+.biome-card__metric--humidity {
+    background: #f5f8f7;
+}
+
+.biome-card__humidity-icon {
+    --humidity-fill: 0%;
+
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+}
+
+.biome-card__humidity-icon img {
+    position: relative;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    display: block;
+    object-fit: contain;
+}
+
+.biome-card__humidity-fill {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    height: var(--humidity-fill);
+    background: linear-gradient(180deg, #7dd3fc 0%, #0ea5e9 100%);
+    border-radius: 0 0 8px 8px;
+    z-index: 1;
+    transition: height 0.25s ease;
+    clip-path: polygon(
+            50% 0%,
+            84% 30%,
+            94% 58%,
+            83% 82%,
+            50% 100%,
+            17% 82%,
+            6% 58%,
+            16% 30%
+    );
+}
+
+.biome-card__score {
+    margin-bottom: 1rem;
+}
+
+.biome-card__score > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+}
+
+.biome-card__score span {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.biome-card__score strong {
+    color: #0f172a;
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+.biome-card__score-track {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.biome-card__score-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #0b3d39;
+}
+
+.biome-card--unstable .biome-card__score-track span {
+    background: #eab308;
+}
+
+.biome-card--critical .biome-card__score-track span {
+    background: #dc2626;
+}
+
+.biome-card__footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    gap: 0.65rem;
+}
+
+.biome-card__details,
+.biome-card__settings {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 900;
+}
+
+.biome-card__details {
+    background: #0b3d39;
+    color: #ffffff;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.biome-card__settings {
+    background: #eef4f2;
+    transition:
+            background-color 0.18s ease,
+            transform 0.18s ease,
+            box-shadow 0.18s ease;
+}
+
+.biome-card__settings:hover {
+    background: rgba(11, 61, 57, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(11, 61, 57, 0.12);
+}
+
+.biome-card__settings:hover img {
+    transform: rotate(18deg);
+}
+
+.biome-card__settings img {
+    width: 17px;
+    height: 17px;
+    display: block;
+    object-fit: contain;
+    transition: transform 0.18s ease;
+}
+
+@media (max-width: 1300px) {
+    .biome-kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .biome-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .biome-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}

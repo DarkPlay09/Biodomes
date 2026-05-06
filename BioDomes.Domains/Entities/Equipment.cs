@@ -8,15 +8,15 @@ public class Equipment
     public ResourceType? ProducedElement { get; set; }
     public ResourceType? ConsumedElement { get; set; }
     public string? ImagePath { get; set; }
-    public UserAccount? Creator { get; set; }
+    public UserAccount Creator { get; set; }
     public bool IsPublicAvailable { get; set; }
 
     public Equipment(
         string name,
         ResourceType? producedElement,
         ResourceType? consumedElement,
-        string? imagePath = null,
-        UserAccount? creator = null,
+        string? imagePath,
+        UserAccount creator,
         bool isPublicAvailable = false)
     {
         if (producedElement is null &&
@@ -28,7 +28,7 @@ public class Equipment
         ProducedElement = producedElement;
         ConsumedElement = consumedElement;
         ImagePath = imagePath;
-        Creator = creator;
+        Creator = creator ?? throw new ArgumentNullException(nameof(creator));
         IsPublicAvailable = isPublicAvailable;
     }
 }

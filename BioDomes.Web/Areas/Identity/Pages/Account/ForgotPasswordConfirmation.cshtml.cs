@@ -77,9 +77,16 @@ public class ForgotPasswordConfirmationModel : PageModel
     /// <summary>
     /// Initialise la page et calcule le temps restant avant un nouvel envoi autorisé.
     /// </summary>
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         CooldownRemainingSeconds = GetRemainingCooldownSeconds(Email);
+
+        return Page();
     }
 
     /// <summary>
@@ -94,6 +101,11 @@ public class ForgotPasswordConfirmationModel : PageModel
     /// </remarks>
     public async Task<IActionResult> OnPostResendAsync()
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         if (string.IsNullOrWhiteSpace(Email))
         {
             StatusMessage = "Adresse e-mail introuvable.";

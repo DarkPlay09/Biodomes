@@ -1,0 +1,197 @@
+﻿@using BioDomes.Infrastructures.EntityFramework.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<UserEntity> SignInManager
+@inject UserManager<UserEntity> UserManager
+
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    
+    var homeUrl = Url.Page("/Index", new { area = "" }) ?? Url.Content("~/");
+
+    var isDashboardPage = currentPage.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase);
+    var isBiomesPage = currentPage.StartsWith("/Biome", StringComparison.OrdinalIgnoreCase);
+    var isSpeciesPage = currentPage.StartsWith("/Species", StringComparison.OrdinalIgnoreCase);
+    var isEquipmentPage = currentPage.StartsWith("/Equipment", StringComparison.OrdinalIgnoreCase);
+    var isStatsPage = currentPage.StartsWith("/Stats", StringComparison.OrdinalIgnoreCase);
+    var isAdminSpeciesPage = currentPage.StartsWith("/Admin/Species", StringComparison.OrdinalIgnoreCase);
+    var isAdminEquipmentPage = currentPage.StartsWith("/Admin/Equipment", StringComparison.OrdinalIgnoreCase);
+    var isProfileManagePage = currentPage.StartsWith("/Account/Manage", StringComparison.OrdinalIgnoreCase);
+
+    var dashboardUser = SignInManager.IsSignedIn(User)
+        ? await UserManager.GetUserAsync(User)
+        : null;
+    
+    var isAdmin = string.Equals(dashboardUser?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+    
+    var connectedRoleLabel = isAdmin
+        ? "Admin connecté"
+        : "Chercheur connecté";
+
+    var displayName = dashboardUser?.UserName ?? User.Identity?.Name ?? "Chercheur";
+    var avatarPath = dashboardUser?.AvatarPath;
+    var avatarInitial = string.IsNullOrWhiteSpace(displayName)
+        ? "B"
+        : displayName.Substring(0, 1).ToUpperInvariant();
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - BioDomes</title>
+    <link rel="icon" type="image/png" href="~/images/logo_biodomes.png" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+<body class="dashboard-shell-body">
+<div class="dashboard-mobile-overlay" id="dashboardOverlay"></div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="dashboard-toast dashboard-toast--success" data-dashboard-toast>
+        <div class="dashboard-toast__icon">✓</div>
+
+        <div class="dashboard-toast__content">
+            <strong>Succès</strong>
+            <p>@successMessage</p>
+        </div>
+
+        <button type="button"
+                class="dashboard-toast__close"
+                data-dashboard-toast-close
+                aria-label="Fermer la notification">
+            ×
+        </button>
+    </div>
+}
+
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <div class="dashboard-sidebar__top">
+            <a asp-area=""
+               asp-page="/Index"
+               class="dashboard-sidebar__brand"
+               aria-label="Retour à l'accueil BioDomes">
+                <img class="dashboard-sidebar__brand-image" src="~/images/logo_biodomes.png" alt="Logo BioDomes"/>
+                <span>BioDomes</span>
+            </a>
+
+            <button type="button"
+                    class="dashboard-sidebar__close"
+                    id="dashboardSidebarClose"
+                    aria-label="Fermer le menu">
+                ✕
+            </button>
+        </div>
+
+        <nav class="dashboard-sidebar__nav">
+            <a asp-area=""
+               asp-page="/Dashboard/Index"
+               class="dashboard-sidebar__link @(isDashboardPage ? "dashboard-sidebar__link--active" : "")">
+                <span>Tableau de bord</span>
+            </a>
+
+            <a asp-area=""
+               asp-page="/Biome/Index"
+               class="dashboard-sidebar__link @(isBiomesPage ? "dashboard-sidebar__link--active" : "")">
+                <span>Mes biomes</span>
+            </a>
+
+            <a asp-area=""
+               asp-page="/Species/Index"
+               class="dashboard-sidebar__link @(isSpeciesPage ? "dashboard-sidebar__link--active" : "")">
+                <span>Espèces</span>
+            </a>
+
+            <a asp-area=""
+               asp-page="/Equipment/Index"
+               class="dashboard-sidebar__link @(isEquipmentPage ? "dashboard-sidebar__link--active" : "")">
+                <span>Équipements</span>
+            </a>
+
+            @if (isAdmin)
+            {
+                <div class="dashboard-sidebar__section">
+                    <span class="dashboard-sidebar__section-title">Administration</span>
+
+                    <a asp-area=""
+                       asp-page="/Admin/Species/Index"
+                       class="dashboard-sidebar__link @(isAdminSpeciesPage ? "dashboard-sidebar__link--active" : "")">
+                        <span>Modération des espèces</span>
+                    </a>
+
+                    <a asp-area=""
+                       asp-page="/Admin/Equipment/Index"
+                       class="dashboard-sidebar__link @(isAdminEquipmentPage ? "dashboard-sidebar__link--active" : "")">
+                        <span>Modération des équipements</span>
+                    </a>
+                </div>
+            }
+        </nav>
+
+        <div class="dashboard-sidebar__bottom">
+            <a asp-area="Identity"
+               asp-page="/Account/Manage/Index"
+               class="dashboard-sidebar__profile @(isProfileManagePage ? "dashboard-sidebar__profile--active" : "")">
+                <div class="dashboard-sidebar__avatar">
+                    @if (!string.IsNullOrWhiteSpace(avatarPath))
+                    {
+                        <img src="@Url.Content($"~{avatarPath}")" alt="Photo de profil de @displayName" />
+                    }
+                    else
+                    {
+                        <span>@avatarInitial</span>
+                    }
+                </div>
+
+                <div>
+                    <strong>@displayName</strong>
+                    <span>@connectedRoleLabel</span>
+                </div>
+            </a>
+
+            <div class="dashboard-sidebar__account-actions">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-area="Identity"
+                          asp-page="/Account/Logout"
+                          asp-route-returnUrl="@homeUrl"
+                          method="post"
+                          class="dashboard-sidebar__logout-form">
+                        <button type="submit" class="dashboard-sidebar__logout-button">
+                            Déconnexion
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-content">
+        <header class="dashboard-topbar">
+            <div class="dashboard-topbar__left">
+                <button type="button"
+                        class="dashboard-menu-toggle"
+                        id="dashboardMenuToggle"
+                        aria-label="Ouvrir le menu">
+                    ☰
+                </button>
+
+                <div>
+                    <h1>@(ViewData["DashboardTitle"] ?? "Dashboard")</h1>
+                    <p>@(ViewData["DashboardSubtitle"] ?? "")</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-page">
+            @RenderBody()
+        </div>
+    </main>
+</div>
+
+<script src="~/js/layout/dashboard-sidebar.js" asp-append-version="true"></script>
+<script src="~/js/layout/dashboard-toast.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

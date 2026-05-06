@@ -1,19 +1,23 @@
 ﻿using BioDomes.Domains.Extensions;
 using BioDomes.Domains.Repositories;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace BioDomes.Infrastructures.Files;
 
 public class SpeciesImageStorage : ISpeciesImageStorage
 {
-    
     private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _configuration;
 
     private static readonly string[] AvailableExtensions = [".jpg", ".jpeg", ".png", ".webp"];
-    
-    public SpeciesImageStorage(IWebHostEnvironment environment)
+
+    public SpeciesImageStorage(
+        IWebHostEnvironment environment,
+        IConfiguration configuration)
     {
         _environment = environment;
+        _configuration = configuration;
     }
 
     public async Task<string?> SaveAsync(string specieName, string originalFileName, Stream content)
@@ -27,32 +31,50 @@ public class SpeciesImageStorage : ISpeciesImageStorage
         var uniquePart = Guid.NewGuid().ToString("N")[..8];
         var fileName = $"{baseFileName}-{uniquePart}{extension}";
 
-        var filePath = Path.Combine(_environment.WebRootPath, "images", "species", fileName);
+        var uploadsRoot = GetUploadsRoot();
+
+        var filePath = Path.Combine(
+            uploadsRoot,
+            "species",
+            fileName
+        );
 
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
-        await using var fileStream = System.IO.File.Create(filePath);
+        await using var fileStream = File.Create(filePath);
         await content.CopyToAsync(fileStream);
 
-        return $"/images/species/{fileName}";
+        return $"/uploads/species/{fileName}";
     }
 
     public void Delete(string? imagePath)
     {
-        if (string.IsNullOrEmpty(imagePath))
-            return;
-        
-
-        if (!imagePath.StartsWith("/images/species/"))
+        if (string.IsNullOrWhiteSpace(imagePath))
             return;
 
-        if (imagePath == "/images/species/noImageSpecie.png")
+        var normalizedPath = imagePath
+            .Replace("\\", "/")
+            .Trim();
+
+        if (normalizedPath.StartsWith("~/"))
+            normalizedPath = normalizedPath[2..];
+
+        normalizedPath = normalizedPath.TrimStart('/');
+
+        if (!normalizedPath.StartsWith("uploads/species/"))
             return;
-        
-        var relativePath = imagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-        var absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
-        
-        if(File.Exists(absolutePath))
+
+        var relativePath = normalizedPath["uploads/".Length..]
+            .Replace('/', Path.DirectorySeparatorChar);
+
+        var absolutePath = Path.Combine(GetUploadsRoot(), relativePath);
+
+        if (File.Exists(absolutePath))
             File.Delete(absolutePath);
+    }
+
+    private string GetUploadsRoot()
+    {
+        return Path.Combine(_environment.WebRootPath, "uploads");
     }
 }

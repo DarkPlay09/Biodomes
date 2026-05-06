@@ -1,0 +1,411 @@
+/* =========================
+   Biome Details
+   ========================= */
+
+.biome-detail-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.biome-detail-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid rgba(11, 61, 57, 0.08);
+}
+
+.biome-detail-header h2 {
+    margin: 0;
+    color: #0b3d39;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 1;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.biome-detail-header p {
+    margin: 0.65rem 0 0;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.biome-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.biome-detail-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    border-radius: 18px;
+    background: #fffbeb;
+    border: 1px solid rgba(217, 119, 6, 0.24);
+    color: #92400e;
+}
+
+.biome-detail-alert__icon {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(217, 119, 6, 0.14);
+    color: #b45309;
+    font-weight: 950;
+}
+
+.biome-detail-alert strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #92400e;
+    font-weight: 600;
+}
+
+.biome-detail-alert p {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.biome-detail-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.biome-detail-kpi-card {
+    min-height: 150px;
+    padding: 1.35rem;
+    border-radius: 22px;
+    background: #ffffff;
+    border: 1px solid rgba(11, 61, 57, 0.06);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.biome-detail-kpi-card__label {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: #64748b;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.biome-detail-kpi-card strong {
+    display: block;
+    color: #0b3d39;
+    font-size: clamp(1.55rem, 2.4vw, 2.2rem);
+    line-height: 1.05;
+    font-weight: 950;
+    letter-spacing: -0.045em;
+}
+
+.biome-detail-kpi-card__unit {
+    font-size: 0.55em;
+    opacity: 0.70;
+    font-weight: 800;
+}
+
+.biome-detail-kpi-card small {
+    display: block;
+    margin-top: 0.75rem;
+    color: #64748b;
+    font-size: 0.86rem;
+    line-height: 1.5;
+}
+
+.dashboard-pill--neutral {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.biome-detail-help-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 22px;
+    background: #eef5f3;
+    border: 1px solid rgba(11, 61, 57, 0.08);
+}
+
+.biome-detail-help-card h3 {
+    margin: 0 0 0.75rem;
+    color: #0b3d39;
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.biome-detail-help-card p {
+    max-width: 760px;
+    margin: 0;
+    color: #475569;
+    line-height: 1.65;
+}
+
+.biome-detail-help-list {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.biome-detail-help-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    color: #475569;
+    line-height: 1.55;
+}
+
+.biome-detail-help-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.68rem;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #80b6ab;
+}
+
+.biome-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.biome-detail-card {
+    overflow: hidden;
+    border-radius: 22px;
+    background: #ffffff;
+    border: 1px solid rgba(11, 61, 57, 0.06);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.biome-detail-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.35rem 1.5rem;
+    border-bottom: 1px solid rgba(11, 61, 57, 0.08);
+}
+
+.biome-detail-card__header h3 {
+    margin: 0;
+    color: #0b3d39;
+    font-size: 1.15rem;
+    font-weight: 900;
+}
+
+.biome-detail-card__header p {
+    margin: 0.35rem 0 0;
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.biome-detail-table-wrap {
+    overflow-x: auto;
+}
+
+.biome-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.biome-detail-table th {
+    padding: 0.9rem 1.5rem;
+    color: #64748b;
+    background: #f8fbfa;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.biome-detail-table td {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(11, 61, 57, 0.06);
+    color: #334155;
+    font-size: 0.92rem;
+    vertical-align: middle;
+}
+
+.biome-detail-table__right {
+    text-align: right !important;
+}
+
+.biome-detail-entity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 190px;
+}
+
+.biome-detail-entity img,
+.biome-detail-entity__fallback {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: rgba(11, 61, 57, 0.08);
+}
+
+.biome-detail-entity__fallback {
+    display: grid;
+    place-items: center;
+    color: #0b3d39;
+    font-weight: 900;
+}
+
+.biome-detail-entity strong {
+    color: #0f172a;
+    font-size: 0.95rem;
+    font-weight: 900;
+}
+
+.biome-detail-tag {
+    display: inline-flex;
+    padding: 0.3rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(11, 61, 57, 0.08);
+    color: #0b3d39;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.biome-detail-remove-button {
+    border: none;
+    background: #fee2e2;
+    color: #b91c1c;
+    min-height: 36px;
+    padding: 0.45rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.biome-detail-remove-button:hover {
+    background: #fecaca;
+}
+
+.biome-detail-empty {
+    padding: 1.5rem;
+    background: #f8fbfa;
+}
+
+.biome-detail-empty strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.biome-detail-empty p {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.55;
+}
+
+.biome-detail-observation {
+    position: relative;
+    height: 360px;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #0b3d39;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.biome-detail-observation img {
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    display: block;
+    object-fit: cover;
+    filter: brightness(0.72) saturate(0.9);
+    transition: transform 0.8s ease;
+}
+
+.biome-detail-observation__overlay {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 2rem;
+    color: #ffffff;
+    background: linear-gradient(0deg, rgba(11, 61, 57, 0.92) 0%, rgba(11, 61, 57, 0.62) 65%, transparent 100%);
+}
+
+.biome-detail-observation__overlay h3 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 950;
+    letter-spacing: -0.04em;
+}
+
+.biome-detail-observation__overlay p {
+    max-width: 720px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.65;
+}
+
+@media (max-width: 1200px) {
+    .biome-detail-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .biome-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .biome-detail-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .biome-detail-actions {
+        justify-content: flex-start;
+    }
+
+    .biome-detail-actions .dashboard-btn {
+        width: 100%;
+    }
+
+    .biome-detail-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .biome-detail-help-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .biome-detail-help-card .dashboard-btn {
+        width: 100%;
+    }
+
+    .biome-detail-card__header {
+        flex-direction: column;
+    }
+
+    .biome-detail-observation__overlay {
+        padding: 1.25rem;
+    }
+}

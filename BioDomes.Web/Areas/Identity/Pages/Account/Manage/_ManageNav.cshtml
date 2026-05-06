@@ -1,0 +1,15 @@
+﻿@{
+    var activePage = ViewData["ActivePage"]?.ToString();
+}
+
+<nav class="dashboard-manage-nav" aria-label="Navigation du profil">
+    <a class="dashboard-manage-nav__link @(activePage == "Profile" ? "dashboard-manage-nav__link--active" : "")"
+       asp-page="./Index">
+        Profil
+    </a>
+
+    <a class="dashboard-manage-nav__link @(activePage == "Password" ? "dashboard-manage-nav__link--active" : "")"
+       asp-page="./ChangePassword">
+        Mot de passe
+    </a>
+</nav>

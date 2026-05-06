@@ -105,8 +105,13 @@ public class LoginModel : PageModel
     /// <item><description>initialise l’URL de retour.</description></item>
     /// </list>
     /// </remarks>
-    public async Task OnGetAsync(string returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string? returnUrl = null)
     {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return LocalRedirect(Url.Content("~/Dashboard"));
+        }
+        
         if (!string.IsNullOrEmpty(ErrorMessage))
         {
             ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -118,6 +123,8 @@ public class LoginModel : PageModel
 
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         ReturnUrl = returnUrl;
+        
+        return Page();
     }
 
     /// <summary>

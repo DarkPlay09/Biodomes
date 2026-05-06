@@ -1,14 +1,18 @@
-﻿@model BioDomes.Web.Pages.Species.SpeciesFormViewModel
+@model BioDomes.Web.Pages.Species.SpeciesFormViewModel
 
 <div class="entity-form__grid">
     <div class="entity-form__field">
-        <label asp-for="Input.Name"></label>
-        <input asp-for="Input.Name" class="entity-form__control" />
+        <label asp-for="Input.Name">
+            Nom <span class="auth-required" aria-hidden="true">*</span>
+        </label>
+        <input asp-for="Input.Name" class="entity-form__control" placeholder="Requin-Lutin"/>
         <span asp-validation-for="Input.Name" class="entity-form__error"></span>
     </div>
 
     <div class="entity-form__field">
-        <label asp-for="Input.Classification"></label>
+        <label asp-for="Input.Classification">
+            Classification <span class="auth-required" aria-hidden="true">*</span>
+        </label>
         <select asp-for="Input.Classification" asp-items="Model.ClassificationOptions" class="entity-form__control">
             <option value="">-- Choisir une classification --</option>
         </select>
@@ -16,7 +20,9 @@
     </div>
 
     <div class="entity-form__field">
-        <label asp-for="Input.Diet"></label>
+        <label asp-for="Input.Diet">
+            Régime alimentaire <span class="auth-required" aria-hidden="true">*</span>
+        </label>
         <select asp-for="Input.Diet" asp-items="Model.DietOptions" class="entity-form__control">
             <option value="">-- Choisir un régime --</option>
         </select>
@@ -24,7 +30,9 @@
     </div>
 
     <div class="entity-form__field">
-        <label asp-for="Input.AdultSize"></label>
+        <label asp-for="Input.AdultSize">
+            Taille adulte <span class="auth-required" aria-hidden="true">*</span>
+        </label>
         <div class="entity-form__input-with-suffix">
             <input asp-for="Input.AdultSize" type="number" step="0.0001" class="entity-form__control entity-form__control--with-suffix" />
             <span class="entity-form__suffix">m</span>
@@ -33,7 +41,9 @@
     </div>
 
     <div class="entity-form__field">
-        <label asp-for="Input.Weight"></label>
+        <label asp-for="Input.Weight">
+            Poids <span class="auth-required" aria-hidden="true">*</span>
+        </label>
         <div class="entity-form__input-with-suffix">
             <input asp-for="Input.Weight" type="number" step="0.1" class="entity-form__control entity-form__control--with-suffix" />
             <span class="entity-form__suffix">kg</span>
@@ -42,7 +52,9 @@
     </div>
 
     <div class="entity-form__field entity-form__field--full">
-        <label asp-for="Input.ImageFile">Image</label>
+        <label asp-for="Input.ImageFile">
+            Image <span class="auth-required" aria-hidden="true">*</span>
+        </label>
 
         <div class="entity-file-upload" data-file-upload>
             <input asp-for="Input.ImageFile"
@@ -53,7 +65,13 @@
 
             <label for="speciesImageInput" class="entity-file-upload__label">
                 <div class="entity-file-upload__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <img class="entity-file-upload__icon-preview"
+                         data-file-icon-preview
+                         data-current-src="@(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? "" : $"{Context.Request.PathBase}{Model.CurrentImagePath}")"
+                         src="@(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? "" : $"{Context.Request.PathBase}{Model.CurrentImagePath}")"
+                         alt="Aperçu de l'image"
+                         @(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? "hidden" : null) />
+                    <svg data-file-icon-fallback viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" @(string.IsNullOrWhiteSpace(Model.CurrentImagePath) ? null : "hidden")>
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <path d="M7 10l5-5 5 5"></path>
                         <path d="M12 5v12"></path>
@@ -63,7 +81,7 @@
                 <div class="entity-file-upload__content">
                     <span class="entity-file-upload__title">Joindre une image</span>
                     <span class="entity-file-upload__subtitle">
-                        PNG, JPG ou WEBP • cliquez pour sélectionner
+                        PNG, JPG ou WEBP - cliquez pour sélectionner
                     </span>
                 </div>
 
@@ -71,17 +89,15 @@
             </label>
 
             <div class="entity-file-upload__meta">
-                <span class="entity-file-upload__filename" data-file-name>
-                    Aucun fichier choisi
+                <span class="entity-file-upload__filename @(string.IsNullOrWhiteSpace(Model.CurrentImageFileName) ? "" : "entity-file-upload__filename--selected")"
+                      data-file-name
+                      data-current-name="@(Model.CurrentImageFileName ?? "Aucun fichier choisi")">
+                    @(Model.CurrentImageFileName ?? "Aucun fichier choisi")
                 </span>
             </div>
-
-            <div class="entity-file-upload__preview-wrapper" data-file-preview-wrapper hidden>
-                <img src="" alt="Aperçu de l’image" class="entity-file-upload__preview" data-file-preview />
-            </div>
-        </div>
+</div>
 
         <span asp-validation-for="Input.ImageFile" class="entity-form__error"></span>
     </div>
 </div>
-                
+

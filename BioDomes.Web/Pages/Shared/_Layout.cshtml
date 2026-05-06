@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - BioDomes : Terrarium Zero</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/bundle.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true"/>
+    <link rel="icon" type="image/png" href="~/images/logo_biodomes.png" />
 </head>
 @{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
@@ -23,17 +22,32 @@
                 </a>
                 
                 <nav class="main-navigation">
-                    <a class="nav-entry @(currentPage == "/Index" ? "nav-entry--active" : "")" asp-area="" asp-page="/Index">Accueil</a>
-                    @if(User.Identity?.IsAuthenticated == true)
+                    <a class="nav-entry @(currentPage == "/Index" ? "nav-entry--active" : "")"
+                       asp-area=""
+                       asp-page="/Index">
+                        Accueil
+                    </a>
+
+                    @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Species/Index">Espèces</a>
-                        <a class="nav-entry" href="#">Biomes</a>
-                        <a class="nav-entry @(currentPage?.StartsWith("/Equipment") == true ? "nav-entry--active" : "")" asp-area="" asp-page="/Equipment/Index">Equipments</a>
+                        <a class="nav-entry @(currentPage?.StartsWith("/Biome") == true ? "nav-entry--active" : "")"
+                           asp-area=""
+                           asp-page="/Biome/Index">
+                            Biomes
+                        </a>
                     }
-                    else
-                    {
-                        <a class="nav-entry" href="#">Il faudrait ajouter des trucs mais on verra plus tard hahaha</a>
-                    }
+
+                    <a class="nav-entry @(currentPage?.StartsWith("/Species") == true ? "nav-entry--active" : "")"
+                       asp-area=""
+                       asp-page="/Species/Index">
+                        Espèces
+                    </a>
+
+                    <a class="nav-entry @(currentPage?.StartsWith("/Equipment") == true ? "nav-entry--active" : "")"
+                       asp-area=""
+                       asp-page="/Equipment/Index">
+                        Équipements
+                    </a>
                 </nav>
                 
                 <div class="header-actions">
@@ -54,15 +68,32 @@
         <button class="mobile-menu-close" type="button" id="menuClose" aria-label="Fermer le menu">×</button>
 
         <nav class="mobile-menu-nav">
-            <a class="@(currentPage == "/Index" ? "mobile-menu-link--active" : "")" asp-page="/Index">Accueil</a>
-            <a class="@(currentPage?.StartsWith("/Species") == true ? "mobile-menu-link--active" : "")" asp-page="/Species/Index">Espèces</a>
-            <a href="#">Biomes</a>
-            <a href="#">Équipements</a>
+            <a class="@(currentPage == "/Index" ? "mobile-menu-link--active" : "")"
+               asp-page="/Index">
+                Accueil
+            </a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a class="@(currentPage?.StartsWith("/Biome") == true ? "mobile-menu-link--active" : "")"
+                   asp-page="/Biome/Index">
+                    Biomes
+                </a>
+            }
+
+            <a class="@(currentPage?.StartsWith("/Species") == true ? "mobile-menu-link--active" : "")"
+               asp-page="/Species/Index">
+                Espèces
+            </a>
+
+            <a class="@(currentPage?.StartsWith("/Equipment") == true ? "mobile-menu-link--active" : "")"
+               asp-page="/Equipment/Index">
+                Équipements
+            </a>
         </nav>
 
         <div class="mobile-menu-actions">
-            <a class="action-link" href="#">Connexion</a>
-            <a class="action-button" href="#">Inscription</a>
+            <partial name="_LoginPartial" />
         </div>
     </aside>
     
@@ -90,17 +121,16 @@
                 <h4 class="footer-title">Navigation</h4>
                 <ul class="footer-list">
                     <li><a asp-area="" asp-page="/Index">Accueil</a></li>
-                    <li><a asp-area="" asp-page="/Species">Espèces</a></li>
-                    <li><a href="#">Biomes</a></li>
-                    <li><a href="#">Équipements</a></li>
+                    <li><a asp-area="" asp-page="/Species/Index">Espèces</a></li>
+                    <li><a asp-area="" asp-page="/Equipment/Index">Équipements</a></li>
                 </ul>
             </div>
 
             <div class="footer-column">
                 <h4 class="footer-title">Légal</h4>
                 <ul class="footer-list">
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="/Privacy">Confidentialité</a></li>
+                    <li><a href="~/Contact">Contact</a></li>
+                    <li><a href="~/Privacy">Confidentialité</a></li>
                 </ul>
             </div>
         </div>
@@ -114,7 +144,7 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/app/site.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
 </body>

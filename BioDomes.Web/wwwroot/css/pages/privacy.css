@@ -1,0 +1,100 @@
+﻿.privacy-page {
+    padding: 4.5rem 1.5rem 6rem;
+    background:
+            radial-gradient(circle at top left, rgba(210, 180, 140, 0.10), transparent 30%),
+            linear-gradient(180deg, #f6f8f8 0%, #ffffff 100%);
+}
+
+.privacy-container {
+    width: min(1040px, 100%);
+    margin: 0 auto;
+}
+
+.privacy-document {
+    color: var(--color-text);
+}
+
+.privacy-document h1 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+}
+
+.privacy-intro {
+    max-width: 980px;
+    margin: 1.35rem 0 3rem;
+    color: var(--color-text);
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.privacy-section {
+    padding-top: 1.85rem;
+    margin-top: 1.85rem;
+}
+
+.privacy-section:first-of-type {
+    margin-top: 0;
+}
+
+.privacy-section h2 {
+    margin: 0 0 1rem;
+    color: var(--color-primary);
+    font-size: 1.45rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.privacy-section p {
+    margin: 0;
+    max-width: 980px;
+    color: var(--color-text);
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.privacy-section ul {
+    margin: 1rem 0 0;
+    padding-left: 1.25rem;
+    color: var(--color-text);
+}
+
+.privacy-section li {
+    margin-bottom: 0.75rem;
+    line-height: 1.75;
+}
+
+.privacy-section li::marker {
+    color: var(--color-primary);
+}
+
+.privacy-section strong {
+    color: var(--color-primary);
+    font-weight: 900;
+}
+
+@media (max-width: 768px) {
+    .privacy-page {
+        padding: 3rem 1rem 4.5rem;
+    }
+
+    .privacy-document h1 {
+        font-size: clamp(2rem, 10vw, 2.8rem);
+    }
+
+    .privacy-intro {
+        margin-bottom: 2.25rem;
+    }
+
+    .privacy-section {
+        padding-top: 1.35rem;
+        margin-top: 1.35rem;
+    }
+
+    .privacy-section h2 {
+        font-size: 1.25rem;
+    }
+}

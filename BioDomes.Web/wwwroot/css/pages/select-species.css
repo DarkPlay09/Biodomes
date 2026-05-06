@@ -1,0 +1,119 @@
+﻿.select-species-page__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-right: auto;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.catalog-filter-card .select-species-page__toggle-input {
+    width: 18px;
+    height: 18px;
+    min-height: 18px;
+    padding: 0;
+    border: 1px solid rgba(11, 61, 57, 0.22);
+    border-radius: 4px;
+    background: #ffffff;
+    accent-color: #0b3d39;
+    cursor: pointer;
+    box-shadow: none;
+    flex-shrink: 0;
+}
+
+.select-species-page .catalog-filter-card__actions {
+    align-items: center;
+}
+
+.select-species-page .catalog-filter-card__actions .dashboard-btn {
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+}
+
+.select-species-page__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.select-species-page__card--already {
+    position: relative;
+}
+
+.select-species-page__card--already .species-card__image img,
+.select-species-page__card--already .entity-card__image img {
+    filter: grayscale(100%) brightness(0.82);
+}
+
+.select-species-page__card--already .species-card__body,
+.select-species-page__card--already .entity-card__body {
+    opacity: 0.78;
+}
+
+.select-species-page__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.select-species-page__card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.select-species-page__card-link:hover {
+    text-decoration: none;
+}
+
+.select-species-page .species-card__footer,
+.select-species-page .entity-card__footer {
+    margin-top: 0;
+    padding: 1rem 1.1rem 1.1rem;
+    border-top: 1px solid rgba(11, 61, 57, 0.08);
+    justify-content: flex-end;
+}
+
+.select-species-page__select-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.select-species-page__select-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border: 1px solid rgba(11, 61, 57, 0.25);
+    border-radius: 12px;
+    background: #0b3d39;
+    color: #ffffff;
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.select-species-page__select-checkbox:checked + .select-species-page__select-button {
+    border-color: #b81c1c;
+    background: #b81c1c;
+    color: #ffffff;
+}
+
+.select-species-page__select-button {
+    font-size: 0; /* cache le texte HTML */
+}
+
+.select-species-page__select-button::after {
+    content: "+ Ajouter dans le biome";
+    font-size: 0.95rem;
+}
+
+.select-species-page__select-checkbox:checked + .select-species-page__select-button::after {
+    content: "Annuler";
+}
+
