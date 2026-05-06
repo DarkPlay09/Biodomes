@@ -1,4 +1,5 @@
 ﻿@page "/biome"
+@using System.Globalization
 @model BioDomes.Web.Pages.Biome.IndexModel
 
 @{
@@ -116,7 +117,11 @@
         <div class="biome-grid">
             @foreach (var biome in Model.BiomeCards)
             {
-                var scoreWidth = $"{biome.Score}%";
+                var roundedScore = Math.Round(biome.Score, 1);
+
+                var scoreLabel = roundedScore.ToString("0.#", CultureInfo.GetCultureInfo("fr-BE"));
+
+                var scoreWidth = $"{Math.Clamp(roundedScore, 0, 100).ToString("0.##", CultureInfo.InvariantCulture)}%";
 
                 <article class="biome-card @biome.StateCssClass">
                     <div class="biome-card__visual">
@@ -161,7 +166,7 @@
                         <div class="biome-card__score">
                             <div>
                                 <span>Score stabilité</span>
-                                <strong>@biome.Score</strong>
+                                <strong>@scoreLabel</strong>
                             </div>
 
                             <div class="biome-card__score-track">

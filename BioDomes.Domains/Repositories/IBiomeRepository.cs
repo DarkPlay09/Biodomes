@@ -26,4 +26,5 @@ public interface IBiomeRepository
     BiomeSpeciesManagementPageDto? GetSpeciesManagementPageData(string biomeSlug, int creatorId, BiomeSpeciesManagementFiltersDto filters);
     void SetSpeciesCountInBiome(int biomeId, int speciesId, int individualCount);
     IReadOnlyList<HomeBiomeCardDto> GetBestBiomesForHome(int count);
+    IReadOnlyDictionary<string, double> GetScoresByCreator(int creatorId);
 }

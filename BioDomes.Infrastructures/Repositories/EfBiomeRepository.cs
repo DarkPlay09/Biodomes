@@ -567,7 +567,11 @@ public class EfBiomeRepository : IBiomeRepository
             .Select(biome => new
             {
                 Biome = biome,
-                Score = CalculateHomeStabilityScore(biome)
+                Score = BiomeScoreCalculator.Calculate(
+                    biome.State,
+                    biome.BiomeSpeciesLinks.Select(link => link.Species.Diet),
+                    biome.BiomeSpeciesLinks.Count,
+                    biome.BiomeEquipmentLinks.Count)
             })
             .OrderByDescending(item => item.Score)
             .ThenByDescending(item => item.Biome.UpdatedAt)
@@ -586,91 +590,22 @@ public class EfBiomeRepository : IBiomeRepository
             })
             .ToList();
     }
-
-    private static double CalculateHomeStabilityScore(BiomeEntity biome)
+    
+    public IReadOnlyDictionary<string, double> GetScoresByCreator(int creatorId)
     {
-        var environmentScore = GetStateScore(biome.State);
-        var trophicScore = CalculateTrophicStability(biome);
-
-        var speciesBonus = Math.Min(biome.BiomeSpeciesLinks.Count * 4, 15);
-        var equipmentBonus = Math.Min(biome.BiomeEquipmentLinks.Count * 3, 10);
-
-        var score = environmentScore * 0.55
-                    + trophicScore * 0.35
-                    + speciesBonus
-                    + equipmentBonus;
-
-        return Math.Round(Math.Min(score, 100), 1);
-    }
-
-    private static int GetStateScore(string state)
-    {
-        if (state.Equals("Optimal", StringComparison.OrdinalIgnoreCase))
-        {
-            return 100;
-        }
-
-        if (state.Equals("Instable", StringComparison.OrdinalIgnoreCase))
-        {
-            return 60;
-        }
-
-        if (state.Equals("Critique", StringComparison.OrdinalIgnoreCase))
-        {
-            return 25;
-        }
-
-        return 50;
-    }
-
-    private static double CalculateTrophicStability(BiomeEntity biome)
-    {
-        var diets = biome.BiomeSpeciesLinks
-            .Select(link => link.Species.Diet ?? string.Empty)
-            .ToList();
-
-        var hasProducer = diets.Any(IsProducer);
-        var hasHerbivore = diets.Any(IsHerbivore) || diets.Any(IsOmnivore);
-        var hasCarnivore = diets.Any(IsCarnivore) || diets.Any(IsOmnivore);
-
-        double score = 20;
-
-        if (hasProducer)
-        {
-            score += 30;
-        }
-
-        if (hasHerbivore)
-        {
-            score += 25;
-        }
-
-        if (hasCarnivore)
-        {
-            score += 25;
-        }
-
-        return Math.Min(score, 100);
-    }
-
-    private static bool IsProducer(string diet)
-    {
-        return diet.Contains("photo", StringComparison.OrdinalIgnoreCase)
-               || diet.Contains("producteur", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsHerbivore(string diet)
-    {
-        return diet.Contains("herbivore", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsCarnivore(string diet)
-    {
-        return diet.Contains("carnivore", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsOmnivore(string diet)
-    {
-        return diet.Contains("omnivore", StringComparison.OrdinalIgnoreCase);
+        return _context.Biomes
+            .AsNoTracking()
+            .Where(biome => biome.CreatorId == creatorId)
+            .Include(biome => biome.BiomeSpeciesLinks)
+            .ThenInclude(link => link.Species)
+            .Include(biome => biome.BiomeEquipmentLinks)
+            .ToList()
+            .ToDictionary(
+                biome => _slugService.ToSlug(biome.Name),
+                biome => BiomeScoreCalculator.Calculate(
+                    biome.State,
+                    biome.BiomeSpeciesLinks.Select(link => link.Species.Diet),
+                    biome.BiomeSpeciesLinks.Count,
+                    biome.BiomeEquipmentLinks.Count));
     }
 }

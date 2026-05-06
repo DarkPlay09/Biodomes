@@ -252,21 +252,28 @@
 }
 
 .biome-card__score-track {
-    height: 7px;
+    width: 100%;
+    height: 8px;
     overflow: hidden;
     border-radius: 999px;
-    background: #e2e8f0;
+    background: #e5ecea;
 }
 
 .biome-card__score-track span {
     display: block;
     height: 100%;
+    min-width: 4px;
     border-radius: inherit;
-    background: #0b3d39;
+    background: #0b4f49;
+    transition: width 0.25s ease;
+}
+
+.biome-card--optimal .biome-card__score-track span {
+    background: #0b4f49;
 }
 
 .biome-card--unstable .biome-card__score-track span {
-    background: #eab308;
+    background: #d97706;
 }
 
 .biome-card--critical .biome-card__score-track span {

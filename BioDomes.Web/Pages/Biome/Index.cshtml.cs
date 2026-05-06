@@ -3,6 +3,7 @@ using System.Security.Claims;
 using BioDomes.Domains.Entities;
 using BioDomes.Domains.Enums;
 using BioDomes.Domains.Repositories;
+using BioDomes.Domains.Services;
 using BioDomes.Infrastructures.Services.Slug;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,6 +23,8 @@ public class IndexModel : PageModel
 
     private readonly IBiomeRepository _biomeRepository;
     private readonly ISlugService _slugService;
+    
+    private IReadOnlyDictionary<string, double> _biomeScores = new Dictionary<string, double>();
 
     /// <summary>
     /// Initialise la page des biomes.
@@ -119,6 +122,8 @@ public class IndexModel : PageModel
         }
 
         var biomes = _biomeRepository.GetAllByCreator(userId).ToList();
+        
+        _biomeScores = _biomeRepository.GetScoresByCreator(userId);
 
         TotalCount = biomes.Count;
         OptimalCount = biomes.Count(biome => biome.State == BiomeState.Optimal);
@@ -257,9 +262,6 @@ public class IndexModel : PageModel
         var temperatureCssClass = GetTemperatureCssClass(biome.Temperature);
         var temperatureIconPath = GetTemperatureIconPath(biome.Temperature);
 
-        // Si tu n'as pas d'humidité relative en %, on convertit l'humidité absolue
-        // en pourcentage visuel.
-        // 30 g/m³ est une base raisonnable pour un remplissage visuel.
         var humidityPercent = Math.Clamp(
             (int)Math.Round((biome.AbsoluteHumidity / 30d) * 100),
             0,
@@ -284,13 +286,13 @@ public class IndexModel : PageModel
                 BiomeState.Critique => "biome-card--critical",
                 _ => "biome-card--optimal"
             },
-            Score = biome.State switch
-            {
-                BiomeState.Optimal => 92,
-                BiomeState.Instable => 45,
-                BiomeState.Critique => 21,
-                _ => 60
-            },
+            Score = _biomeScores.TryGetValue(_slugService.ToSlug(biome.Name), out var score)
+                ? score
+                : BiomeScoreCalculator.Calculate(
+                    FormatState(biome.State),
+                    [],
+                    0,
+                    0),
             LastUpdatedLabel = biome.UpdatedAt
                 .ToLocalTime()
                 .ToString("dd/MM/yyyy HH:mm", fr)
@@ -381,7 +383,7 @@ public class IndexModel : PageModel
 
         public string StateCssClass { get; set; } = string.Empty;
 
-        public int Score { get; set; }
+        public double Score { get; set; }
 
         public string LastUpdatedLabel { get; set; } = string.Empty;
         

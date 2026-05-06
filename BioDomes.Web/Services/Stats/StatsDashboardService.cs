@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.Json;
+using BioDomes.Domains.Services;
 using BioDomes.Infrastructures;
 using BioDomes.Infrastructures.EntityFramework.Entities;
 using BioDomes.Infrastructures.Services.Slug;
@@ -54,7 +55,8 @@ public sealed class StatsDashboardService : IStatsDashboardService
             .AsNoTracking()
             .Where(b => b.CreatorId == userId)
             .Include(b => b.BiomeSpeciesLinks)
-                .ThenInclude(l => l.Species)
+            .ThenInclude(l => l.Species)
+            .Include(b => b.BiomeEquipmentLinks)
             .OrderByDescending(b => b.UpdatedAt)
             .ToListAsync();
 
@@ -158,9 +160,24 @@ public sealed class StatsDashboardService : IStatsDashboardService
 
         var totalIndividuals = sources.Sum(source => source.IndividualCount);
 
-        var biodiversityIndex = Math.Round(Math.Min(100.0, distinctSpecies * 10.0), 1);
-        var trophicStability = Math.Round(CalculateTrophicStability(biome), 1);
-        var environmentScore = GetStateScore(biome.State);
+        var biodiversityIndex = Math.Round(
+            Math.Min(100.0, distinctSpecies * 10.0),
+            1);
+
+        var diets = biome.BiomeSpeciesLinks
+            .Select(link => link.Species.Diet)
+            .ToList();
+
+        var trophicStability = Math.Round(
+            BiomeScoreCalculator.CalculateTrophicStability(diets),
+            1);
+
+        var environmentScore = BiomeScoreCalculator.Calculate(
+            biome.State,
+            diets,
+            biome.BiomeSpeciesLinks.Count,
+            biome.BiomeEquipmentLinks.Count);
+        
         var connectivity = Math.Round(CalculateConnectivity(sources), 2);
         var chainLength = Math.Round(CalculateChainLength(biome), 1);
         var predatorPreyRatio = Math.Round(CalculatePredatorPreyRatio(sources), 2);
@@ -500,42 +517,6 @@ public sealed class StatsDashboardService : IStatsDashboardService
     }
 
     /// <summary>
-    /// Calcule un score de stabilité trophique selon la présence de producteurs,
-    /// d'herbivores et de carnivores dans le biome.
-    /// </summary>
-    /// <param name="biome">Biome analysé.</param>
-    /// <returns>Score de stabilité compris entre 0 et 100.</returns>
-    private static double CalculateTrophicStability(BiomeEntity biome)
-    {
-        var diets = biome.BiomeSpeciesLinks
-            .Select(link => link.Species.Diet ?? string.Empty)
-            .ToList();
-
-        var hasProducer = diets.Any(IsProducer);
-        var hasHerbivore = diets.Any(IsHerbivore) || diets.Any(IsOmnivore);
-        var hasCarnivore = diets.Any(IsCarnivore) || diets.Any(IsOmnivore);
-
-        double score = 20;
-
-        if (hasProducer)
-        {
-            score += 30;
-        }
-
-        if (hasHerbivore)
-        {
-            score += 25;
-        }
-
-        if (hasCarnivore)
-        {
-            score += 25;
-        }
-
-        return Math.Min(score, 100);
-    }
-
-    /// <summary>
     /// Estime la longueur moyenne de la chaîne trophique du biome.
     /// </summary>
     /// <param name="biome">Biome analysé.</param>
@@ -686,31 +667,6 @@ public sealed class StatsDashboardService : IStatsDashboardService
             "all" => "Toutes les données",
             _ => "30 jours"
         };
-    }
-
-    /// <summary>
-    /// Convertit l'état textuel d'un biome en score numérique environnemental.
-    /// </summary>
-    /// <param name="state">État du biome.</param>
-    /// <returns>Score environnemental associé.</returns>
-    private static int GetStateScore(string state)
-    {
-        if (state.Equals("Optimal", StringComparison.OrdinalIgnoreCase))
-        {
-            return 100;
-        }
-
-        if (state.Equals("Instable", StringComparison.OrdinalIgnoreCase))
-        {
-            return 60;
-        }
-
-        if (state.Equals("Critique", StringComparison.OrdinalIgnoreCase))
-        {
-            return 25;
-        }
-
-        return 50;
     }
 
     /// <summary>
